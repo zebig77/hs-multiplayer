@@ -1,0 +1,63 @@
+syntax = "proto3";
+package game;
+
+option java_package = "org.zebig.hs.protobuf";
+option java_outer_classname = "GameProto";
+
+message Auth {
+  string token = 1;
+  string clientVersion = 2;
+}
+
+message CreateMatch {
+  string mode = 1;
+}
+
+message PlayCard {
+  string matchId = 1;
+  string cardId = 2;
+  uint32 actionSeq = 3;
+  string targetId = 4;
+  uint32 choiceNum = 5;
+}
+
+message ChatMessage {
+  string matchId = 1;
+  string from = 2;
+  string text = 3;
+}
+
+message MatchCreated {
+  string matchId = 1;
+}
+
+message ClientMessage {
+  oneof payload {
+    Auth auth = 1;
+    CreateMatch createMatch = 2;
+    PlayCard playCard = 3;
+    ChatMessage chat = 4;
+  }
+}
+
+message Ack {
+  string msg = 1;
+  uint64 serverTime = 2;
+}
+
+// 🔥 A diff in game state
+message GameEvent {
+    string type = 1;                 // e.g. "DrawCard", "Summon", "Damage", "Death"
+    map<string,string> data = 2;     // arbitrary key→value
+    uint64 seq = 3;                  // server event sequence
+}
+
+message ServerMessage {
+    string gameId = 1;
+  oneof payload {
+      Ack ack = 2;
+      ChatMessage chat = 3;
+      MatchCreated matchCreated = 4;
+      GameEvent event = 5;
+  }
+}
