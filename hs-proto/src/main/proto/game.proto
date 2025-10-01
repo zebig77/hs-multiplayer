@@ -8,8 +8,8 @@ option java_outer_classname = "GameProto";
 /* Client to server messages */
 
 message Auth {
-  string token = 1;
-  string client_version = 2;
+  string token = 1;             // for authentication
+  string client_version = 2;    // not yet implemented
 }
 
 /* Client asks the server to create a game or find a game with a waiting player */
@@ -86,12 +86,62 @@ message MatchJoined {
 
 /* the full state of a card in hand or on board */
 message CardDetail {
-    // TODO
+    string card_id = 1;
+    string card_name = 2;
+    string card_text = 3;
+    uint64 attack_power = 4;
+    uint64 health = 5;
+    bool frozen = 6;
+    bool can_attack = 7;
+}
+
+/* weapon health, attack power, effects */
+message WeaponDetail {
+    string card_id = 1; // the card that created it if any
+    uint32 health = 2;
+    uint32 attack_power = 3;
+}
+
+/* health, armour, mana, hand size, weapon, state (e.g. frozen), deck size, secret count */
+message HeroDetail {
+    string hero_name = 1;
+    uint32 health = 2;
+    uint32 attack_power = 3;
+    uint32 mana_max = 4;
+    uint32 mana_free = 5;
+    uint32 mana_overload = 6;
+    bool can_attack = 7;
+    uint32 deck_size = 8;
+    uint32 fatigue = 9;
+    uint32 secret_count = 10;
+}
+
+message BoardDetail {
+    repeated string card_id = 1;
+    repeated CardDetail card_details = 3;
+}
+
+message HandDetail {
+    repeated string card_id = 1;
+    repeated CardDetail card_details = 3;
+}
+
+message SecretsDetail {
+    repeated string card_id = 1;
+    repeated CardDetail card_details = 3;
 }
 
 /* for a full refresh of the game state */
 message GameState {
-    // TODO
+    HeroDetail your_hero = 1;
+    HeroDetail opp_hero = 2;
+    HandDetail your_hand = 3;
+    WeaponDetail your_weapon = 4;
+    WeaponDetail opp_weapon = 5;
+    BoardDetail your_board = 6;
+    BoardDetail opp_board = 7;
+    SecretsDetail your_secrets = 8;
+    bool your_turn = 9;
 }
 
 message Ack {
