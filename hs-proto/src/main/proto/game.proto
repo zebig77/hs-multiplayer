@@ -4,40 +4,94 @@ package game;
 option java_package = "org.zebig.hs.protobuf";
 option java_outer_classname = "GameProto";
 
+
+/* Client to server messages */
+
 message Auth {
   string token = 1;
-  string clientVersion = 2;
+  string client_version = 2;
 }
 
-message CreateMatch {
-  string mode = 1;
+/* Client asks the server to create a game or find a game with a waiting player */
+message JoinGame {
+  string mode = 1; // possible values : "casual" or "ranked"
 }
 
+/* only once during mulligan phase */
+message Mulligan {
+    string match_id = 1;
+    repeated string card_id = 2;
+}
+
+/* sent by the active player, during play phase */
 message PlayCard {
-  string matchId = 1;
-  string cardId = 2;
-  uint32 actionSeq = 3;
-  string targetId = 4;
-  uint32 choiceNum = 5;
+    string match_id = 1;
+    string card_id = 2;
+    uint32 action_seq = 3;
+    string target_id = 4;   // if the played card requires a target
+    uint32 choice_num = 5;  // if the played card requires a choice number
+    uint32 position = 6;    // for minions, the place on the board
 }
 
-message ChatMessage {
-  string matchId = 1;
-  string from = 2;
-  string text = 3;
+/*  sent by the active player, during play phase
+    attack by a player's minion
+*/
+message MinionAttack {
+    string match_id = 1;
+    string card_id = 2;      // the minion that attacks; must be in player's board and being able to attack
+    string target_id = 3;    // the target of attack, = H if opponent's hero or a card_id for a minion in the opponent's board
 }
 
-message MatchCreated {
-  string matchId = 1;
+/*  sent by the active player, during play phase,
+    attack by the player's hero
+*/
+message HeroAttack {
+    string match_id = 1;
+    string target_id = 2;    // the target of attack, = H if opponent's hero or a card_id for a minion in the opponent's board
+}
+
+/*  sent by the active player, during play phase,
+    use player's hero power
+*/
+message UseHeroPower {
+    string match_id = 1;
+    string target_id = 2;    // h = player's hero, H = opponent's hero, else card_id (on board)
+}
+
+/*  sent by any player, during play phase,
+    concede the game (accept defeat)
+*/
+message ConcedeGame {
+    string match_id = 1;
+    string target_id = 2;    // h = player's hero, H = opponent's hero, else card_id (on board)
 }
 
 message ClientMessage {
-  oneof payload {
-    Auth auth = 1;
-    CreateMatch createMatch = 2;
-    PlayCard playCard = 3;
-    ChatMessage chat = 4;
-  }
+    oneof payload {
+        Auth auth = 1;
+        JoinGame join_game = 2;
+        PlayCard play_card = 3;
+        MinionAttack minion_attack = 4;
+        HeroAttack hero_attack = 5;
+        UseHeroPower use_hero_power = 6;
+        ConcedeGame concede_game = 7;
+    }
+}
+
+/* Server to client messages */
+
+message MatchJoined {
+  string match_id = 1;
+}
+
+/* the full state of a card in hand or on board */
+message CardDetail {
+    // TODO
+}
+
+/* for a full refresh of the game state */
+message GameState {
+    // TODO
 }
 
 message Ack {
@@ -53,11 +107,10 @@ message GameEvent {
 }
 
 message ServerMessage {
-    string gameId = 1;
-  oneof payload {
+    string game_id = 1;
+    oneof payload {
       Ack ack = 2;
-      ChatMessage chat = 3;
-      MatchCreated matchCreated = 4;
+      MatchJoined match_joined = 3;
       GameEvent event = 5;
   }
 }

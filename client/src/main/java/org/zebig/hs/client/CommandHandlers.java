@@ -8,7 +8,7 @@ import java.util.Map;
 public class CommandHandlers {
     public static void handlePlay(String[] parts, Channel channel) {
         if (parts.length < 4) {
-            System.out.println("Usage: play <matchId> <cardId> actionSeq=<n> [targetId=<id>] [choiceNum=<n>]");
+            System.out.println("Usage: play <match_id> <card_id> action_seq=<n> [target_id=<id>] [choice_num=<n>]");
             return;
         }
         String matchId = parts[1];
@@ -18,7 +18,7 @@ public class CommandHandlers {
         try {
             actionSeq = Integer.parseInt(namedArgs.get("actionseq"));
         } catch (Exception e) {
-            System.out.println("ERROR: actionSeq is mandatory and must be a number");
+            System.out.println("ERROR: action_seq is mandatory and must be a number");
             return;
         }
         String targetId = namedArgs.getOrDefault("targetid", "");
@@ -27,7 +27,7 @@ public class CommandHandlers {
             try {
                 choiceNum = Integer.parseInt(namedArgs.get("choicenum"));
             } catch (NumberFormatException e) {
-                System.out.println("ERROR: choiceNum must be a number");
+                System.out.println("ERROR: choice_num must be a number");
                 return;
             }
         }
@@ -41,7 +41,7 @@ public class CommandHandlers {
 
     public static void handleChat(String[] parts, Channel channel) {
         if (parts.length < 4) {
-            System.out.println("Usage: chat <matchId> from=<name> text=<message>");
+            System.out.println("Usage: chat <match_id> from=<name> text=<message>");
             return;
         }
         String matchId = parts[1];
@@ -69,10 +69,10 @@ public class CommandHandlers {
 
     public static void handleJoin(String[] parts, Channel channel) {
         if (parts.length < 2) {
-            System.out.println("Usage: join <matchId>");
+            System.out.println("Usage: join <match_id>");
             return;
         }
         String matchId = parts[1];
-        System.out.println("Join requested for match " + matchId + " (server-side join not implemented in proto; share matchId and use create/join server API when added).");
+        System.out.println("Join requested for match " + matchId + " (server-side join not implemented in proto; share match_id and use create/join server API when added).");
     }
 }

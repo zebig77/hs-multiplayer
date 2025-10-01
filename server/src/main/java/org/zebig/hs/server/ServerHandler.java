@@ -22,7 +22,7 @@ public class ServerHandler extends SimpleChannelInboundHandler<GameProto.ClientM
             if (play.getCardId() == null || play.getCardId().isEmpty()) {
                 ctx.writeAndFlush(GameProto.ServerMessage.newBuilder()
                         .setAck(GameProto.Ack.newBuilder()
-                            .setMsg("ERROR: cardId is mandatory")
+                            .setMsg("ERROR: card_id is mandatory")
                             .setServerTime(System.currentTimeMillis()).build())
                         .build());
                 return;

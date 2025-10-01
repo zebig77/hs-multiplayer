@@ -11,7 +11,7 @@ public class ProtobufTest {
                 .setMatchId("m1")
                 .setCardId("Fireball")
                 .setActionSeq(1)
-                .setChoiceNum(2) // targetId omitted on purpose
+                .setChoiceNum(2) // target_id omitted on purpose
                 .build();
         assertEquals("Fireball", pc.getCardId());
         assertEquals("", pc.getTargetId());

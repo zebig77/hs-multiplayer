@@ -55,9 +55,9 @@ public class ClientConsole {
             System.out.println("Connected to server " + host + ":" + port);
             System.out.println("Commands:");
             System.out.println(" create mode=<mode>");
-            System.out.println(" chat <matchId> from=<name> text=<message>");
-            System.out.println(" play <matchId> <cardId> actionSeq=<n> [targetId=<id>] [choiceNum=<n>]");
-            System.out.println(" join <matchId>   (client-side only placeholder)");
+            System.out.println(" chat <match_id> from=<name> text=<message>");
+            System.out.println(" play <match_id> <card_id> action_seq=<n> [target_id=<id>] [choice_num=<n>]");
+            System.out.println(" join <match_id>   (client-side only placeholder)");
 
             Scanner scanner = new Scanner(System.in);
             while (true) {

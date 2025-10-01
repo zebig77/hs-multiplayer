@@ -12,10 +12,10 @@ public class MessageBuilderHelper {
             int choiceNum
     ) {
         if (matchId == null || matchId.isEmpty()) {
-            throw new IllegalArgumentException("matchId is mandatory");
+            throw new IllegalArgumentException("match_id is mandatory");
         }
         if (cardId == null || cardId.isEmpty()) {
-            throw new IllegalArgumentException("cardId is mandatory");
+            throw new IllegalArgumentException("card_id is mandatory");
         }
         GameProto.PlayCard.Builder playBuilder = GameProto.PlayCard.newBuilder()
                 .setMatchId(matchId)
@@ -34,7 +34,7 @@ public class MessageBuilderHelper {
 
     public static GameProto.ClientMessage buildChatMessage(String matchId, String from, String text) {
         if (matchId == null || matchId.isEmpty()) {
-            throw new IllegalArgumentException("matchId is mandatory");
+            throw new IllegalArgumentException("match_id is mandatory");
         }
         if (from == null || from.isEmpty()) {
             throw new IllegalArgumentException("from is mandatory");
