@@ -279,7 +279,7 @@ class TestPaladin extends TestHelper {
 		_attack(blu,p2.hero)
 		assert blu.is_dead()
 		assert p2.hero.health == 30
-		assert p2.minions.size() == 0
+		assert p2.board.size() == 0
 		assert p2.secrets.size() == 0
 	}
 	
@@ -345,8 +345,8 @@ class TestPaladin extends TestHelper {
 		assert p1.hero.weapon != null
 		def dur = p1.hero.weapon.get_durability()
 		_use_hero_power() // summon a 1/1 Silver Hand Recruit
-		assert p1.minions.size() == 1
-		def shr = p1.minions[0]
+		assert p1.board.size() == 1
+		def shr = p1.board.cards[0]
 		assert shr.get_attack() == shr.attack + 1
 		assert shr.get_health() == shr.health + 1
 		assert p1.hero.weapon.get_durability() == dur - 1	// 4

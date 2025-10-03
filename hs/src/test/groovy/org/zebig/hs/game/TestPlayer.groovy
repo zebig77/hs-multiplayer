@@ -23,7 +23,7 @@ class TestPlayer extends TestHelper {
 		catch( Exception e ) {
 			println e // OK
 			assert p1.hand.contains(abo)
-			assert !p1.minions.contains(abo)
+			assert !p1.board.contains(abo)
 		}
 		
 		/*
@@ -34,7 +34,7 @@ class TestPlayer extends TestHelper {
 		p1.hand.add(twl)
 		p1.play(twl)
 		assert !p1.hand.contains(twl)
-		assert p1.minions.contains(twl)
+		assert p1.board.contains(twl)
 
 	}
 

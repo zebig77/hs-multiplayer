@@ -17,7 +17,7 @@ class TestWarlock extends TestHelper {
 		def abo = _play("Abomination")
 		_play_and_target("Bane of Doom", abo)
 		assert !abo.is_dead()
-		assert p1.minions.contains( abo )
+		assert p1.board.contains( abo )
 	}
 
 	@Test
@@ -27,8 +27,8 @@ class TestWarlock extends TestHelper {
 		def leg = _play("Leper Gnome")
 		_play_and_target("Bane of Doom", leg)
 		assert leg.is_dead()
-		assert p1.minions.findAll{ it.is_a_demon() }.size() > 0
-		println "   - p1.minions = ${p1.minions}"
+		assert p1.minions().findAll{ it.is_a_demon() }.size() > 0
+		println "   - p1.minions = ${p1.minions()}"
 	}
 
 	@Test
@@ -38,7 +38,7 @@ class TestWarlock extends TestHelper {
 		def abu = _play("Abusive Sergeant")
 		_next_random_int(0)
 		_play_and_target("Bane of Doom", abu)
-		assert p1.minions[0].name == "Dread Infernal"
+		assert p1.board.cards[0].name == "Dread Infernal"
 	}
 	
 	@Test
@@ -48,7 +48,7 @@ class TestWarlock extends TestHelper {
 		def abu = _play("Abusive Sergeant")
 		_next_random_int(1)
 		_play_and_target("Bane of Doom", abu)
-		assert p1.minions[0].name == "Succubus"
+		assert p1.board.cards[0].name == "Succubus"
 		
 		// Test Succubus play - hand contains only succubus
 		def suc = g.new_card("Succubus")
@@ -89,7 +89,7 @@ class TestWarlock extends TestHelper {
 		def abu = _play("Abusive Sergeant")
 		_next_random_int(2)
 		_play_and_target("Bane of Doom", abu)
-		assert p1.minions[0].name == "Voidwalker"
+		assert p1.board.cards[0].name == "Voidwalker"
 	}
 
 	@Test
@@ -99,7 +99,7 @@ class TestWarlock extends TestHelper {
 		def abu = _play("Abusive Sergeant")
 		_next_random_int(3)
 		_play_and_target("Bane of Doom", abu)
-		assert p1.minions[0].name == "Blood Imp"
+		assert p1.board.cards[0].name == "Blood Imp"
 	}
 
 	@Test
@@ -109,7 +109,7 @@ class TestWarlock extends TestHelper {
 		def abu = _play("Abusive Sergeant")
 		_next_random_int(4)
 		_play_and_target("Bane of Doom", abu)
-		assert p1.minions[0].name == "Felguard"
+		assert p1.board.cards[0].name == "Felguard"
 	}
 	
 	@Test
@@ -266,17 +266,17 @@ class TestWarlock extends TestHelper {
 		assert p1.hero.health == 15
 		assert p1.hero.weapon != null
 		assert p1.hero.weapon.name == "Blood Fury"
-		assert p1.minions.size() == 0
+		assert p1.board.size() == 0
 		
 		_attack(p1.hero, p2.hero)
 		assert p2.hero.health == 30 - p1.hero.weapon.get_attack()
 		
 		_use_hero_power() // Inferno: Summon a 6/6 Infernal
-		assert p1.minions.size() == 1
-		assert p1.minions[0].name == "Infernal"
-		assert p1.minions[0].attack == 6
-		assert p1.minions[0].health == 6
-		assert p1.minions[0].creature_type == "demon"		
+		assert p1.board.size() == 1
+		assert p1.board.cards[0].name == "Infernal"
+		assert p1.board.cards[0].attack == 6
+		assert p1.board.cards[0].health == 6
+		assert p1.board.cards[0].creature_type == "demon"		
 	}
 	
 	@Test
@@ -301,8 +301,8 @@ class TestWarlock extends TestHelper {
 		_next_turn()
 		
 		_play("Lord Jaraxxus")
-		assert p2.minions.size() == 1
-		assert p2.minions[0].name == 'Lord Jaraxxus'
+		assert p2.board.size() == 1
+		assert p2.board.cards[0].name == 'Lord Jaraxxus'
 	}
 	
 	@Test
@@ -550,10 +550,10 @@ class TestWarlock extends TestHelper {
 		p1.hand.cards.clear()
 		def v = _play("Voidcaller")
 		assert v.has_deathrattle()
-		assert p1.minions.size() == 1
-		assert p1.minions[0].name == "Voidcaller"
+		assert p1.board.size() == 1
+		assert p1.board.cards[0].name == "Voidcaller"
 		v.dies()
-		assert p1.minions.size() == 0
+		assert p1.board.size() == 0
 	}
 	
 	@Test
@@ -562,11 +562,11 @@ class TestWarlock extends TestHelper {
 		p1.hand.cards.add(g.new_card("Blood Imp"))
 		def v = _play("Voidcaller")
 		assert v.has_deathrattle()
-		assert p1.minions.size() == 1
-		assert p1.minions[0].name == "Voidcaller"
+		assert p1.board.size() == 1
+		assert p1.board.cards[0].name == "Voidcaller"
 		v.dies()
-		assert p1.minions.size() == 1
-		assert p1.minions[0].name == "Blood Imp"
+		assert p1.board.size() == 1
+		assert p1.board.cards[0].name == "Blood Imp"
 	}
 	
 	@Test

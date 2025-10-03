@@ -4,6 +4,7 @@ import org.zebig.hs.game.Card
 import org.zebig.hs.game.CardDefinition
 import org.zebig.hs.game.CardLibrary
 import org.zebig.hs.game.Game
+import org.zebig.hs.game.Target
 import org.zebig.hs.logger.Log
 import org.zebig.hs.mechanics.buffs.BuffType
 
@@ -38,7 +39,7 @@ class BestialWrath extends CardDefinition {
 		reserved_to="Hunter"
 		get_targets=[{ all_minions.findAll{it.creature_type == 'beast'} }]
 		when_played(text) {
-			def b = select_spell_target( all_minions.findAll{it.creature_type == 'beast'} )
+			def b = select_spell_target(all_minions.findAll{it.creature_type == 'beast'} as List<Target>)
 			b.gains("+2 Attack").until_end_of_turn()
 			b.gains(BuffType.IMMUNE).until_end_of_turn()
 		}
@@ -294,7 +295,7 @@ class MultiShot extends CardDefinition {
 		text='Deal 3 damage to two random enemy minions.'
 		reserved_to="Hunter"
 		before_play("check targets") {
-			check(enemy_minions.size() >= 2, "not enough targets")
+			check(opponent.board.size() >= 2, "not enough targets")
 		}
 		when_played(text) {
 			def possible_choices = enemy_minions
@@ -484,7 +485,7 @@ class UnleashTheHounds extends CardDefinition {
 		text='For each enemy minion, summon a 1/1 Hound with Charge.'
 		reserved_to="Hunter"
 		when_played(text) {
-			enemy_minions.size().times {
+			opponent.board.size().times {
 				game.summon(you, "Hound")
 			}
 		}

@@ -257,7 +257,7 @@ class TestGame extends TestHelper {
 	void Game_play_minion_success() {
 		Card c = g.new_card("Abomination")
 		g.summon(p1, c)
-		assert p1.minions.contains(c)
+		assert p1.board.contains(c)
 		assert c.place == 0
 		assert c.just_summoned
 		assert c.has_buff(TAUNT)

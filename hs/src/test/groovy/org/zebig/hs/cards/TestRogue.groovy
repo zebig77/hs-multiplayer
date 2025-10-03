@@ -33,7 +33,7 @@ class TestRogue extends TestHelper {
 		_play_and_target("Assassinate", abo)
 		assert abo.is_dead()
 		assert !abo.is_in_play()
-		assert !p2.minions.contains(abo)
+		assert !p2.board.contains(abo)
 	}
 
 	@Test
@@ -143,7 +143,7 @@ class TestRogue extends TestHelper {
 		// Combo: Summon a 2/1 Defias Bandit
 		def drl = _play("Defias Ringleader")
 		assert drl.is_in_play()
-		assert p1.minions.size() == 1
+		assert p1.board.size() == 1
 	}
 
 	@Test
@@ -255,7 +255,7 @@ class TestRogue extends TestHelper {
 		_play("Abomination")
 		def drl = _play("Defias Ringleader")
 		assert drl.is_in_play()
-		assert p1.minions.size() == 3
+		assert p1.board.size() == 3
 	}
 
 	@Test

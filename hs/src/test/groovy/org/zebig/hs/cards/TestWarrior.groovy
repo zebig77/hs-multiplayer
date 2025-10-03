@@ -119,9 +119,9 @@ class TestWarrior extends TestHelper {
 		// Destroy all minions except one. (chosen randomly)
 		def abo = _play("Abomination")
 		def bfo = _play("Boulderfist Ogre")
-		assert p1.minions.size() == 2
+		assert p1.board.size() == 2
 		_play("Brawl")
-		assert p1.minions.size() == 1
+		assert p1.board.size() == 1
 	}
 	
 	@Test

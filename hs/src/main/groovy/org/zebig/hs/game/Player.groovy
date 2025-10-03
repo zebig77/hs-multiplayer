@@ -23,8 +23,8 @@ class Player extends ScriptObject {
 
 	String name
 	Hand hand
+    Board board
 	Deck deck
-	ListState<Card> minions
 	ListState<Card> secrets
 	PlayerArtefact artefact // container for player's triggers
 
@@ -37,9 +37,9 @@ class Player extends ScriptObject {
 		this.name = name
 		this.hero = hero
 		this.deck = deck
-        this.minions = new ListState<Card>(game)
         this.secrets = new ListState<Card>(game)
 		this.hand = new Hand(this)
+        this.board = new Board(this)
 		this.overload = 0
 		this.nb_cards_played_this_turn = 0
 		this.available_mana = 0
@@ -75,7 +75,7 @@ class Player extends ScriptObject {
 		sw << " Arm=${hero.armor}"
 		sw << " Hnd=${hand.size()}"
 		sw << " Dck=${deck.size()}"
-		sw << " Min=${minions.size()}"
+		sw << " Brd=${board.size()}"
 		sw << " Sec=${secrets.size()}"
 		return sw.toString()
 	}
@@ -166,34 +166,34 @@ class Player extends ScriptObject {
 	}
 
 	// previous controller loses control
-	def take_control(Card c) {
-		assert c != null
-		assert c.is_a_minion()
-		assert c.controller != null
+	def take_control(Target t) {
+		assert t != null
+		assert t.is_a_minion()
+		assert t.controller != null
 		// take minion out of the other player control
-		println "      . ${c.controller} loses control of $c"
-		c.controller.minions.remove(c)
-		c.controller.update_minions_place()
-		gain_control(c)
+		println "      . ${t.controller} loses control of $t"
+		t.controller.board.remove(t as Card)
+		t.controller.update_minions_place()
+		gain_control(t)
 	}
 
-	def gain_control(Card c) {
-		controls(c, minions.size())
+	def gain_control(Target t) {
+		controls(t, board.size())
 	}
 
-	def controls(Card c, int place) {
-		assert c != null
-		assert c.is_a_minion()
-		c.controller = this
-		println "      . ${this} gains control of $c"
-		if (c.place < minions.size()) { // insert c
+	def controls(Target t, int place) {
+		assert t != null
+		assert t.is_a_minion()
+		t.controller = this
+		println "      . ${this} gains control of $t"
+		if (t.place < board.size()) { // insert t
 			minions().findAll{it.place >= place}.each {
-				(it as Card).place++
+				it.place++
 				println "      . $it moved to x=$it.place"
 			}
 		}
-		c.place = place
-		this.minions.add(c)
+		t.place = place
+		this.board.add(t as Card)
 	}
 
 	int get_power_damage(int amount) {
@@ -205,7 +205,7 @@ class Player extends ScriptObject {
 	int get_spell_damage(int amount) {
 		AnySpellDamageIsEvaluated e = new AnySpellDamageIsEvaluated(this, amount)
 		def buff_spell_damage_increase = 0
-		minions.each{ minion ->
+		minions().each{ minion ->
 			minion.get_buffs().findAll{ it.spell_damage_increase != 0 }.each { Buff buff ->
 				buff_spell_damage_increase += buff.spell_damage_increase
 				println "      . spell damage modified by $buff"
@@ -229,7 +229,7 @@ class Player extends ScriptObject {
 		available_mana = max_mana - overload
 		overload = 0
 		nb_cards_played_this_turn = 0
-		minions.each {Card minion ->
+		minions().each {Card minion ->
 			minion.attack_counter = 0
 			minion.just_summoned = false
 		}
@@ -240,9 +240,10 @@ class Player extends ScriptObject {
 	// create a copy to avoid java.util.ConcurrentModificationException
 	ArrayList<Card> minions() {
 		// if a minion is being played it is not yet considered part of the minions
-		return new ArrayList<Card>(minions.findAll{ Card c ->
-            !c.is_being_played && !c.is_destroyed
+        ArrayList<Card> result = new ArrayList<Card>(board.cards.findAll{ Card c ->
+            c.is_a_minion() && !c.is_being_played && !c.is_destroyed
 		}).sort{it.play_order}
+        return result
 	}
 
 	/** play a card from hand, with place specified */
@@ -250,7 +251,7 @@ class Player extends ScriptObject {
 
 		// check that card can be played
 		println "\n- $this plays $c"
-		if (minions.size() >= 7 && c.is_a_minion()) {
+		if (board.size() >= 7 && c.is_a_minion()) {
 			throw new IllegalActionException("no room in battlefield to play a minion")
 		}
 
@@ -318,7 +319,7 @@ class Player extends ScriptObject {
 	def play(Card c) {
 		def played
 		if (c.is_a_minion()) {
-			played = play(c, this.minions.size()) // rightmost position
+			played = play(c, this.board.size()) // rightmost position
 		} else {
 			played = play(c, 0)
 		}
@@ -329,7 +330,7 @@ class Player extends ScriptObject {
 	}
 
 	Card select_card(List<Card> choices) {
-		return select(1, choices)
+		return select(1, choices) as Card
 	}
 
 	Target select_target(List<Target> choices) {

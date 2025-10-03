@@ -24,7 +24,7 @@ abstract class State {
 			def playerNode = gameNode.add( "Player#${player_num}", it.ps)
 			def handNode = playerNode.add( "Hand#${player_num}", it.hand.cards)
 			def deckNode = playerNode.add( "Deck#${player_num}", it.deck.cards)
-			def minionsNode = playerNode.add( "Minions#${player_num}", it.minions)
+			def boardNode = playerNode.add( "Board#${player_num}", it.board.cards)
 			def secretsNode = playerNode.add( "Secrets#${player_num}", it.secrets)
 			def heroNode = playerNode.add( "Hero#${player_num}", it.hero.ps)			
 			heroNode.add( "HeroPower#${player_num}", it.hero.power.ps)
@@ -33,7 +33,7 @@ abstract class State {
 			}
 			createCardNode(it.hand.cards, handNode)
 			createCardNode(it.deck.cards, deckNode)
-			createCardNode(it.minions, minionsNode)
+			createCardNode(it.board.cards, boardNode)
 			createCardNode(it.secrets, secretsNode)
 		}
 		return gameNode

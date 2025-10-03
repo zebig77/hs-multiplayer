@@ -31,7 +31,7 @@ class PlayerAction {
 
 		// possible positions on battlefield (minions)
 		if (c.is_a_minion()) {
-			def _l_positions = 0..c.game.active_player.minions.size()
+			def _l_positions = 0..c.game.active_player.board.size()
 			GroovyCollections.combinations([_l_targets, _l_positions]).each {
 				def _target = it[0]
 				int _position = 0

@@ -24,7 +24,7 @@ class TestTarget extends TestHelper {
 		assert !c3.has_buff(TAUNT)
 		assert !c3.has_buff(WINDFURY)
 		g.summon(p1, c3)
-		assert p1.minions.contains(c3)
+		assert p1.board.contains(c3)
 		assert c3.has_buff(TAUNT) // as an effect of being put in play
 	}
 	

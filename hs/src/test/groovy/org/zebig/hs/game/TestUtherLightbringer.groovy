@@ -11,11 +11,11 @@ public class TestUtherLightbringer extends TestHelper {
 		p1.hero = new UtherLightbringer(g)
 		p1.hero.controller = p1
 		_use_hero_power()
-		assert p1.minions.size() == 1
-		assert p1.minions[0].name == "Silver Hand Recruit"
-		assert p1.minions[0].cost == 1
-		assert p1.minions[0].attack == 1
-		assert p1.minions[0].health == 1		
+		assert p1.board.size() == 1
+		assert p1.board.cards[0].name == "Silver Hand Recruit"
+		assert p1.board.cards[0].cost == 1
+		assert p1.board.cards[0].attack == 1
+		assert p1.board.cards[0].health == 1		
 	}
 
 }

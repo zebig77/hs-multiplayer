@@ -7,6 +7,8 @@ import org.junit.Test
 
 import org.zebig.hs.utils.TestHelper
 
+import static org.zebig.hs.mechanics.buffs.BuffType.*
+
 class TestMage extends TestHelper {
 
 	@Test
@@ -89,13 +91,13 @@ class TestMage extends TestHelper {
 		// Deal 2 damage to all enemy minions and Freeze them
 		def fad = _play("Faerie Dragon")
 		def ars = _play("Argent Squire")
-		assert ars.has_buff(BuffType.DIVINE_SHIELD) == true
+		assert ars.has_buff(DIVINE_SHIELD)
 		_next_turn()
 		_play( "Blizzard" )
 		assert fad.is_dead()
-		assert ars.is_dead() == false
+		assert !ars.is_dead()
 		assert ars.is_frozen()
-		assert ars.has_buff(BuffType.DIVINE_SHIELD) == false
+		assert !ars.has_buff(DIVINE_SHIELD)
 	}
 	
 	@Test
@@ -111,7 +113,7 @@ class TestMage extends TestHelper {
 		// Freeze a minion and the minions next to it, and deal 1 damage to them
 		def abo = _play("Abomination", p2)
 		_play_and_target("Cone of Cold", abo)
-		assert abo.is_dead() == false
+		assert !abo.is_dead()
 		assert abo.is_frozen()
 		assert abo.get_health() == abo.card_definition.max_health - 1
 	}
@@ -279,16 +281,16 @@ class TestMage extends TestHelper {
 			def blu = _play("Bluegill Warrior")
 			_attack(blu, p2.hero)
 			assert p2.hero.health == 1
-			assert p2.hero.has_buff(BuffType.IMMUNE)
+			assert p2.hero.has_buff(IMMUNE)
 			assert ice.is_revealed()
 			assert p1.hero.triggers.size() == 0 // its power only
 			def blu2 = _play("Bluegill Warrior")
 			_attack(blu2, p2.hero)
 			assert p2.hero.health == 1
-			assert p2.hero.has_buff(BuffType.IMMUNE)
+			assert p2.hero.has_buff(IMMUNE)
 		_next_turn()
 		// check that the IMMUNE buff is removed
-		assert p2.hero.has_buff(BuffType.IMMUNE) == false
+		assert p2.hero.has_buff(IMMUNE) == false
 		assert p2.hero.triggers.size() == 0 // its power only
 		_next_turn()
 			_attack(blu, p2.hero)
@@ -308,7 +310,7 @@ class TestMage extends TestHelper {
 			def blu = _play("Bluegill Warrior")
 			_attack(blu, p2.hero)
 			assert p2.hero.health == 4 - blu.attack // 2
-			assert p2.hero.has_buff(BuffType.IMMUNE) == false
+			assert p2.hero.has_buff(IMMUNE) == false
 			assert ice.is_revealed() == false
 			assert p2.hero.triggers.size() == 1 // when_a_hero_takes_damage
 	}
@@ -324,11 +326,11 @@ class TestMage extends TestHelper {
 			def blu2 = _play("Bluegill Warrior")
 			_attack(blu2, p2.hero) // fatal damage
 			assert p2.hero.health == 4 - blu.attack // 2
-			assert p2.hero.has_buff(BuffType.IMMUNE) == true
+			assert p2.hero.has_buff(IMMUNE) == true
 			assert ice.is_revealed() == true
 			assert p2.hero.triggers.size() == 1 // when_a_hero_takes_damage
 		_next_turn()
-		assert p1.hero.has_buff(BuffType.IMMUNE) == false
+		assert p1.hero.has_buff(IMMUNE) == false
 		assert p1.hero.triggers.size() == 0 
 	}
 	
@@ -404,11 +406,11 @@ class TestMage extends TestHelper {
 		_next_turn()
 		_play("Elven Archer", p2.hero) // battlecry should deal 1 damage
 		assert p2.hero.health == 29
-		assert p1.minions.size() == 1 // copy, doesn't steal
-		assert p2.minions.size() == 1 // should have a copy of Elven Archer
+		assert p1.board.size() == 1 // copy, doesn't steal
+		assert p2.board.size() == 1 // should have a copy of Elven Archer
 		assert p1.hero.health == 30	  // battlecry of copied minion should not trigger
-		def a1 = p1.minions[0]
-		def a2 = p2.minions[0]
+		def a1 = p1.board.cards[0]
+		def a2 = p2.board.cards[0]
 		assert a1.id != a2.id
 		assert a1.name == a2.name
 		assert a1.attack == a2.attack
@@ -450,41 +452,41 @@ class TestMage extends TestHelper {
 		// test with buff
 		_next_turn()
 		_play("Mirror Entity") // create the secret
-		p1.minions.clear()
-		p2.minions.clear()
+		p1.board.cards.clear()
+		p2.board.cards.clear()
 		_next_turn()
 		_play("Shieldbearer") // has taunt
-		assert p1.minions.size() == 1 // copy, doesn't steal
-		assert p2.minions.size() == 1 // should have a copy of Elven Archer
-		assert p1.minions[0].has_taunt()
-		assert p2.minions[0].has_taunt()
-		assert p1.minions[0].buffs.size() == p2.minions[0].buffs.size()
-		_play("Silence", p2.minions[0]) // the copy
-		assert p1.minions[0].has_taunt() == true
-		assert p2.minions[0].has_taunt() == false
+		assert p1.board.size() == 1 // copy, doesn't steal
+		assert p2.board.size() == 1 // should have a copy of Elven Archer
+		assert p1.board.cards[0].has_taunt()
+		assert p2.board.cards[0].has_taunt()
+		assert p1.board.cards[0].buffs.size() == p2.board.cards[0].buffs.size()
+		_play("Silence", p2.board.cards[0]) // the copy
+		assert p1.board.cards[0].has_taunt()
+		assert !p2.board.cards[0].has_taunt()
 	}
 	
 	@Test
 	public void MirrorImage_play() {
 		// Summon two 0/2 minions with Taunt
 		_play("Mirror Image")
-		assert p1.minions.size() == 2
+		assert p1.board.size() == 2
 		[0,1].each {
-			assert p1.minions[it].name == "Mirror Image"
-			assert p1.minions[it].type == "minion"
-			assert p1.minions[it].cost == 0
-			assert p1.minions[it].attack == 0
-			assert p1.minions[it].health == 2
-			assert p1.minions[it].has_taunt()
+			assert p1.board.cards[it].name == "Mirror Image"
+			assert p1.board.cards[it].type == "minion"
+			assert p1.board.cards[it].cost == 0
+			assert p1.board.cards[it].attack == 0
+			assert p1.board.cards[it].health == 2
+			assert p1.board.cards[it].has_taunt()
 		}
 		_play("Mirror Image")
-		assert p1.minions.size() == 4
+		assert p1.board.size() == 4
 		_play("Mirror Image")
-		assert p1.minions.size() == 6
+		assert p1.board.size() == 6
 		_play("Mirror Image")
-		assert p1.minions.size() == 7 // no space left
+		assert p1.board.size() == 7 // no space left
 		_should_fail("no space left") { _play("Mirror Image") }
-		assert p1.minions.size() == 7
+		assert p1.board.size() == 7
 	}
 	
 	@Test
@@ -493,8 +495,8 @@ class TestMage extends TestHelper {
 		def bou = _play("Boulderfist Ogre")
 		_next_turn()
 		_play("Polymorph", bou)
-		assert p2.minions.find{it.name == "Sheep"} != null
-		assert p2.minions.find{it.name == "Boulderfist Ogre"} == null
+		assert p2.minions().find{it.name == "Sheep"} != null
+		assert p2.minions().find{it.name == "Boulderfist Ogre"} == null
 		assert bou.name == "Sheep"
 		assert bou.cost == 0
 		assert bou.attack == 1

@@ -220,6 +220,10 @@ abstract class ScriptObject {
 		return game.passive_player.minions()
 	}
 
+    Board getYour_board() {
+        return game.active_player.board
+    }
+
 	int getHeal_amount() {
 		return game.current_event.heal_amount
 	}
@@ -280,6 +284,12 @@ abstract class ScriptObject {
 	Card getThis_minion() {
 		return game.current_event.origin as Card
 	}
+
+    List<Target> getAll_enemies() {
+        List<Target> result = opponent.minions()
+        result.add opponent_hero
+        return result
+    }
 	
 	Player opponent_of(Player p) {
 		return game.opponent_of(p)
@@ -289,8 +299,8 @@ abstract class ScriptObject {
 		return game.random_pick(choices) as Card
 	}
 
-	Object random_pick(List choices) {
-		return game.random_pick(choices)
+	<T> T random_pick(List<T> choices) {
+		return game.random_pick(choices) as T
 	}
 
 	Object random_pick(int count, List choices) {

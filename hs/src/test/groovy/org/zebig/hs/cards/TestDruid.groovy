@@ -115,7 +115,7 @@ class TestDruid extends TestHelper {
 		assert m1.get_health() == m1.card_definition.max_health
 		assert m2.get_health() == m2.card_definition.max_health
 		assert cen.get_health() == cen.card_definition.max_health // unchanged
-		List<Card> treants = p1.minions.findAll { it.name == "Treant" }
+		List<Card> treants = p1.minions().findAll { it.name == "Treant" }
 		assert treants.size() == 2
 		assert treants[0].has_buff(TAUNT)
 		assert treants[1].has_buff(TAUNT)
@@ -188,8 +188,8 @@ class TestDruid extends TestHelper {
 	void ForceOfNature_play() {
 		// Summon three 2/2 Treants with Charge that die at the end of the turn
 		_play("Force of Nature")
-		assert p1.minions.size() == 3
-		p1.minions.each {
+		assert p1.board.size() == 3
+		p1.minions().each {
 			assert it.name == "Treant"
 			assert it.attack == 2
 			assert it.health == 2
@@ -366,15 +366,15 @@ class TestDruid extends TestHelper {
 		assert p1.hero.health == 28 // because abo is dead 
 		assert p2.hero.health == 26 // because gnome is dead + abo
 		
-		assert p1.minions.size() == 1
-		assert p1.minions[0].name == "Treant"
-		assert p1.minions[0].attack == 2
-		assert p1.minions[0].health == 2
+		assert p1.board.size() == 1
+		assert p1.board.cards[0].name == "Treant"
+		assert p1.board.cards[0].attack == 2
+		assert p1.board.cards[0].health == 2
 		
-		assert p2.minions.size() == 1
-		assert p2.minions[0].name == "Treant"
-		assert p2.minions[0].attack == 2
-		assert p2.minions[0].health == 2
+		assert p2.board.size() == 1
+		assert p2.board.cards[0].name == "Treant"
+		assert p2.board.cards[0].attack == 2
+		assert p2.board.cards[0].health == 2
 	}
 	
 	@Test
@@ -395,10 +395,10 @@ class TestDruid extends TestHelper {
 		// Power of the Wild: Choose One - Give your minions +1/+1; or summon a 3/2 Panther
 		p1.next_choices = [ 'Summon a 3/2 Panther' ]
 		_play("Power of the Wild")
-		assert p1.minions.size() == 1
-		assert p1.minions[0].name == "Panther"
-		assert p1.minions[0].attack == 3
-		assert p1.minions[0].health == 2
+		assert p1.board.size() == 1
+		assert p1.board.cards[0].name == "Panther"
+		assert p1.board.cards[0].attack == 3
+		assert p1.board.cards[0].health == 2
 	}
 	
 	@Test
@@ -454,12 +454,12 @@ class TestDruid extends TestHelper {
 		_next_turn()
 		_next_turn()
 		(0..2).each {
-			assert !p1.minions[it].is_dead()
+			assert !p1.board.cards[it].is_dead()
 		}
 		_next_turn()
 		_next_turn()
 		(0..2).each {
-			assert !p1.minions[it].is_dead()
+			assert !p1.board.cards[it].is_dead()
 		}
 	}
 	

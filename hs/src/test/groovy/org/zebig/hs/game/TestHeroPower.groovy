@@ -57,12 +57,12 @@ class TestHeroPower extends TestHelper {
 	@Test
 	void Reinforce_play() {
 		p1.hero = new UtherLightbringer(g)
-		assert p1.minions.size() == 0
+		assert p1.board.size() == 0
 		_use_hero_power()
-		assert p1.minions.size() == 1
-		assert p1.minions[0].name == "Silver Hand Recruit"
-		assert p1.minions[0].attack == 1
-		assert p1.minions[0].health == 1
+		assert p1.board.size() == 1
+		assert p1.board.cards[0].name == "Silver Hand Recruit"
+		assert p1.board.cards[0].attack == 1
+		assert p1.board.cards[0].health == 1
 	}
 	
 	@Test
@@ -83,15 +83,15 @@ class TestHeroPower extends TestHelper {
 	void TotemicCall_possible() {
 		p1.hero = new Thrall(g)
 		_use_hero_power()
-		assert p1.minions.size() == 1
-		assert TotemicCall.power_totems.contains(p1.minions[0].name)
+		assert p1.board.size() == 1
+		assert TotemicCall.power_totems.contains(p1.board.cards[0].name)
 		_should_fail("Cannot use power") { _use_hero_power() } // already used
 		
 		_next_turn()
 		_next_turn()
 		_use_hero_power()
-		assert p1.minions.size() == 2
-		assert TotemicCall.power_totems.contains(p1.minions[1].name)
+		assert p1.board.size() == 2
+		assert TotemicCall.power_totems.contains(p1.board.cards[1].name)
 	}
 
 	@Test
@@ -100,7 +100,7 @@ class TestHeroPower extends TestHelper {
 		TotemicCall.power_totems.each {
 			g.summon(p1, it)
 		}
-		assert p1.minions.size() == 4
+		assert p1.board.size() == 4
 		_should_fail("Cannot use power") { _use_hero_power() } // all totems already summoned
 	}
 	

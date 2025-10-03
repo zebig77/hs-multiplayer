@@ -421,8 +421,8 @@ class TestNeutral extends TestHelper {
 		// Deathrattle: Summon a 4/5 Baine Bloodhoof
 		def cbh = _play("Cairne Bloodhoof")
 		cbh.dies()
-		assert p1.minions.size() == 1
-		assert p1.minions[0].name == "Baine Bloodhoof"
+		assert p1.board.size() == 1
+		assert p1.board.cards[0].name == "Baine Bloodhoof"
 	}
 
 	@Test
@@ -431,8 +431,8 @@ class TestNeutral extends TestHelper {
 		def cbh = _play("Cairne Bloodhoof")
 		_next_turn()
 		_play("Assassinate", cbh)
-		assert p2.minions.size() == 1
-		assert p2.minions[0].name == "Baine Bloodhoof"
+		assert p2.board.size() == 1
+		assert p2.board.cards[0].name == "Baine Bloodhoof"
 	}
 
 	@Test
@@ -705,10 +705,10 @@ class TestNeutral extends TestHelper {
 	void Deathlord_play() {
 		def dt = _play("Deathlord")
 		def before_deck_size = p2.deck.size()
-		assert p2.minions.size() == 0
+		assert p2.board.size() == 0
 		dt.dies()
 		assert p2.deck.size() == before_deck_size -1
-		assert p2.minions.size() == 1
+		assert p2.board.size() == 1
 	}
 
 
@@ -795,15 +795,15 @@ class TestNeutral extends TestHelper {
 		_next_turn()
 		_next_turn() // aob should not swap with abo
 		assert !p1.hand.contains(aob)
-		assert !p1.minions.contains(abo)
+		assert !p1.board.contains(abo)
 		assert p1.hand.contains(abo)
-		assert p1.minions.contains(aob)
+		assert p1.board.contains(aob)
 		_next_turn()
 		_next_turn() // abo should swap with aob
 		assert p1.hand.contains(aob)
-		assert p1.minions.contains(abo)
+		assert p1.board.contains(abo)
 		assert !p1.hand.contains(abo)
-		assert !p1.minions.contains(aob)
+		assert !p1.board.contains(aob)
 
 	}
 
@@ -819,13 +819,13 @@ class TestNeutral extends TestHelper {
 		 */
 		def aob = _play("Alarm-O-Bot")
 		_next_turn()
-		assert p2.minions.contains(aob)
+		assert p2.board.contains(aob)
 		p2.hand.cards.clear()
 		def exe = g.new_card("Execute")
 		p2.deck.add(exe) // for the next draw
 		g.next_turn()
 		assert p2.hand.contains(exe)
-		assert p2.minions.contains(aob)
+		assert p2.board.contains(aob)
 	}
 
 	@Test
@@ -919,8 +919,8 @@ class TestNeutral extends TestHelper {
 		// Battlecry: Summon a 2/1 Mechanical Dragonling
 		def dlm = _play("Dragonling Mechanic")
 		assert dlm.is_in_play()
-		assert p1.minions.size() == 2
-		def mdl = p1.minions.find{it.name == "Mechanical Dragonling"}
+		assert p1.board.size() == 2
+		def mdl = p1.minions().find{it.name == "Mechanical Dragonling"}
 		assert mdl != null
 		assert mdl.get_attack() == 2
 		assert mdl.get_health() == 1
@@ -958,8 +958,8 @@ class TestNeutral extends TestHelper {
 		assert echo1.get_health() == echo1.health + 1
 		_next_turn()
 
-		assert p2.minions.size() == 2
-		def echo2 = p2.minions[1]
+		assert p2.board.size() == 2
+		def echo2 = p2.board.cards[1]
 		assert echo2.get_attack() == echo2.attack + 2
 		assert echo2.get_health() == echo2.health + 2
 	}
@@ -1060,8 +1060,8 @@ class TestNeutral extends TestHelper {
 		assert fm.get_health() == echo1.get_health()
 		_next_turn()
 
-		assert p1.minions.size() == 2
-		assert p2.minions.size() == 1
+		assert p1.board.size() == 2
+		assert p2.board.size() == 1
 	}
 
 	@Test
@@ -1081,7 +1081,7 @@ class TestNeutral extends TestHelper {
 		assert !g.stalagg_died
 		feugen.dies()
 		assert g.feugen_died
-		assert p1.minions.find { it.name == 'Thaddius'} == null
+		assert p1.minions().find { it.name == 'Thaddius'} == null
 	}
 
 	@Test
@@ -1089,7 +1089,7 @@ class TestNeutral extends TestHelper {
 		g.stalagg_died = true
 		def feugen = _play('Feugen')
 		feugen.dies()
-		assert p1.minions.find { it.name == 'Thaddius'} != null
+		assert p1.minions().find { it.name == 'Thaddius'} != null
 	}
 
 	@Test
@@ -1182,8 +1182,8 @@ class TestNeutral extends TestHelper {
 	@Test
 	void GelbinMekkatorque_play() {
 		_play("Gelbin Mekkatorque")
-		assert p1.minions.size() == 2
-		assert p1.minions[1].name in ['Repair Bot', 'Poultryizer', 'Homing Chicken', 'Emboldener 3000']
+		assert p1.board.size() == 2
+		assert p1.board.cards[1].name in ['Repair Bot', 'Poultryizer', 'Homing Chicken', 'Emboldener 3000']
 	}
 
 	@Test
@@ -1273,17 +1273,17 @@ class TestNeutral extends TestHelper {
 		def golem = _play("Harvest Golem")
 		golem.dies()
 		assert p1.minions().size() == 1
-		assert p1.minions[0].name == 'Damaged Golem'
-		assert p1.minions[0].attack == 2
-		assert p1.minions[0].health == 1
+		assert p1.board.cards[0].name == 'Damaged Golem'
+		assert p1.board.cards[0].attack == 2
+		assert p1.board.cards[0].health == 1
 	}
 	
 	@Test
 	void HauntedCreeper_play() {
 		def creeper = _play("Haunted Creeper")
 		creeper.dies()
-		assert p1.minions.size() == 2
-		p1.minions.each { Card c ->
+		assert p1.board.size() == 2
+		p1.minions().each { Card c ->
 			assert c.name == "Spectral Spider"
 			assert c.attack == 1
 			assert c.health == 1
@@ -1295,18 +1295,18 @@ class TestNeutral extends TestHelper {
 		// 'At the end of your turn, summon a 2/2 Gnoll with Taunt
 		def hog = _play("Hogger")
 		_next_turn()
-		assert p2.minions.size() == 2
-		assert p2.minions[1].name == 'Gnoll'
-		assert p2.minions[1].attack == 2
-		assert p2.minions[1].health == 2
-		assert p2.minions[1].max_health == 2
-		assert p2.minions[1].has_buff(TAUNT)
+		assert p2.board.size() == 2
+		assert p2.board.cards[1].name == 'Gnoll'
+		assert p2.board.cards[1].attack == 2
+		assert p2.board.cards[1].health == 2
+		assert p2.board.cards[1].max_health == 2
+		assert p2.board.cards[1].has_buff(TAUNT)
 		_play("Fireball", hog)
 		assert hog.is_dead()
 		_next_turn()
 		_next_turn()
 		// check end of turn effect has been removed
-		assert p2.minions.size() == 1 // Gnoll
+		assert p2.board.size() == 1 // Gnoll
 	}
 
 	@Test
@@ -1353,14 +1353,14 @@ class TestNeutral extends TestHelper {
 	void IllidanStormrage_play() {
 		// Whenever you play a card, summon a 2/1 Flame of Azzinoth
 		_play("Illidan Stormrage")
-		assert p1.minions.size() == 1
+		assert p1.board.size() == 1
 		_play_and_target("Ice Lance", p2.hero) // should summon a Flame
-		assert p1.minions[1].name == "Flame of Azzinoth"
-		assert p1.minions[1].attack == 2
-		assert p1.minions[1].health == 1
-		assert p1.minions.size() == 2
+		assert p1.board.cards[1].name == "Flame of Azzinoth"
+		assert p1.board.cards[1].attack == 2
+		assert p1.board.cards[1].health == 1
+		assert p1.board.size() == 2
 		_play_and_target("Ice Lance", p2.hero)
-		assert p1.minions.size() == 3
+		assert p1.board.size() == 3
 	}
 
 	@Test
@@ -1368,17 +1368,17 @@ class TestNeutral extends TestHelper {
 		def master = _play("Imp Master")
 		_next_turn()
 		assert master.health == 4
-		assert p2.minions.size() == 2
-		assert p2.minions[1].name == "Imp"
-		assert p2.minions[1].attack == 1
-		assert p2.minions[1].health == 1
+		assert p2.board.size() == 2
+		assert p2.board.cards[1].name == "Imp"
+		assert p2.board.cards[1].attack == 1
+		assert p2.board.cards[1].health == 1
 		
 		_next_turn()
 		master.health = 1
 		
 		_next_turn()
 		assert master.is_dead()
-		assert p2.minions.size() == 2
+		assert p2.board.size() == 2
 	}
 	
 	@Test
@@ -1447,9 +1447,9 @@ class TestNeutral extends TestHelper {
 		assert !kel.is_dead()
 		_next_turn()
 		
-		assert p2.minions.size() == 3
-		assert p2.minions.findAll { it.name == 'Bluegill Warrior' } != null
-		assert p2.minions.findAll { it.name == 'Wolfrider' } != null
+		assert p2.board.size() == 3
+		assert p2.minions().findAll { it.name == 'Bluegill Warrior' } != null
+		assert p2.minions().findAll { it.name == 'Wolfrider' } != null
 		assert abo.is_dead()
 	}
 
@@ -1481,13 +1481,13 @@ class TestNeutral extends TestHelper {
 
 		def lee = _play("Leeroy Jenkins")
 		assert lee.has_buff(CHARGE)
-		assert p2.minions.size() == 2
-		assert p2.minions[0].name == "Whelp"
-		assert p2.minions[0].attack == 1
-		assert p2.minions[0].health == 1
-		assert p2.minions[1].name == "Whelp"
-		assert p2.minions[1].attack == 1
-		assert p2.minions[1].health == 1
+		assert p2.board.size() == 2
+		assert p2.board.cards[0].name == "Whelp"
+		assert p2.board.cards[0].attack == 1
+		assert p2.board.cards[0].health == 1
+		assert p2.board.cards[1].name == "Whelp"
+		assert p2.board.cards[1].attack == 1
+		assert p2.board.cards[1].health == 1
 
 		_attack(lee, p2.hero)
 		assert p2.hero.health == 24
@@ -1733,20 +1733,20 @@ class TestNeutral extends TestHelper {
 		_play("Loot Hoarder")
 		_play("Faerie Dragon")
 		_next_turn()
-		assert p2.minions.size() == 3
+		assert p2.board.size() == 3
 		def mct = _play("Mind Control Tech")
 		assert mct.is_in_play()
-		assert p2.minions.size() == 3
+		assert p2.board.size() == 3
 
 		// test #2 : opponent has 4 minions
 		_next_turn()
 		_play("Kobold Geomancer")
 		_next_turn()
-		assert p2.minions.size() == 4
+		assert p2.board.size() == 4
 		def mct2 = _play("Mind Control Tech")
 		assert mct2.is_in_play()
-		assert p1.minions.size() == 3	// mct1 + mct2 + controlled minion
-		assert p2.minions.size() == 3
+		assert p1.board.size() == 3	// mct1 + mct2 + controlled minion
+		assert p2.board.size() == 3
 	}
 
 	@Test
@@ -1807,9 +1807,9 @@ class TestNeutral extends TestHelper {
 	void MurlocTidehunter_play() {
 		// Battlecry: Summon a 1/1 Murloc Scout
 		_play("Murloc Tidehunter")
-		assert p1.minions.size() == 2
-		assert p1.minions[0].name == "Murloc Tidehunter"
-		assert p1.minions[1].name == "Murloc Scout"
+		assert p1.board.size() == 2
+		assert p1.board.cards[0].name == "Murloc Tidehunter"
+		assert p1.board.cards[1].name == "Murloc Scout"
 	}
 
 	@Test
@@ -1819,7 +1819,7 @@ class TestNeutral extends TestHelper {
 		// summon the murlocs
 		def mtc = _play("Murloc Tidecaller")	// Whenever a Murloc is summoned, gain +1 Attack.
 		def mth = _play("Murloc Tidehunter")	// Battlecry: Summon a 1/1 Murloc Scout
-		Card msc = p1.minions.find{it.name == 'Murloc Scout'}
+		Card msc = p1.minions().find{it.name == 'Murloc Scout'}
 		assert msc != null
 		def mwl = _play("Murloc Warleader")
 		def blu = _play("Bluegill Warrior")		// check permanent effect (summon after mwl)
@@ -1903,10 +1903,10 @@ class TestNeutral extends TestHelper {
 	void NerubianEgg_play() {
 		def egg = _play("Nerubian Egg")
 		egg.dies()
-		assert p1.minions.size() == 1
-		assert p1.minions[0].name == "Nerubian"
-		assert p1.minions[0].attack == 4
-		assert p1.minions[0].health == 4
+		assert p1.board.size() == 1
+		assert p1.board.cards[0].name == "Nerubian"
+		assert p1.board.cards[0].attack == 4
+		assert p1.board.cards[0].health == 4
 	}
 
 	@Test
@@ -1993,10 +1993,10 @@ class TestNeutral extends TestHelper {
 	void Onyxia_play() {
 		// Battlecry: Summon 1/1 Whelps until your side of the battlefield is full
 		_play("Onyxia")
-		assert p1.minions.size() == 7
-		assert p1.minions[1].name == "Whelp"
-		assert p1.minions[1].attack == 1
-		assert p1.minions[1].health == 1
+		assert p1.board.size() == 7
+		assert p1.board.cards[1].name == "Whelp"
+		assert p1.board.cards[1].attack == 1
+		assert p1.board.cards[1].health == 1
 	}
 
 	@Test
@@ -2040,9 +2040,9 @@ class TestNeutral extends TestHelper {
 
 		_next_turn()
 		assert p1.minions().size() == 1
-		assert p1.minions[0].name == 'Chicken'
-		assert p1.minions[0].attack == 1
-		assert p1.minions[0].health == 1
+		assert p1.board.cards[0].name == 'Chicken'
+		assert p1.board.cards[0].attack == 1
+		assert p1.board.cards[0].health == 1
 	}
 
 	@Test
@@ -2164,12 +2164,12 @@ class TestNeutral extends TestHelper {
 		// Battlecry: Summon a 1/1 Boar
 
 		_play("Razorfen Hunter")
-		assert p1.minions.size() == 2
-		assert p1.minions[1].name == "Boar"
-		assert p1.minions[1].creature_type == "beast"
-		assert p1.minions[1].cost == 1
-		assert p1.minions[1].attack == 1
-		assert p1.minions[1].health == 1
+		assert p1.board.size() == 2
+		assert p1.board.cards[1].name == "Boar"
+		assert p1.board.cards[1].creature_type == "beast"
+		assert p1.board.cards[1].cost == 1
+		assert p1.board.cards[1].attack == 1
+		assert p1.board.cards[1].health == 1
 	}
 
 	@Test
@@ -2308,11 +2308,11 @@ class TestNeutral extends TestHelper {
 		// Battlecry: Summon a 2/2 Squire
 
 		_play("Silver Hand Knight")
-		assert p1.minions.size() == 2
-		assert p1.minions[1].name == "Squire"
-		assert p1.minions[1].cost == 1
-		assert p1.minions[1].attack == 2
-		assert p1.minions[1].health == 2
+		assert p1.board.size() == 2
+		assert p1.board.cards[1].name == "Squire"
+		assert p1.board.cards[1].cost == 1
+		assert p1.board.cards[1].attack == 2
+		assert p1.board.cards[1].health == 2
 	}
 
 	@Test
@@ -2346,11 +2346,11 @@ class TestNeutral extends TestHelper {
 		def slu = _play("Sludge Belcher")
 		assert slu.has_taunt()
 		slu.dies()
-		assert p1.minions.size() == 1
-		assert p1.minions[0].name == "Slime"
-		assert p1.minions[0].attack == 1
-		assert p1.minions[0].health == 2
-		assert p1.minions[0].has_taunt()
+		assert p1.board.size() == 1
+		assert p1.board.cards[0].name == "Slime"
+		assert p1.board.cards[0].attack == 1
+		assert p1.board.cards[0].health == 2
+		assert p1.board.cards[0].has_taunt()
 		
 	}
 
@@ -2566,7 +2566,7 @@ class TestNeutral extends TestHelper {
 
 		_play("Silence", sto)
 		assert blu.is_dead()
-		assert ! p2.minions.contains(blu)
+		assert ! p2.board.contains(blu)
 	}
 
 	@Test
@@ -2621,7 +2621,7 @@ class TestNeutral extends TestHelper {
 		assert !g.stalagg_died
 		stalagg.dies()
 		assert g.stalagg_died
-		assert p1.minions.find { it.name == 'Thaddius'} == null
+		assert p1.minions().find { it.name == 'Thaddius'} == null
 	}
 
 	@Test
@@ -2629,7 +2629,7 @@ class TestNeutral extends TestHelper {
 		g.feugen_died = true
 		def stalagg = _play('Stalagg')
 		stalagg.dies()
-		assert p1.minions.find { it.name == 'Thaddius'} != null
+		assert p1.minions().find { it.name == 'Thaddius'} != null
 	}
 
 
@@ -2717,10 +2717,10 @@ class TestNeutral extends TestHelper {
 		_attack(bou, bea)
 		assert bou.is_dead()
 		assert bea.is_dead()
-		assert p1.minions.size() == 2 // cruel taskmast + finkle
-		assert p1.minions[1].name == 'Finkle Einhorn'
-		assert p1.minions[1].attack == 3
-		assert p1.minions[1].health == 3
+		assert p1.board.size() == 2 // cruel taskmast + finkle
+		assert p1.board.cards[1].name == 'Finkle Einhorn'
+		assert p1.board.cards[1].attack == 3
+		assert p1.board.cards[1].health == 3
 	}
 
 	@Test
@@ -2741,7 +2741,7 @@ class TestNeutral extends TestHelper {
 		// Battlecry: Transform another random minion into a 5/5 Devilsaur or a 1/1 Squirrel
 
 		_play("Tinkmaster Overspark")
-		assert p1.minions[0].name == "Tinkmaster Overspark"
+		assert p1.board.cards[0].name == "Tinkmaster Overspark"
 	}
 
 
@@ -2753,8 +2753,8 @@ class TestNeutral extends TestHelper {
 		_next_turn()
 
 		_play("Tinkmaster Overspark")
-		assert p2.minions.size() == 1
-		assert p2.minions[0].name in ["Devilsaur", "Squirrel"]
+		assert p2.board.size() == 1
+		assert p2.board.cards[0].name in ["Devilsaur", "Squirrel"]
 	}
 
 	@Test
@@ -2825,21 +2825,21 @@ class TestNeutral extends TestHelper {
 		// Whenever you cast a spell, summon a 1/1 Apprentice
 
 		_play("Violet Teacher")
-		assert p1.minions.size() == 1
+		assert p1.board.size() == 1
 
 		def bou = _play("Boulderfist Ogre") // not a spell -> no effect
-		assert p1.minions.size() == 2
+		assert p1.board.size() == 2
 
 		_play("The Coin")	// a spell
-		assert p1.minions.size() == 3
-		assert p1.minions[2].name == "Violet Apprentice"
-		assert p1.minions[2].cost == 0
-		assert p1.minions[2].attack == 1
-		assert p1.minions[2].health == 1
+		assert p1.board.size() == 3
+		assert p1.board.cards[2].name == "Violet Apprentice"
+		assert p1.board.cards[2].cost == 0
+		assert p1.board.cards[2].attack == 1
+		assert p1.board.cards[2].health == 1
 
 		_next_turn()
 		_play("Assassinate", bou) // a spell but not cast by me -> no effect
-		assert p2.minions.size() == 2
+		assert p2.board.size() == 2
 	}
 
 	@Test

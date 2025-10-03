@@ -12,9 +12,9 @@ class StateGameTest extends TestHelper {
 	void testStateChange() {
 		g.begin_transaction()
 		Card abo = _play("Abomination")
-		assert p1.minions.contains(abo)
+		assert p1.board.contains(abo)
 		g.rollback_transaction()
-		assert !p1.minions.contains(abo)
+		assert !p1.board.contains(abo)
 	}
 	
 	@Test

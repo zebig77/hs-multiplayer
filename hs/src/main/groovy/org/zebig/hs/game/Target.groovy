@@ -47,8 +47,11 @@ class Target extends GameObject {
 		this.is_attacking = false
 		this.is_destroyed = false
 	}
-	
-	List<Buff> get_buffs() {
+
+    int getPlace() { ps.place }
+    void setPlace(int p) { ps.place = p }
+
+    List<Buff> get_buffs() {
 		def result = new ArrayList<Buff>(buffs.storage)
 		def e = new AnyBuffListIsEvaluated(this)
 		e.check()
@@ -488,7 +491,7 @@ class Target extends GameObject {
 		triggers.clear()
 		if (this.is_a_minion()) {
 			(this as Card).init()
-			this.controller.minions.remove(this as Card)
+			this.controller.board.remove(this as Card)
 			this.controller.update_minions_place()
 		} else if (this.is_a_spell()) { // secret
 			this.controller.secrets.remove(this as Card)

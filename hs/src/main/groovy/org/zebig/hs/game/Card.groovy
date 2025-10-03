@@ -56,9 +56,6 @@ class Card extends Target {
 		Log.info "      . $this text = ${ps.text}"
 	}
 	
-	int getPlace() { ps.place }
-	void setPlace(int p) { ps.place = p }
-	
 	boolean getJust_summoned() { ps.just_summoned }
 	void setJust_summoned(boolean js) { ps.just_summoned = js }
 	
@@ -127,7 +124,7 @@ class Card extends Target {
 			Log.info e.toString()
 			return false
 		}
-		if (this.is_a_minion() && game.active_player.minions.size() == 7 ) {
+		if (this.is_a_minion() && game.active_player.board.size() >= 7 ) {
 			return false
 		}
 		return true
@@ -206,10 +203,9 @@ class Card extends Target {
 	}
 
 	Card left_neighbor() {
-		return controller.minions.find{ it.place == this.place-1 }
+		return controller.minions().find{ it.place == this.place-1 }
 	}
-	
-	
+
 	List<Card> neighbors() {
 		def r = right_neighbor()
 		def l = left_neighbor()
@@ -227,7 +223,7 @@ class Card extends Target {
 	}
 	
 	Card right_neighbor() {
-		return controller.minions.find{ it.place == this.place+1 }
+		return controller.minions().find{ it.place == this.place+1 }
 	}
 	
 	static copy(Card from, Card to) {

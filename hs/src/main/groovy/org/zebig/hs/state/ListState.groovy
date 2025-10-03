@@ -26,6 +26,7 @@ class ListState<T> extends State {
 	boolean add(int position, T item) {
 		game?.transaction?.logListAdd(this, item)
 		storage.add(position, item)
+        return true
 	}
 	
 	boolean addAll(Collection<T> items) {
@@ -39,6 +40,7 @@ class ListState<T> extends State {
 		if (storage.remove(item)) {
 			game?.transaction?.logListRemove(this, item, position)
 		}
+        return item
 	}
 	
 	T remove(int position) {

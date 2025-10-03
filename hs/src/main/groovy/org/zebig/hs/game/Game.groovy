@@ -244,7 +244,7 @@ class Game {
 		/*
 		 * if a defender has taunt, it must be attacked
 		 */
-		def l = passive_player.minions.findAll{ it.has_buff(TAUNT) }
+		def l = passive_player.minions().findAll{ it.has_buff(TAUNT) }
 		if (! l.isEmpty() && ! l.contains(attacked)) {
 			throw new IllegalActionException("you must attack a minion with taunt")
 		}
@@ -421,7 +421,7 @@ class Game {
 			pa += PlayerAction.possiblePlayCardActions(c)
 		}
 		// minion attacks
-		active_player.minions.each { Card c ->
+		active_player.minions().each { Card c ->
 			pa += PlayerAction.possibleAttackActions(c)
 		}
 		// hero attack
@@ -435,7 +435,7 @@ class Game {
 		if (c == null) {
 			return null
 		}
-		return summon( p, c, p.minions.size() )
+		return summon( p, c, p.board.size() )
 	}
 
 	Card summon( Player p, String card_name ) {

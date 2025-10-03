@@ -2,6 +2,7 @@ package org.zebig.hs.cards
 
 import org.zebig.hs.game.Card
 import org.zebig.hs.game.CardDefinition
+import org.zebig.hs.game.Target
 import org.zebig.hs.logger.Log
 import org.zebig.hs.mechanics.buffs.BuffType
 
@@ -500,7 +501,7 @@ class Deathlord extends CardDefinition {
 		when_it_is_destroyed("Deathrattle: Your opponent puts a minion from their deck into the battlefield.") {
 			def _opponent = opponent_of(this_minion.controller)
 			def c = random_card(_opponent.deck.cards.findAll{(it as Card).type == 'minion'})
-			if (c != null && _opponent.minions.size() < 7) {
+			if (c != null && _opponent.board.size() < 7) {
 				_opponent.deck.cards.remove(c)
 				game.summon(_opponent, c)
 			}
@@ -740,7 +741,7 @@ class FrostwolfWarlord extends CardDefinition {
 		name='Frostwolf Warlord'; type='minion'; cost=5; attack=4; max_health=4
 		text='Battlecry: Gain +1/+1 for each other friendly minion on the battlefield.'
 		when_played(text) {
-			def x = your_minions.size()
+			def x = your_minions.size() // it is not yet on the board
 			this_minion.gains("+$x/+$x")
 		}
 	}
@@ -1070,7 +1071,6 @@ class KnifeJuggler extends CardDefinition {
 			def knife_juggler = this_minion
 			knife_juggler.when_its_controller_plays_a_card(text) {
 				if (that_card.is_a_minion()) {
-					def all_enemies = opponent.minions + opponent.hero
 					knife_juggler.deal_damage(1, random_pick(all_enemies))
 				}
 			}
@@ -1267,7 +1267,7 @@ class MasterSwordsmith extends CardDefinition {
 		when_coming_in_play(text) {
 			def master_swordsmith = this_minion
 			this_minion.when_its_controller_turn_ends(text) {
-				if (your_minions.size() > 0) {
+				if (your_board.size() > 0) {
 					random_card(your_minions - master_swordsmith)?.gains('+1 Attack')
 				}
 			}
@@ -1302,8 +1302,8 @@ class MindControlTech extends CardDefinition {
 		name='Mind Control Tech'; type='minion'; cost=3; attack=3; max_health=3
 		text='Battlecry: If your opponent has 4 or more minions, take control of one at random.'
 		when_played(text) {
-			if (opponent.minions.size() >= 4) {
-				def m = game.random_pick(opponent.minions)
+			if (opponent.board.size() >= 4) {
+				def m = game.random_pick(opponent.minions())
 				you.take_control(m)
 			}
 		}
@@ -1372,7 +1372,7 @@ class MurlocTidehunter extends CardDefinition {
 		name='Murloc Tidehunter'; type='minion'; creature_type='murloc'; cost=2; attack=2; max_health=1
 		text='Battlecry: Summon a 1/1 Murloc Scout.'
 		when_played(text) {
-			if (your_minions.size() < 7) {
+			if (your_board.size() < 7) {
 				game.summon(you, "Murloc Scout")
 			}
 		}
@@ -1541,7 +1541,7 @@ class Onyxia extends CardDefinition {
 		when_played(text) {
 			// note: I used 'you.minions' instead of 'your_minions' because the latest excludes
 			// the card being played (Onyxia here).
-			(7 - you.minions.size()).times {
+			(7 - you.board.size()).times {
 				game.summon(you, "Whelp")
 			}
 		}
@@ -1620,7 +1620,6 @@ class RagnarosTheFirelord extends CardDefinition {
 			def ragnaros = this_minion
 			this_minion.gains(BuffType.CANNOT_ATTACK)
 			this_minion.when_its_controller_turn_ends("deal 8 damage to a random enemy") {
-				def all_enemies = opponent.minions + opponent.hero
 				ragnaros.deal_damage(8, random_pick(all_enemies))
 			}
 		}
@@ -1752,8 +1751,8 @@ class ShatteredSunCleric extends CardDefinition {
 		text='Battlecry: Give a friendly minion +1/+1.'
 		get_targets=[ { your_minions } ]
 		when_played(text) {
-			if (your_minions.size() > 0) {
-				select_target(your_minions).gains('+1/+1')
+			if (your_board.size() > 0) {
+                select_target(your_minions)?.gains('+1/+1')
 			}
 		}
 	}

@@ -15,17 +15,17 @@ class TestHunter extends TestHelper{
 	public void AnimalCompanion_summon_Misha() {
 		_next_random_int(0)
 		_play("Animal Companion")
-		assert p1.minions.size() == 1
-		assert p1.minions[0].name == "Misha" // taunt
-		assert p1.minions[0].has_taunt()
+		assert p1.board.size() == 1
+		assert p1.board.cards[0].name == "Misha" // taunt
+		assert p1.board.cards[0].has_taunt()
 	}
 
 	@Test
 	public void AnimalCompanion_summon_Leokk() {
 		_next_random_int(1)
 		_play("Animal Companion")
-		assert p1.minions.size() == 1
-		assert p1.minions[0].name == "Leokk" // other friendly minions have +1 Attack
+		assert p1.board.size() == 1
+		assert p1.board.cards[0].name == "Leokk" // other friendly minions have +1 Attack
 		def lep = _play("Leper Gnome")
 		assert lep.attack == 2
 		assert lep.get_attack() == 3
@@ -35,15 +35,15 @@ class TestHunter extends TestHelper{
 	public void AnimalCompanion_summon_Huffer() {
 		_next_random_int(2)
 		_play("Animal Companion")
-		assert p1.minions.size() == 1
-		assert p1.minions[0].name == "Huffer" // charge
-		assert p1.minions[0].has_charge()
+		assert p1.board.size() == 1
+		assert p1.board.cards[0].name == "Huffer" // charge
+		assert p1.board.cards[0].has_charge()
 	}
 	
 	@Test
 	public void AnimalCompanion_random() {
 		_play("Animal Companion")
-		assert p1.minions.size() == 1
+		assert p1.board.size() == 1
 	}
 	
 	@Test
@@ -88,7 +88,7 @@ class TestHunter extends TestHelper{
 		assert tiw.has_buff(BuffType.IMMUNE)
 		g.end_turn()
 		assert tiw.get_attack() == tiw.card_definition.attack
-		assert tiw.has_buff(BuffType.IMMUNE) == false
+		assert !tiw.has_buff(BuffType.IMMUNE)
 	}
 	
 	@Test
@@ -363,15 +363,15 @@ class TestHunter extends TestHelper{
 		_next_turn()
 		_attack(sav, bou)	// sav should be killed
 		assert sav.is_dead()
-		assert p1.minions.size() == 2
-		assert p1.minions[0].name == "Hyena"
-		assert p1.minions[0].cost == 2
-		assert p1.minions[0].attack == 2
-		assert p1.minions[0].health == 2
-		assert p1.minions[1].name == "Hyena"
-		assert p1.minions[1].cost == 2
-		assert p1.minions[1].attack == 2
-		assert p1.minions[1].health == 2
+		assert p1.board.size() == 2
+		assert p1.board.cards[0].name == "Hyena"
+		assert p1.board.cards[0].cost == 2
+		assert p1.board.cards[0].attack == 2
+		assert p1.board.cards[0].health == 2
+		assert p1.board.cards[1].name == "Hyena"
+		assert p1.board.cards[1].cost == 2
+		assert p1.board.cards[1].attack == 2
+		assert p1.board.cards[1].health == 2
 	}
 	
 	@Test
@@ -423,14 +423,14 @@ class TestHunter extends TestHelper{
 		assert blu.is_dead()
 		assert lep.is_dead()
 		assert p2.secrets.size() == 0
-		assert p2.minions.size() == 3 // the 3 snakes
+		assert p2.board.size() == 3 // the 3 snakes
 		(0..2).each {
-			assert p2.minions[it].name == "Snake"
-			assert p2.minions[it].cost == 0
-			assert p2.minions[it].creature_type == "beast"
-			assert p2.minions[it].attack == 1
-			assert p2.minions[it].health == 1
-			assert p2.minions[it].place == it
+			assert p2.board.cards[it].name == "Snake"
+			assert p2.board.cards[it].cost == 0
+			assert p2.board.cards[it].creature_type == "beast"
+			assert p2.board.cards[it].attack == 1
+			assert p2.board.cards[it].health == 1
+			assert p2.board.cards[it].place == it
 		}
 	}
 	
@@ -556,8 +556,8 @@ class TestHunter extends TestHelper{
 		_next_turn()
 		
 		_play("Unleash the Hounds")
-		assert p1.minions.size() == p2.minions.size()
-		p1.minions.each { Card minion ->
+		assert p1.board.size() == p2.board.size()
+		p1.minions().each { Card minion ->
 			assert minion.name == "Hound"
 			assert minion.cost == 1
 			assert minion.creature_type == "beast"

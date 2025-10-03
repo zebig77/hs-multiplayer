@@ -65,9 +65,9 @@ class TestPriest extends TestHelper {
 		def csp =_play("Cabal Shadow Priest", tiw)
 		assert tiw.controller == p1
 		assert bfo.controller == p2
-		assert p1.minions.contains(tiw)
-		assert p1.minions.contains(csp)
-		assert !p2.minions.contains(tiw)
+		assert p1.board.contains(tiw)
+		assert p1.board.contains(csp)
+		assert !p2.board.contains(tiw)
 	}
 	
 	@Test
@@ -281,11 +281,11 @@ class TestPriest extends TestHelper {
 		_next_turn()
 		def lep = _play("Leper Gnome") 		// just to check abu place will be 1
 		assert abu.controller == p2
-		assert p2.minions.contains(abu)
+		assert p2.board.contains(abu)
 		_play("Mind Control", abu) 	// abu battlecry effect doesn't trigger
 		assert abu.controller == p1
-		assert p1.minions.contains(abu)
-		assert !p2.minions.contains(abu)
+		assert p1.board.contains(abu)
+		assert !p2.board.contains(abu)
 		assert abu.place == 1 		// right of abu
 		
 		// check abu cannot attack (just summoned)
@@ -332,8 +332,8 @@ class TestPriest extends TestHelper {
 		 p1.hand.cards.clear() // to avoid exceeding 10 cards
 		 p2.hand.cards.clear() // to avoid exceeding 10 cards
 		 _play("Vanish") // Return all minions to their owner's hand
-		 assert p1.minions.size() == 0
-		 assert p2.minions.size() == 0
+		 assert p1.board.size() == 0
+		 assert p2.board.size() == 0
 		 assert abu.controller == p2 // mind controlled
 		 assert p2.hand.contains(abu)
 		 assert lep.controller == p2 
@@ -368,8 +368,8 @@ class TestPriest extends TestHelper {
 		_next_turn()
 		_play("Mindgames")
 		assert p2.deck.cards.size() == 3 // create a copy, do not steal
-		assert p1.minions.size() == 1
-		assert p1.minions[0].name == "Molten Giant" // lucky
+		assert p1.board.size() == 1
+		assert p1.board.cards[0].name == "Molten Giant" // lucky
 	}
 	
 	@Test
@@ -383,8 +383,8 @@ class TestPriest extends TestHelper {
 		_next_turn()
 		_play("Mindgames")
 		assert p2.deck.cards.size() == 2 // no change
-		assert p1.minions.size() == 1
-		assert p1.minions[0].name == "Shadow of Nothing" // not lucky ;)
+		assert p1.board.size() == 1
+		assert p1.board.cards[0].name == "Shadow of Nothing" // not lucky ;)
 	}
 	
 	@Test
@@ -422,8 +422,8 @@ class TestPriest extends TestHelper {
 		_next_turn()
 		_play_and_target( "Shadow Madness", lep )
 		assert lep.controller != first_controller
-		assert !first_controller.minions.contains(lep)
-		assert p1.minions.contains(lep)
+		assert !first_controller.board.contains(lep)
+		assert p1.board.contains(lep)
 		try {
 			Game.player_attacks(lep, first_controller.hero)
 			fail("should fail: just summoned")
@@ -505,7 +505,7 @@ class TestPriest extends TestHelper {
 		_play_and_target( "Shadow Madness", lep )
 		_next_turn() // first controller should regain control
 		assert lep.controller == first_controller
-		assert first_controller.minions.contains(lep)
+		assert first_controller.board.contains(lep)
 	}
 	
 	@Test
