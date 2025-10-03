@@ -1,5 +1,6 @@
 package org.zebig.hs.game
 
+import org.zebig.hs.logger.Log
 import org.zebig.hs.mechanics.Trigger
 import org.zebig.hs.mechanics.buffs.Buff
 import org.zebig.hs.mechanics.events.AnyMinionIsPlayed
@@ -85,23 +86,23 @@ class Player extends ScriptObject {
 		if (available_mana > 10) {
 			available_mana = 10
 		}
-		println "      . available mana for $this = $available_mana"
+		Log.info "      . available mana for $this = $available_mana"
 	}
 
 	def add_max_mana(int amount) {
 		max_mana += amount
 		if (max_mana > 10) { max_mana = 10 }
 		if (max_mana < 0) { max_mana = 0 }
-		println "      . max mana for $this = $max_mana"
+		Log.info "      . max mana for $this = $max_mana"
 	}
 
 	def add_overload(int amount) {
 		this.overload += amount
-		println "      . $this's overload = ${overload}"
+		Log.info "      . $this's overload = ${overload}"
 	}
 
 	def choose(List<String> choices, List<Closure> scripts) {
-		//println " - $this has to choose between '${choices[0]}' and '${choices[1]}'"
+		//Log.info " - $this has to choose between '${choices[0]}' and '${choices[1]}'"
 		if (next_choices.isEmpty()) {
 			throw new IllegalActionException("no choice made !")
 		}
@@ -109,7 +110,7 @@ class Player extends ScriptObject {
 		if (! choices.contains(choice)) {
 			throw new IllegalActionException("'$choice' is not a valid answer")
 		}
-		println "      . $this chooses '$choice'"
+		Log.info "      . $this chooses '$choice'"
 		if (choice == choices[0]) {
 			scripts[0].call()
 		} else {
@@ -118,7 +119,7 @@ class Player extends ScriptObject {
 	}
 
 	Card create_secret(Card c) {
-		println "      . adding $c to ${this}'s secrets"
+		Log.info "      . adding $c to ${this}'s secrets"
 		secrets.add(c)
 		new ItComesInPlay(c).check()
 		return c
@@ -129,7 +130,7 @@ class Player extends ScriptObject {
 		def place=0
 		this.minions().sort{it.place}.each  {
 			if ((it as Card).place != place) {
-				println "      . $it moved to x=$place"
+				Log.info "      . $it moved to x=$place"
 				(it as Card).place = place
 			}
 			place++
@@ -137,9 +138,9 @@ class Player extends ScriptObject {
 	}
 
 	def reveal(Card c) {
-		// 11 March 2014 Patch: "Secrets can now only activate on your opponent�s turn."
+		// 11 March 2014 Patch: "Secrets can now only activate on your opponent's turn."
 		assert c.controller != game.active_player
-		println "      . secret '$c.name' is revealed"
+		Log.info "      . secret '$c.name' is revealed"
 		new AnySecretIsRevealed(c).check()
 		secrets.remove(c)
 	}
@@ -148,7 +149,7 @@ class Player extends ScriptObject {
 		if (n_cards <= 0) {
 			return
 		}
-		println "      . $this draws $n_cards card" + (n_cards > 1 ? "s" : "")
+		Log.info "      . $this draws $n_cards card" + (n_cards > 1 ? "s" : "")
 		n_cards.times {
 			Card c = deck.draw()
 			if (c != null) {
@@ -156,9 +157,9 @@ class Player extends ScriptObject {
 				hand.add(c)
 			}
 			else {
-				println "      . $this cannot draw !"
+				Log.info "      . $this cannot draw !"
 				fatigue += 1
-				println "      . fatigue = $fatigue !"
+				Log.info "      . fatigue = $fatigue !"
 				hero.receive_damage(fatigue)
 				game.check_end_of_game()
 			}
@@ -171,7 +172,7 @@ class Player extends ScriptObject {
 		assert t.is_a_minion()
 		assert t.controller != null
 		// take minion out of the other player control
-		println "      . ${t.controller} loses control of $t"
+		Log.info "      . ${t.controller} loses control of $t"
 		t.controller.board.remove(t as Card)
 		t.controller.update_minions_place()
 		gain_control(t)
@@ -185,11 +186,11 @@ class Player extends ScriptObject {
 		assert t != null
 		assert t.is_a_minion()
 		t.controller = this
-		println "      . ${this} gains control of $t"
+		Log.info "      . ${this} gains control of $t"
 		if (t.place < board.size()) { // insert t
 			minions().findAll{it.place >= place}.each {
 				it.place++
-				println "      . $it moved to x=$it.place"
+				Log.info "      . $it moved to x=$it.place"
 			}
 		}
 		t.place = place
@@ -208,7 +209,7 @@ class Player extends ScriptObject {
 		minions().each{ minion ->
 			minion.get_buffs().findAll{ it.spell_damage_increase != 0 }.each { Buff buff ->
 				buff_spell_damage_increase += buff.spell_damage_increase
-				println "      . spell damage modified by $buff"
+				Log.info "      . spell damage modified by $buff"
 			}
 		}
 		e.spell_damage_increase = buff_spell_damage_increase
@@ -247,10 +248,13 @@ class Player extends ScriptObject {
 	}
 
 	/** play a card from hand, with place specified */
-	def play(Card c, int place) {
+	Card play(Card c, int place) {
 
 		// check that card can be played
-		println "\n- $this plays $c"
+		Log.info "\n- $this plays $c"
+
+        game.begin_transaction()
+
 		if (board.size() >= 7 && c.is_a_minion()) {
 			throw new IllegalActionException("no room in battlefield to play a minion")
 		}
@@ -287,8 +291,9 @@ class Player extends ScriptObject {
 			AnySpellIsPlayed e = new AnySpellIsPlayed(c)
             e.check()
 			if (e.stop_action) {
-				println "      . $c is not played"
-				return
+				Log.info "      . $c is not played"
+                game.end_transaction()
+				return null
 			}
 		}
 
@@ -312,6 +317,8 @@ class Player extends ScriptObject {
 
 		// for combo test
 		nb_cards_played_this_turn++
+
+        game.end_transaction()
 
 		return c
 	}
@@ -347,7 +354,7 @@ class Player extends ScriptObject {
 
 	Target select(int howmany, List<Target> choices) {
 		if (choices.isEmpty()) {
-			println "      . list of choices is empty, no selection"
+			Log.info "      . list of choices is empty, no selection"
 			return null
 		}
 		if (howmany > choices.size()) {
@@ -361,7 +368,7 @@ class Player extends ScriptObject {
 			throw new IllegalActionException("${next_choices[0]} is not a valid choice (${choices})")
 		}
 		if (howmany == 1) {
-			println "      . selected: ${next_choices.getAt(0)}"
+			Log.info "      . selected: ${next_choices.getAt(0)}"
 			return next_choices.remove(0) // single value
 		}
 		def result = []
@@ -369,8 +376,8 @@ class Player extends ScriptObject {
 			next_choices.remove(0)
 			result.add( choices )
 		}
-		println "      . selected: $result"
-		return result // multiple values
+		Log.info "      . selected: $result"
+		return result as Target // multiple values
 	}
 
 	String toString() {
@@ -379,16 +386,18 @@ class Player extends ScriptObject {
 
 	def use_hero_power() {
 		StringBuilder reason = new StringBuilder()
-		if (hero.can_use_power(reason) == false) {
+		if (!hero.can_use_power(reason)) {
 			throw new IllegalActionException("Cannot use power (${reason.toString()})")
 		}
+        game.begin_transaction()
 		add_available_mana(-hero.power.cost)
-		println "\n- $this uses ${hero}'s power: ${hero.power.name}"
+        Log.info "\n- $this uses ${hero}'s power: ${hero.power.name}"
 		new ThisPowerIsUsed(hero.power).check()
 		hero.power.use_counter++
 		// in case a minion has its health = 0 but remains in battlefield
 		game.remove_dead_from_battlefield()
 		game.check_end_of_game()
+        game.end_transaction()
 	}
 
 	@Override

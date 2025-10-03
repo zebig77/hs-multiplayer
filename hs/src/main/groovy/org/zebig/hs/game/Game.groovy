@@ -75,9 +75,9 @@ class Game {
     }
 
     void begin_transaction() {
-        assert transaction == null
-        assert events.size() == 0
-        transaction = new Transaction()
+        if (transaction == null) {
+            transaction = new Transaction()
+        }
     }
 
     void end_transaction() {
@@ -152,6 +152,7 @@ class Game {
 	
 	void end_turn() {
 		Log.info "\n - $active_player ends its turn"
+        begin_transaction()
 		// kill minions scheduled to die at end of turn
 		new ItsControllerTurnEnds(active_player).check()
 		new AnyTurnEnds(this).check()
@@ -171,6 +172,7 @@ class Game {
 		def x = active_player
 		active_player = passive_player
 		passive_player = x
+        end_transaction()
 	}
 	
 	int get_random_int(int bound) {
@@ -190,6 +192,7 @@ class Game {
 
 	void play_turn() {
 		Log.info "\n---- ${active_player}'s turn begins"
+        begin_transaction()
 		turn_timeout = 90 // default timeout, can be changed by Nozdormu
 		new AnyTurnStarts(this).check()
 		active_player.init_turn()
@@ -210,6 +213,7 @@ class Game {
 				passive_player.minions()*.dies()
 			}
 		}
+        end_transaction()
 	}
 	
 	void remove_dead_from_battlefield() {
@@ -239,6 +243,7 @@ class Game {
 			throw new IllegalActionException("$attacker and $attacked have the same controller")
 		}
 		Log.info "\n- ${active_player} orders $attacker to attack $attacked"
+        begin_transaction()
 		attacker.check_can_attack()
 		attacked.check_can_be_attacked()
 		/*
@@ -246,6 +251,7 @@ class Game {
 		 */
 		def l = passive_player.minions().findAll{ it.has_buff(TAUNT) }
 		if (! l.isEmpty() && ! l.contains(attacked)) {
+            rollback_transaction()
 			throw new IllegalActionException("you must attack a minion with taunt")
 		}
 		// if attack has stealth, remove it
@@ -267,6 +273,7 @@ class Game {
         e.check()
         if (attacker.is_a_minion() && !attacker.is_in_play()) {
             Log.info "      . $attacker is no longer on the battlefield -> attack cancelled "
+            end_transaction()
             return
         }
         if (e.changed_attacked != null) {
@@ -385,6 +392,7 @@ class Game {
 		}
 		
 		check_end_of_game()
+        end_transaction()
 	}
 
 	Card summon( Player p, Card c, int place ) {

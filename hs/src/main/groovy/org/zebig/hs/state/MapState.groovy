@@ -9,10 +9,16 @@ class MapState extends State {
     }
 	
 	def storage = [:]
-	
-	void setProperty(String name, value) {
+
+    void setProperty(String name, value) {
         if (storage.containsKey(name)) {
-            game?.transaction?.logPropertyUpdate(this, name, storage[name])
+            if (game != null) {
+                if (game.transaction != null) {
+                    int s = game.transaction.change_log.size()
+                    game.transaction.logPropertyUpdate(this, name, storage[name])
+                    assert game.transaction.change_log.size() == s+1
+                }
+            }
         }
         else {
             game?.transaction?.logPropertyCreate(this, name)
@@ -23,9 +29,9 @@ class MapState extends State {
 	def getProperty(String name) {
 		storage[name]
 	}
-	
+
 	int size() { storage.size() }
-	
+
 	
 	MapState clone() {
 		def ps2 = new MapState(this.game)

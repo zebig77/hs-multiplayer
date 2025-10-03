@@ -21,7 +21,7 @@ class TestPriest extends TestHelper {
 	void newGame() {
 		_create_game( 
 			"Didier", AnduinWrynn.class, AnduinDeck1.class,
-			"Titou",  MalfurionStormrage.class, MalfurionDeck1.class)	
+			"Aurélien",  MalfurionStormrage.class, MalfurionDeck1.class)	
 	}
 	
 	@Test

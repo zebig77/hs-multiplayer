@@ -7,6 +7,8 @@ import org.junit.Test
 
 import org.zebig.hs.utils.TestHelper
 
+import static org.zebig.hs.mechanics.buffs.BuffType.*
+
 class TestHunter extends TestHelper{
 
 	/* Animal companion:  Summon a random Beast Companion */
@@ -85,10 +87,10 @@ class TestHunter extends TestHelper{
 		def tiw = _play("Timber Wolf")
 		_play_and_target("Bestial Wrath", tiw)
 		assert tiw.get_attack() == tiw.card_definition.attack +2
-		assert tiw.has_buff(BuffType.IMMUNE)
+		assert tiw.has_buff(IMMUNE)
 		g.end_turn()
 		assert tiw.get_attack() == tiw.card_definition.attack
-		assert !tiw.has_buff(BuffType.IMMUNE)
+		assert !tiw.has_buff(IMMUNE)
 	}
 	
 	@Test
@@ -193,12 +195,12 @@ class TestHunter extends TestHelper{
 		def bim2 = _play("Blood Imp")
 		assert p1.secrets.size() != 0
 		assert p2.secrets.size() != 0
-		assert bim.has_buff(BuffType.STEALTH)
-		assert bim2.has_buff(BuffType.STEALTH)
+		assert bim.has_buff(STEALTH)
+		assert bim2.has_buff(STEALTH)
 		def before_hand_size = p1.hand.size()
 		_play("Flare")
-		assert bim.has_buff(BuffType.STEALTH) == false
-		assert bim2.has_buff(BuffType.STEALTH) == false
+		assert !bim.has_buff(STEALTH)
+		assert !bim2.has_buff(STEALTH)
 		assert p1.secrets.size() != 0
 		assert p2.secrets.size() == 0
 		assert p1.hand.size() == before_hand_size + 1
@@ -214,7 +216,7 @@ class TestHunter extends TestHelper{
 		_attack(blu, p2.hero)
 		assert p2.hero.health == 30
 		assert p2.secrets.size() == 0
-		assert blu.is_in_play() == false
+		assert !blu.is_in_play()
 		assert p1.hand.contains(blu)
 		assert blu.get_cost() == blu.cost + 2
 		p1.available_mana = blu.card_definition.cost

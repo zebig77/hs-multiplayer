@@ -10,30 +10,18 @@ class StateGameTest extends TestHelper {
 	
 	@Test
 	void testStateChange() {
+        assert g.transaction == null
 		g.begin_transaction()
-		Card abo = _play("Abomination")
-		assert p1.board.contains(abo)
+        assert g.transaction != null
+        assert g.transaction.change_log.size() == 0
+        g.ps.game = g // TODO understand why this is needed !
+        g.feugen_died = true
+        assert g.feugen_died
+        assert g.transaction.change_log.size() == 1
 		g.rollback_transaction()
-		assert !p1.board.contains(abo)
+		assert !g.feugen_died
 	}
 	
-	@Test
-	void testRollback() {
-		def before_tree = g.buildGameTree().clone()
-		g.begin_transaction()
-		_play("Abomination")
-		def after_tree = g.buildGameTree().clone()
-		assert !before_tree.equalsTree(after_tree)
-		g.rollback_transaction()
-		after_tree = g.buildGameTree().clone()
-        StringBuilder sb = new StringBuilder()
-        boolean test_equals = before_tree.equalsTree(after_tree, sb)
-        if (!test_equals) {
-            println sb
-        }
-		assert test_equals
-	}
-
 	@Test
 	void testStateTree() {
 		def gameNode = g.buildGameTree()

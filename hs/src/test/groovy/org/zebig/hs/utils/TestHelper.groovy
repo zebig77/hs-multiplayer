@@ -23,7 +23,6 @@ class TestHelper {
 	void newGame() {
 		_create_game_Garrosh_vs_Malfurion() // default game
 		before_tree = State.buildGameTree(g).clone()
-        //g.begin_transaction()
 	}
 	
 	@After
@@ -77,23 +76,23 @@ Finished test: ${description.getMethodName()}
 	def _create_game_Garrosh_vs_Malfurion() {
 		_create_game( 
 			"Didier", GarroshHellscream.class, GarroshDeck1.class,
-			"Titou",  MalfurionStormrage.class, MalfurionDeck1.class)	
+			"Aurélien",  MalfurionStormrage.class, MalfurionDeck1.class)	
 		}
 	
 	def _create_game_Uther_vs_Uther() {
 		_create_game( 
 			"Didier", UtherLightbringer.class, UtherDeck1.class,
-			"Titou",  UtherLightbringer.class, UtherDeck1.class)	
+			"Aurélien",  UtherLightbringer.class, UtherDeck1.class)	
 		}
 	
 	def _create_game_Garrosh_vs_Jaina() {
 		_create_game( 
 			"Didier", GarroshHellscream.class, GarroshDeck1.class,
-			"Titou", JainaProudmoore.class, JainaDeck1.class)	
+			"Aurélien", JainaProudmoore.class, JainaDeck1.class)	
 		}
 
-    void check(boolean check_result, String error_message) {
-        if (check_result == false) {
+    static void check(boolean check_result, String error_message) {
+        if (!check_result) {
             throw new IllegalActionException("check failed: $error_message")
         }
     }

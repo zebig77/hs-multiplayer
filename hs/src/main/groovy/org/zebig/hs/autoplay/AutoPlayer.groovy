@@ -29,7 +29,7 @@ class AutoPlayer {
 	def create_game() {
 		g = new Game(seed)
 		def p1 = new Player( g, 'Didier', new GarroshHellscream(), new GarroshDeck1() )
-		def p2 = new Player( g, 'Titou', new MalfurionStormrage(), new MalfurionDeck1() )
+		def p2 = new Player( g, 'Aurélien', new MalfurionStormrage(), new MalfurionDeck1() )
 		g.players = [p1, p2]
 		g.start()
 	}

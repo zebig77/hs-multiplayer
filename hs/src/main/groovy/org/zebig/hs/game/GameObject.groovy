@@ -22,7 +22,7 @@ class GameObject extends ScriptObject {
 
         e.origin = this
 
-        game.events.push(e)
+         game.events.push(e)
 
         List<Trigger> todo_triggers = triggers.findAll { (it as Trigger).event_class == e.class }
         todo_triggers.each { Trigger t ->

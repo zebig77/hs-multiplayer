@@ -58,6 +58,7 @@ class StateTest extends TestHelper {
 
 	@Test
 	void testClear() {
+        g.begin_transaction()
 		def sl = new ListState(g)
 		sl.add("Hello")
 		sl.add("World")
@@ -66,6 +67,8 @@ class StateTest extends TestHelper {
 		assert sl.size() == 0
 		sl.add("Hello")
 		sl.add("World")
+        g.end_transaction()
+        assert sl.size() == 2
 		g.begin_transaction()
 		sl.clear()
 		assert sl.size() == 0
