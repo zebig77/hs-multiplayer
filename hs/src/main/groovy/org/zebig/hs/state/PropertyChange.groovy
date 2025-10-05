@@ -14,7 +14,6 @@ class PropertyChange extends Change {
 		this.property_name = property_name
 		this.old_value = old_value
 		this.action = action
-		//println this
 	}
 	
 	def undo() {

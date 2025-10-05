@@ -18,6 +18,9 @@ import org.zebig.hs.mechanics.events.ThisPowerIsUsed
 import org.zebig.hs.state.ListState
 import org.zebig.hs.state.MapState
 
+import java.beans.PropertyChangeEvent
+import java.beans.PropertyChangeListener
+
 class Player extends ScriptObject {
 
 	MapState ps
@@ -28,13 +31,14 @@ class Player extends ScriptObject {
 	Deck deck
 	ListState<Card> secrets
 	PlayerArtefact artefact // container for player's triggers
+    PropertyChangeListener listener
 
 	// simulates player's answers for tests
 	def next_choices = []
 
 	Player(Game game, String name, Hero hero, Deck deck) {
         super(game)
-		ps = new MapState()
+		ps = new MapState(game)
 		this.name = name
 		this.hero = hero
 		this.deck = deck

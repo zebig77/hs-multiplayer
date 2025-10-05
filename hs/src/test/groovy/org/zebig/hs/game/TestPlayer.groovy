@@ -1,8 +1,10 @@
 package org.zebig.hs.game;
 
 import org.junit.Test
-
+import org.zebig.hs.state.PropertyChange
 import org.zebig.hs.utils.TestHelper
+
+import java.beans.PropertyChangeEvent
 
 import static org.junit.Assert.fail;
 

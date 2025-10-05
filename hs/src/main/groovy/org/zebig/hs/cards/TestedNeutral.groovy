@@ -2,7 +2,6 @@ package org.zebig.hs.cards
 
 import org.zebig.hs.game.Card
 import org.zebig.hs.game.CardDefinition
-import org.zebig.hs.game.Target
 import org.zebig.hs.logger.Log
 import org.zebig.hs.mechanics.buffs.BuffType
 

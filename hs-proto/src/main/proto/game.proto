@@ -14,7 +14,9 @@ message Auth {
 
 /* Client asks the server to create a game or find a game with a waiting player */
 message JoinGame {
-  string mode = 1; // possible values : "casual" or "ranked"
+    string mode = 1; // possible values : "casual" or "ranked"
+    string hero_name = 2;
+    string deck_name = 3;
 }
 
 /* only once during mulligan phase */

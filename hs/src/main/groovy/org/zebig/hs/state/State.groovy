@@ -41,7 +41,6 @@ abstract class State {
 	
 	static int countNodes(StateNode sn, int count=0) {
 		count++
-		//println "${sn.name} -> ${sn.state}"
 		sn.children.each { child ->
 			count = countNodes(child, count)
 		}
@@ -51,11 +50,7 @@ abstract class State {
 	static Map<State,StateNode> mapTree(StateNode root) {
 		return root.asMap()
 	}
-	
-	static void printTree(StateNode sn) {
-		println sn.dump()
-	}
-	
+
 	static void createCardNode(ListState<Card> ls, StateNode parent) {
 		ls.@storage.each { Card c ->
 			def cardNode = parent.add("Card ${parent.name} $c", c.ps)

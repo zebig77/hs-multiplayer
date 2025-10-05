@@ -17,12 +17,10 @@ class TestHelper {
 	Game g
 	Player p1
 	Player p2
-	StateNode before_tree, after_tree
 
 	@Before
 	void newGame() {
 		_create_game_Garrosh_vs_Malfurion() // default game
-		before_tree = State.buildGameTree(g).clone()
 	}
 	
 	@After

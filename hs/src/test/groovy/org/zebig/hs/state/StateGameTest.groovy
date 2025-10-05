@@ -20,6 +20,7 @@ class StateGameTest extends TestHelper {
         assert g.transaction.change_log.size() == 1
 		g.rollback_transaction()
 		assert !g.feugen_died
+        assert g.transaction == null
 	}
 	
 	@Test

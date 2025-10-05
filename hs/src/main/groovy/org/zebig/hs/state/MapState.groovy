@@ -2,23 +2,30 @@ package org.zebig.hs.state
 
 import org.zebig.hs.game.Game
 
+import java.beans.PropertyChangeListener
+
 class MapState extends State {
+
+    def storage = [:] as ObservableMap
 
     MapState(Game game) {
         super(game)
     }
-	
-	def storage = [:]
+
+    /*
+    MapState(Game game, PropertyChangeListener listener) {
+        super(game)
+        storage.addPropertyChangeListener(listener)
+    }
+    */
+
+    void setListener(PropertyChangeListener listener) {
+        storage.addPropertyChangeListener(listener)
+    }
 
     void setProperty(String name, value) {
         if (storage.containsKey(name)) {
-            if (game != null) {
-                if (game.transaction != null) {
-                    int s = game.transaction.change_log.size()
-                    game.transaction.logPropertyUpdate(this, name, storage[name])
-                    assert game.transaction.change_log.size() == s+1
-                }
-            }
+            game?.transaction?.logPropertyUpdate(this, name, storage[name])
         }
         else {
             game?.transaction?.logPropertyCreate(this, name)

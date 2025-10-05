@@ -81,7 +81,9 @@ class Game {
     }
 
     void end_transaction() {
-        transaction = null
+        if (transaction != null) {
+            transaction = null
+        }
     }
 
     void rollback_transaction() {

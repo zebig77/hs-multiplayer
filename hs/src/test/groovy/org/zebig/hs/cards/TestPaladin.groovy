@@ -1,5 +1,7 @@
 package org.zebig.hs.cards
 
+import org.zebig.hs.state.StateNode
+
 import static org.zebig.hs.mechanics.buffs.BuffType.*
 import org.zebig.hs.game.Card
 
@@ -335,12 +337,8 @@ class TestPaladin extends TestHelper {
 	void SwordOfJustice_play() {
 		// Whenever you summon a minion, give it +1/+1 and this loses 1 Durability
 		
-		// re-create game to have Uther
-		g.end_transaction()		
 		_create_game_Uther_vs_Uther()
-		before_tree = g.buildGameTree().clone()
-		g.begin_transaction()
-		
+
 		_play("Sword of Justice")
 		assert p1.hero.weapon != null
 		def dur = p1.hero.weapon.get_durability()
