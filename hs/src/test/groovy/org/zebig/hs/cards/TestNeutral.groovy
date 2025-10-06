@@ -458,7 +458,7 @@ class TestNeutral extends TestHelper {
 	@Test
 	void CaptainsParrot_no_pirate_in_deck() {
 		// Battlecry: Put a random Pirate from your deck into your hand
-		assert p1.deck.cards.findAll{it.creature_type == "pirate"}.size() == 0
+		assert (p1.deck.cards as List<Card>).findAll{it.creature_type == "pirate"}.size() == 0
 		def before_hand_size = p1.hand.size()
 		_play("Captain's Parrot")
 		assert p1.hand.size() == before_hand_size
@@ -1609,8 +1609,9 @@ class TestNeutral extends TestHelper {
 	
 	@Test
 	void MadScientist_play_secret() {
+        //Deathrattle: Put a Secret from your deck into the battlefield.
 		p1.deck.cards.add(g.new_card("Counterspell")) // at least one secret in deck
-		def nb_secrets = p1.deck.cards.findAll { Card c -> c.is_a_secret }.size() 
+		def nb_secrets = (p1.deck.cards as List<Card>).findAll { Card c -> c.is_a_secret }.size()
 		def mad = _play("Mad Scientist")
 		mad.dies()
 		assert p1.secrets.size() == 1
@@ -1619,7 +1620,8 @@ class TestNeutral extends TestHelper {
 
 	@Test
 	void MadScientist_play_no_secret() {
-		def secrets = p1.deck.cards.findAll { Card c -> c.is_a_secret }
+        //Deathrattle: Put a Secret from your deck into the battlefield.
+		def secrets = (p1.deck.cards as List<Card>).findAll { Card c -> c.is_a_secret }
 		secrets.each { p1.deck.cards.remove(it) } 
 		def mad = _play("Mad Scientist")
 		mad.dies()

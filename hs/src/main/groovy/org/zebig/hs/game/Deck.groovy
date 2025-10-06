@@ -2,13 +2,10 @@ package org.zebig.hs.game
 
 import java.beans.PropertyChangeEvent
 
-class Deck {
-
-    Game game
-	def cards = [] as ObservableList
+class Deck extends CardZone {
 
     Deck(Game game) {
-        this.game = game
+        super(game)
         this.cards.addPropertyChangeListener {
             process_cards_change(it)
         }
@@ -41,15 +38,4 @@ class Deck {
 		return (cards as List<Card>).remove(0)
 	}
 	
-	def add(Card c) {
-		cards.add(0, c)
-	}
-	
-	boolean isEmpty() {
-		return cards.isEmpty()
-	}
-	
-	int size() {
-		return cards.size()
-	}
 }
