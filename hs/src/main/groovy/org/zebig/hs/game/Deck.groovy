@@ -1,15 +1,21 @@
 package org.zebig.hs.game
 
-import org.zebig.hs.state.ListState
+import java.beans.PropertyChangeEvent
 
 class Deck {
 
     Game game
-	ListState<Card> cards
+	def cards = [] as ObservableList
 
     Deck(Game game) {
         this.game = game
-        this.cards = new ListState<Card>(game)
+        this.cards.addPropertyChangeListener {
+            process_cards_change(it)
+        }
+    }
+
+    void process_cards_change(PropertyChangeEvent event) {
+        game.transaction?.process_state_change(cards, event)
     }
 	
 	def build(Map<String, Integer> definition) {
@@ -32,7 +38,7 @@ class Deck {
 	Card draw() {
 		if (cards.isEmpty())
 			return null
-		return cards.remove(0)
+		return (cards as List<Card>).remove(0)
 	}
 	
 	def add(Card c) {

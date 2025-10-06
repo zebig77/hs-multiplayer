@@ -17,10 +17,6 @@ class CardDefinition extends DefinitionObject {
         super(game)
     }
 
-    CardDefinition() {
-        super(null) // game is set after construction
-    }
-
     void setType(String type) {
 		assert type == "minion" || type == "weapon" || type == "spell"
 		this.type = type

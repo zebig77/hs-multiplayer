@@ -115,7 +115,7 @@ class TestNeutral extends TestHelper {
 	void AncientBrewmaster_nominion() {
 		// Battlecry: Return a friendly minion from the battlefield to your hand
 		def abm = _play("Ancient Brewmaster")
-		assert abm.is_in_play
+		assert abm.is_in_play()
 	}
 
 	@Test
@@ -332,7 +332,7 @@ class TestNeutral extends TestHelper {
 	@Test
 	void BloodsailCorsair_play_no_weapon() {
 		def corsair = _play("Bloodsail Corsair")
-		assert corsair.is_in_play
+		assert corsair.is_in_play()
 
 	}
 
@@ -342,7 +342,7 @@ class TestNeutral extends TestHelper {
 		assert p1.hero.weapon != null
 		assert p1.hero.weapon.durability == axe.card_definition.max_health
 		def corsair = _play("Bloodsail Corsair") // should have no impact
-		assert corsair.is_in_play
+		assert corsair.is_in_play()
 		assert p1.hero.weapon.durability == axe.card_definition.max_health
 	}
 
@@ -438,7 +438,7 @@ class TestNeutral extends TestHelper {
 	@Test
 	void CaptainGreenskin_play_no_weapon() {
 		def greenskin = _play("Captain Greenskin")
-		assert greenskin.is_in_play
+		assert greenskin.is_in_play()
 	}
 
 	@Test
@@ -448,7 +448,7 @@ class TestNeutral extends TestHelper {
 		assert p1.hero.weapon.attack == 3
 		assert p1.hero.weapon.durability == 2
 		def greenskin = _play("Captain Greenskin")
-		assert greenskin.is_in_play
+		assert greenskin.is_in_play()
 		assert p1.hero.weapon.attack == 4
 		assert p1.hero.weapon.durability == 3
 		_attack(p1.hero, p2.hero)
@@ -703,6 +703,7 @@ class TestNeutral extends TestHelper {
 
 	@Test
 	void Deathlord_play() {
+        // Deathrattle: Your opponent puts a minion from their deck into the battlefield.
 		def dt = _play("Deathlord")
 		def before_deck_size = p2.deck.size()
 		assert p2.board.size() == 0
@@ -1251,7 +1252,7 @@ class TestNeutral extends TestHelper {
 	@Test
 	void HarrisonJones_no_weapon() {
 		def hj = _play('Harrison Jones')
-		assert hj.is_in_play
+		assert hj.is_in_play()
 	}
 
 	@Test
@@ -1263,19 +1264,22 @@ class TestNeutral extends TestHelper {
 		/* Player B */
 		def bh = p1.hand.size()
 		def hj = _play('Harrison Jones')
-		assert hj.is_in_play
+		assert hj.is_in_play()
 		assert p2.hero.weapon == null
 		assert p1.hand.size() == bh + 3
 	}
 	
 	@Test
 	void HarvestGolem_play() {
+        // Deathrattle: Summon a 2/1 Damaged Golem.
 		def golem = _play("Harvest Golem")
 		golem.dies()
 		assert p1.minions().size() == 1
-		assert p1.board.cards[0].name == 'Damaged Golem'
-		assert p1.board.cards[0].attack == 2
-		assert p1.board.cards[0].health == 1
+        (p1.board.cards[0] as Card).with {
+            assert name == 'Damaged Golem'
+            assert attack == 2
+            assert health == 1
+        }
 	}
 	
 	@Test
@@ -2448,14 +2452,14 @@ class TestNeutral extends TestHelper {
 	@Test
 	void StampedingKodo_no_minion() {
 		def kodo = _play("Stampeding Kodo")
-		assert kodo.is_in_play
+		assert kodo.is_in_play()
 	}
 
 	@Test
 	void StampedingKodo_friendly_minion() {
 		def blu = _play("Bluegill Warrior")
 		def kodo = _play("Stampeding Kodo")
-		assert kodo.is_in_play
+		assert kodo.is_in_play()
 		assert !blu.is_dead()
 	}
 
@@ -2467,7 +2471,7 @@ class TestNeutral extends TestHelper {
 		
 		/* Player B */
 		def kodo = _play("Stampeding Kodo")
-		assert kodo.is_in_play
+		assert kodo.is_in_play()
 		assert blu.is_dead()
 	}
 
@@ -2479,7 +2483,7 @@ class TestNeutral extends TestHelper {
 		
 		/* Player B */
 		def kodo = _play("Stampeding Kodo")
-		assert kodo.is_in_play
+		assert kodo.is_in_play()
 		assert !rider.is_dead()
 	}
 

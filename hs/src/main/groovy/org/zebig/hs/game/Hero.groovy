@@ -16,17 +16,17 @@ class Hero extends Target {
 		this.is_a_demon = false // except Jaraxxus...
 	}
 	
-	HeroPower getPower() { ps.power }
-	void setPower(HeroPower hp) { ps.power = hp }
+	HeroPower getPower() { state.power }
+	void setPower(HeroPower hp) { state.power = hp }
 	
-	int getArmor() { ps.armor }
-	void setArmor(int a) { ps.armor = a }
+	int getArmor() { state.armor }
+	void setArmor(int a) { state.armor = a }
 	
-	Weapon getWeapon() { ps.weapon }
-	void setWeapon(Weapon w) { ps.weapon = w }
+	Weapon getWeapon() { state.weapon }
+	void setWeapon(Weapon w) { state.weapon = w }
 	
-	boolean getIs_a_demon() { ps.is_a_demon }
-	void setIs_a_demon(boolean iad) { ps.is_a_demon = iad }
+	boolean getIs_a_demon() { state.is_a_demon }
+	void setIs_a_demon(boolean iad) { state.is_a_demon = iad }
 	
 	
 	def add_armor(int amount) {

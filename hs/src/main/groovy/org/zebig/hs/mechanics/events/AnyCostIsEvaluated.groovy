@@ -22,8 +22,7 @@ class AnyCostIsEvaluated extends GlobalEvent {
 			return super.get_scope()
 		}
 		// special case: triggers for cards in hand apply
-		//return Object.get_scope() + target.controller.hand.cards.storage
-		return super.get_scope() + target.controller.hand.cards.storage
+		return super.get_scope() + target.controller.hand.cards
 	}
 	
 }

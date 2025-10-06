@@ -1,10 +1,7 @@
 package org.zebig.hs.cards
 
-
-import org.zebig.hs.mechanics.buffs.BuffType
-
 import org.junit.Test
-
+import org.zebig.hs.game.Card
 import org.zebig.hs.utils.TestHelper
 
 import static org.zebig.hs.mechanics.buffs.BuffType.*
@@ -12,7 +9,7 @@ import static org.zebig.hs.mechanics.buffs.BuffType.*
 class TestMage extends TestHelper {
 
 	@Test
-	public void ArcaneExplosion_play() {
+	void ArcaneExplosion_play() {
 	// Deal 1 damage to all enemy minions
 		def lep = _play("Leper Gnome")
 		def abo = _play("Abomination")
@@ -23,7 +20,7 @@ class TestMage extends TestHelper {
 	}
 
 	@Test
-	public void ArcaneIntellect_draw() {
+	void ArcaneIntellect_draw() {
 		// Draw 2 cards
 		def before_hand_size = p1.hand.size()
 		_play("Arcane Intellect")
@@ -31,33 +28,33 @@ class TestMage extends TestHelper {
 	}
 	
 	@Test
-	public void EtherealArcanist_play_no_secret() {
+	void EtherealArcanist_play_no_secret() {
 		// If you control a Secret at the end of your turn, gain +2/+2
 		def eta = _play("Ethereal Arcanist")
-		assert eta.has_buff("+2/+2") == false
+		assert !eta.has_buff("+2/+2")
 		_next_turn()
-		assert eta.has_buff("+2/+2") == false
+		assert !eta.has_buff("+2/+2")
 	}
 	
 	@Test
-	public void EtherealArcanist_play_1_secret() {
+	void EtherealArcanist_play_1_secret() {
 		// If you control a Secret at the end of your turn, gain +2/+2
 		def eta = _play("Ethereal Arcanist")
 		_play("Counterspell")
-		assert eta.has_buff("+2/+2") == false
+		assert !eta.has_buff("+2/+2")
 		_next_turn()
-		assert eta.has_buff("+2/+2") == true
+		assert eta.has_buff("+2/+2")
 	}
 	
 	@Test
-	public void ArcaneMissiles_hit_only_hero() {
+	void ArcaneMissiles_hit_only_hero() {
 		// Deal 3 damage randomly split among enemy characters
 		_play("Arcane Missiles")
 		assert p2.hero.get_health() == 27
 	}
 
 	@Test
-	public void ArcaneMissiles_several_possible_targets() {
+	void ArcaneMissiles_several_possible_targets() {
 		// Deal 3 damage randomly split among enemy characters
 		def abo = _play("Abomination")
 		_next_turn()
@@ -66,7 +63,7 @@ class TestMage extends TestHelper {
 	}
 	
 	@Test
-	public void ArchmageAntonidas_play_1_spell() {
+	void ArchmageAntonidas_play_1_spell() {
 		// Whenever you cast a spell, put a 'Fireball' spell into your hand
 		_play("Archmage Antonidas")
 		def nb_fireball = p1.hand.cards.findAll{it.name == "Fireball"}.size()
@@ -75,7 +72,7 @@ class TestMage extends TestHelper {
 	}
 
 	@Test
-	public void ArchmageAntonidas_play_2_spells() {
+	void ArchmageAntonidas_play_2_spells() {
 		// Whenever you cast a spell, put a 'Fireball' spell into your hand
 		_play("Archmage Antonidas")
 		def nb_fireball = p1.hand.cards.findAll{it.name == "Fireball"}.size()
@@ -87,7 +84,7 @@ class TestMage extends TestHelper {
 	}
 	
 	@Test
-	public void Blizzard_play() {
+	void Blizzard_play() {
 		// Deal 2 damage to all enemy minions and Freeze them
 		def fad = _play("Faerie Dragon")
 		def ars = _play("Argent Squire")
@@ -101,7 +98,7 @@ class TestMage extends TestHelper {
 	}
 	
 	@Test
-	public void ConeOfCold_1_minion_killed() {
+	void ConeOfCold_1_minion_killed() {
 		// Freeze a minion and the minions next to it, and deal 1 damage to them
 		def lep = _play("Leper Gnome", p2)
 		_play_and_target("Cone of Cold", lep)
@@ -109,7 +106,7 @@ class TestMage extends TestHelper {
 	}
 
 	@Test
-	public void ConeOfCold_1_minion_frozen() {
+	void ConeOfCold_1_minion_frozen() {
 		// Freeze a minion and the minions next to it, and deal 1 damage to them
 		def abo = _play("Abomination", p2)
 		_play_and_target("Cone of Cold", abo)
@@ -119,25 +116,25 @@ class TestMage extends TestHelper {
 	}
 
 	@Test
-	public void ConeOfCold_1_center_minion_frozen_1_neighbor() {
+	void ConeOfCold_1_center_minion_frozen_1_neighbor() {
 		// Freeze a minion and the minions next to it, and deal 1 damage to them
 		def abo = _play("Abomination", p2)
 		def lep = _play("Leper Gnome", p2)
 		_play_and_target("Cone of Cold", abo)
-		assert abo.is_dead() == false
+		assert !abo.is_dead()
 		assert abo.is_frozen()
 		assert abo.get_health() == abo.card_definition.max_health - 1
 		assert lep.is_dead()
 	}
 
 	@Test
-	public void ConeOfCold_1_center_minion_frozen_2_neighbors() {
+	void ConeOfCold_1_center_minion_frozen_2_neighbors() {
 		// Freeze a minion and the minions next to it, and deal 1 damage to them
 		def lep1 = _play("Leper Gnome", p2)
 		def abo  = _play("Abomination", p2)
 		def lep2 = _play("Leper Gnome", p2)
 		_play_and_target("Cone of Cold", abo)
-		assert abo.is_dead() == false
+		assert !abo.is_dead()
 		assert abo.is_frozen()
 		assert abo.get_health() == abo.card_definition.max_health - 1
 		assert lep1.is_dead()
@@ -145,13 +142,13 @@ class TestMage extends TestHelper {
 	}
 
 	@Test
-	public void ConeOfCold_1_center_minion_killed_2_neighbors() {
+	void ConeOfCold_1_center_minion_killed_2_neighbors() {
 		// Freeze a minion and the minions next to it, and deal 1 damage to them
 		def abo  = _play("Abomination", p2)
 		def lep1 = _play("Leper Gnome", p2)
 		def lep2 = _play("Leper Gnome", p2)
 		_play_and_target("Cone of Cold", lep1)
-		assert abo.is_dead() == false
+		assert !abo.is_dead()
 		assert abo.is_frozen()
 		assert abo.get_health() == abo.card_definition.max_health - 1
 		assert lep1.is_dead()
@@ -159,7 +156,7 @@ class TestMage extends TestHelper {
 	}
 	
 	@Test
-	public void Counterspell_play() {
+	void Counterspell_play() {
 		// Secret: When your opponent casts a spell, Counter it
 		def csp = _play("Counterspell")
 		assert p1.secrets.contains(csp)
@@ -176,7 +173,7 @@ class TestMage extends TestHelper {
 	}
 
 	@Test
-	public void Duplicate_play_unfriendly_minion_dies() {
+	void Duplicate_play_unfriendly_minion_dies() {
 		/* Player A */ _play("Duplicate")
 		assert p1.secrets.size() == 1
 		assert p1.secrets[0].name == "Duplicate"
@@ -195,7 +192,7 @@ class TestMage extends TestHelper {
 	}
 	
 	@Test
-	public void Duplicate_play_friendly_minion_dies() {
+	void Duplicate_play_friendly_minion_dies() {
 		/* Player A */
 		def abo = _play("Abomination")
 		_next_turn()
@@ -222,17 +219,17 @@ class TestMage extends TestHelper {
 	
 	
 	@Test
-	public void EtherealArcanist_opponent_play_1_secret() {
+	void EtherealArcanist_opponent_play_1_secret() {
 		_play("Counterspell") // should have no effect
 		_next_turn()
 		def eta = _play("Ethereal Arcanist")
-		assert eta.has_buff("+2/+2") == false
+		assert !eta.has_buff("+2/+2")
 		_next_turn()
-		assert eta.has_buff("+2/+2") == false
+		assert !eta.has_buff("+2/+2")
 	}
 	
 	@Test
-	public void FrostNova_play() {
+	void FrostNova_play() {
 		// Freeze all enemy minions
 		def abo = _play("Abomination")
 		def fae = _play("Faerie Dragon")
@@ -244,12 +241,12 @@ class TestMage extends TestHelper {
 		assert abo.is_frozen()
 		assert fae.is_frozen()
 		_next_turn()
-		assert abo.is_frozen() == false
-		assert fae.is_frozen() == false
+		assert !abo.is_frozen()
+		assert !fae.is_frozen()
 	}
 	
 	@Test
-	public void IceBarrier_play() {
+	void IceBarrier_play() {
 		// Secret: When your hero is attacked, gain 8 Armor
 		def ice = _play("Ice Barrier")
 		assert p1.hero.armor == 0
@@ -261,7 +258,7 @@ class TestMage extends TestHelper {
 		assert p2.hero.health == 30
 		assert p2.hero.armor == 8 - blu.attack
 		assert p1.secrets.size() == 0
-		assert p1.secrets.contains(ice) == false
+		assert !p1.secrets.contains(ice)
 		def blu2 = _play("Bluegill Warrior")
 		_attack(blu2, p2.hero)
 		assert p2.hero.health == 30
@@ -269,14 +266,14 @@ class TestMage extends TestHelper {
 	}
 
 	@Test
-	public void IceBlock_fatal_damage() {
+	void IceBlock_fatal_damage() {
 		// Secret: When your hero takes fatal damage, prevent it and become Immune this turn
 		def ice = _play("Ice Block")
 		assert p1.hero.triggers.size() == 1 // when_a_hero_takes_damage
 		p1.hero.health = 1
 		assert p1.secrets.size() == 1
 		assert p1.secrets.contains(ice)
-		assert ice.is_revealed() == false
+		assert !ice.is_revealed()
 		_next_turn()
 			def blu = _play("Bluegill Warrior")
 			_attack(blu, p2.hero)
@@ -290,7 +287,7 @@ class TestMage extends TestHelper {
 			assert p2.hero.has_buff(IMMUNE)
 		_next_turn()
 		// check that the IMMUNE buff is removed
-		assert p2.hero.has_buff(IMMUNE) == false
+		assert !p2.hero.has_buff(IMMUNE)
 		assert p2.hero.triggers.size() == 0 // its power only
 		_next_turn()
 			_attack(blu, p2.hero)
@@ -298,25 +295,25 @@ class TestMage extends TestHelper {
 	}
 	
 	@Test
-	public void IceBlock_non_fatal_damage() {
+	void IceBlock_non_fatal_damage() {
 		// Secret: When your hero takes fatal damage, prevent it and become Immune this turn
 		def ice = _play("Ice Block")
 		assert p1.hero.triggers.size() == 1 // when_a_hero_takes_damage
 		p1.hero.health = 4
 		assert p1.secrets.size() == 1
 		assert p1.secrets.contains(ice)
-		assert ice.is_revealed() == false
+		assert !ice.is_revealed()
 		_next_turn()
 			def blu = _play("Bluegill Warrior")
 			_attack(blu, p2.hero)
 			assert p2.hero.health == 4 - blu.attack // 2
-			assert p2.hero.has_buff(IMMUNE) == false
-			assert ice.is_revealed() == false
+			assert !p2.hero.has_buff(IMMUNE)
+			assert !ice.is_revealed()
 			assert p2.hero.triggers.size() == 1 // when_a_hero_takes_damage
 	}
 
 	@Test
-	public void IceBlock_non_fatal_then_fatal_damage() {
+	void IceBlock_non_fatal_then_fatal_damage() {
 		// Secret: When your hero takes fatal damage, prevent it and become Immune this turn
 		def ice = _play("Ice Block")
 		p1.hero.health = 4
@@ -326,16 +323,16 @@ class TestMage extends TestHelper {
 			def blu2 = _play("Bluegill Warrior")
 			_attack(blu2, p2.hero) // fatal damage
 			assert p2.hero.health == 4 - blu.attack // 2
-			assert p2.hero.has_buff(IMMUNE) == true
-			assert ice.is_revealed() == true
+			assert p2.hero.has_buff(IMMUNE)
+			assert ice.is_revealed()
 			assert p2.hero.triggers.size() == 1 // when_a_hero_takes_damage
 		_next_turn()
-		assert p1.hero.has_buff(IMMUNE) == false
+		assert !p1.hero.has_buff(IMMUNE)
 		assert p1.hero.triggers.size() == 0 
 	}
 	
 	@Test
-	public void KirinTorMage_2_secrets() {
+	void KirinTorMage_2_secrets() {
 		// Battlecry: The next Secret you play this turn costs (0)
 		def csp = g.new_card("Counterspell")
 		p1.hand.add(csp)
@@ -350,7 +347,7 @@ class TestMage extends TestHelper {
 	}
 	
 	@Test
-	public void KirinTorMage_play_no_secret() {
+	void KirinTorMage_play_no_secret() {
 		// Battlecry: The next Secret you play this turn costs (0)
 		_play("Kirin Tor Mage")
 		_next_turn() // effect should be lost at end of turn
@@ -361,7 +358,7 @@ class TestMage extends TestHelper {
 	}
 	
 	@Test
-	public void Malygos_play() {
+	void Malygos_play() {
 		// Spell Damage +5
 		def maly = _play("Malygos")
 		assert maly.has_buff("Spell Damage +5")
@@ -370,7 +367,7 @@ class TestMage extends TestHelper {
 	}
 	
 	@Test
-	public void ManaWyrm_play() {
+	void ManaWyrm_play() {
 		// Whenever you cast a spell, gain +1 Attack
 		def maw = _play("Mana Wyrm")
 		assert maw.get_attack() == maw.attack
@@ -394,11 +391,11 @@ class TestMage extends TestHelper {
 		// check silence
 		_play("Silence", maw)
 		assert maw.get_attack() == maw.attack
-		assert maw.has_buff("+1 Attack") == false
+		assert !maw.has_buff("+1 Attack")
 	}
 	
 	@Test
-	public void MirrorEntity_play() {
+	void MirrorEntity_play() {
 		// Secret: When your opponent plays a minion, summon a copy of it
 		
 		// simple test
@@ -409,8 +406,8 @@ class TestMage extends TestHelper {
 		assert p1.board.size() == 1 // copy, doesn't steal
 		assert p2.board.size() == 1 // should have a copy of Elven Archer
 		assert p1.hero.health == 30	  // battlecry of copied minion should not trigger
-		def a1 = p1.board.cards[0]
-		def a2 = p2.board.cards[0]
+		Card a1 = p1.board.cards[0]
+		Card a2 = p2.board.cards[0]
 		assert a1.id != a2.id
 		assert a1.name == a2.name
 		assert a1.attack == a2.attack
@@ -421,20 +418,18 @@ class TestMage extends TestHelper {
 		assert a1.cost == a2.cost
 		assert a1.creature_type == a2.creature_type
 		assert a1.health == a2.health
-		assert a1.is_a_secret == false
-		assert a2.is_a_secret == false
-		assert a1.is_attacking == false
-		assert a2.is_attacking == false
-		assert a1.is_being_played == false
-		assert a2.is_being_played == false
-		assert a1.is_destroyed == false
-		assert a1.is_destroyed == false
-		assert a1.is_enraged == false
-		assert a2.is_enraged == false
-		assert a1.is_in_play == true
-		assert a2.is_in_play == true
-		assert a1.just_summoned == true
-		assert a2.just_summoned == true
+		assert !a1.is_a_secret
+		assert !a2.is_a_secret
+		assert !a1.is_attacking
+		assert !a2.is_attacking
+		assert !a1.is_being_played
+		assert !a2.is_being_played
+		assert !a1.is_destroyed
+		assert !a1.is_destroyed
+		assert !a1.is_enraged
+		assert !a2.is_enraged
+		assert a1.just_summoned
+		assert a2.just_summoned
 		assert a1.max_health == a2.max_health
 		assert a2.play_order > a1.play_order
 		assert a1.target_type == a2.target_type
@@ -443,7 +438,7 @@ class TestMage extends TestHelper {
 		assert a1.type == a2.type
 		
 		// test copied minion is a new object, not a reference on an existing object
-		_play("Silence", a2)
+		_play("Silence", a2 as Card)
 		assert a2.text == ''
 		assert a2.triggers.size() == 0
 		assert a1.text != ''
@@ -457,17 +452,17 @@ class TestMage extends TestHelper {
 		_next_turn()
 		_play("Shieldbearer") // has taunt
 		assert p1.board.size() == 1 // copy, doesn't steal
-		assert p2.board.size() == 1 // should have a copy of Elven Archer
-		assert p1.board.cards[0].has_taunt()
-		assert p2.board.cards[0].has_taunt()
-		assert p1.board.cards[0].buffs.size() == p2.board.cards[0].buffs.size()
-		_play("Silence", p2.board.cards[0]) // the copy
-		assert p1.board.cards[0].has_taunt()
-		assert !p2.board.cards[0].has_taunt()
+		assert p2.board.size() == 1 // should have a copy of Shieldbearer
+		assert (p1.board.cards[0] as Card).has_taunt()
+		assert (p2.board.cards[0] as Card).has_taunt()
+		assert (p1.board.cards[0] as Card).buffs == (p2.board.cards[0] as Card).buffs
+		_play("Silence", p2.board.cards[0] as Card) // the copy
+		assert (p1.board.cards[0] as Card).has_taunt()
+		assert !(p2.board.cards[0] as Card).has_taunt()
 	}
 	
 	@Test
-	public void MirrorImage_play() {
+	void MirrorImage_play() {
 		// Summon two 0/2 minions with Taunt
 		_play("Mirror Image")
 		assert p1.board.size() == 2
@@ -490,7 +485,7 @@ class TestMage extends TestHelper {
 	}
 	
 	@Test
-	public void Polymorph_play() {
+	void Polymorph_play() {
 		//Transform a minion into a 1/1 Sheep
 		def bou = _play("Boulderfist Ogre")
 		_next_turn()
@@ -522,7 +517,7 @@ class TestMage extends TestHelper {
 	}
 	
 	@Test
-	public void Pyroblast_play() {
+	void Pyroblast_play() {
 		// Deal 10 damage
 		
 		_play("Kobold Geomancer") // +1 Spell Damage
@@ -531,7 +526,7 @@ class TestMage extends TestHelper {
 	}
 	
 	@Test
-	public void Spellbender_play() {
+	void Spellbender_play() {
 		// Secret: When an enemy casts a spell on a minion, summon a 1/3 as the new target
 		
 		def mal = _play("Malygos")
@@ -551,7 +546,7 @@ class TestMage extends TestHelper {
 	}
 	
 	@Test
-	public void SorcerersApprentice_play() {
+	void SorcerersApprentice_play() {
 		// Your spells cost (1) less
 		
 		p1.hand.cards.clear()
@@ -579,7 +574,7 @@ class TestMage extends TestHelper {
 	}
 	
 	@Test
-	public void Vaporize_play() {
+	void Vaporize_play() {
 		// 'Secret: When a minion attacks your hero, destroy it.'
 		
 		_play("Vaporize")
@@ -591,17 +586,17 @@ class TestMage extends TestHelper {
 	}
 	
 	@Test
-	public void WaterElemental_play() {
+	void WaterElemental_play() {
 		// Freeze any character damaged by this minion
 		
 		def wat = _play("Water Elemental")	// 3/6
 		_next_turn()
 		
 		def arg = _play("Argent Commander")	// 4/2 charge, divine shield
-		assert arg.has_divine_shield() == true
+		assert arg.has_divine_shield()
 		_attack(arg, wat)
-		assert arg.is_frozen() == false
-		assert arg.has_divine_shield() == false
+		assert !arg.is_frozen()
+		assert !arg.has_divine_shield()
 		
 		def rhi = _play("Tundra Rhino")		// 2/5 charge
 		_attack(rhi, wat)
@@ -623,10 +618,10 @@ class TestMage extends TestHelper {
 		_next_turn()
 		
 		assert p1.hero.is_frozen()
-		assert rhi.is_frozen() == false
+		assert !rhi.is_frozen()
 		_next_turn()
 		
-		assert p2.hero.is_frozen() == false
+		assert !p2.hero.is_frozen()
 	}
 
 }

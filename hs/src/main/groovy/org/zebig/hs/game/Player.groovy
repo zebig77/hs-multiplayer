@@ -15,21 +15,18 @@ import org.zebig.hs.mechanics.events.ItIsPlayed
 import org.zebig.hs.mechanics.events.ItsControllerPlaysACard
 import org.zebig.hs.mechanics.events.SpellTargetSelected
 import org.zebig.hs.mechanics.events.ThisPowerIsUsed
-import org.zebig.hs.state.ListState
-import org.zebig.hs.state.MapState
 
 import java.beans.PropertyChangeEvent
 import java.beans.PropertyChangeListener
 
 class Player extends ScriptObject {
 
-	MapState ps
-
+	def state = [:] as ObservableMap
 	String name
 	Hand hand
     Board board
 	Deck deck
-	ListState<Card> secrets
+	def secrets = [] as ObservableList
 	PlayerArtefact artefact // container for player's triggers
     PropertyChangeListener listener
 
@@ -38,11 +35,9 @@ class Player extends ScriptObject {
 
 	Player(Game game, String name, Hero hero, Deck deck) {
         super(game)
-		ps = new MapState(game)
 		this.name = name
 		this.hero = hero
 		this.deck = deck
-        this.secrets = new ListState<Card>(game)
 		this.hand = new Hand(this)
         this.board = new Board(this)
 		this.overload = 0
@@ -51,25 +46,39 @@ class Player extends ScriptObject {
 		this.max_mana = 0
 		this.fatigue = 0
 		this.artefact = new PlayerArtefact(game, "artefact of $name")
+        this.state.addPropertyChangeListener {
+            process_state_change(it)
+        }
+        this.secrets.addPropertyChangeListener {
+            process_secrets_change(it)
+        }
 	}
 
-	Hero getHero() { ps.hero }
-	void setHero(Hero h) { ps.hero = h; h.controller = this }
+    void process_state_change(PropertyChangeEvent event) {
+        game.transaction?.process_state_change(state, event)
+    }
 
-	int getOverload() { ps.overload }
-	void setOverload(int o) { ps.overload = o }
+    void process_secrets_change(PropertyChangeEvent event) {
+        game.transaction?.process_state_change(secrets, event)
+    }
 
-	int getNb_cards_played_this_turn() { ps.nb_cards_played_this_turn }
-	void setNb_cards_played_this_turn(int n) { ps.nb_cards_played_this_turn = n }
+    Hero getHero() { state.hero }
+	void setHero(Hero h) { state.hero = h; h.controller = this }
 
-	int getAvailable_mana() { ps.available_mana }
-	void setAvailable_mana(int am) { ps.available_mana = am }
+	int getOverload() { state.overload }
+	void setOverload(int o) { state.overload = o }
 
-	int getMax_mana() { return ps.max_mana }
-	void setMax_mana(int max_mana) {	ps.max_mana = max_mana }
+	int getNb_cards_played_this_turn() { state.nb_cards_played_this_turn }
+	void setNb_cards_played_this_turn(int n) { state.nb_cards_played_this_turn = n }
 
-	int getFatigue() { return ps.fatigue	}
-	void setFatigue(int fatigue) { ps.fatigue = fatigue }
+	int getAvailable_mana() { state.available_mana }
+	void setAvailable_mana(int am) { state.available_mana = am }
+
+	int getMax_mana() { return state.max_mana }
+	void setMax_mana(int max_mana) {	state.max_mana = max_mana }
+
+	int getFatigue() { return state.fatigue	}
+	void setFatigue(int fatigue) { state.fatigue = fatigue }
 
 	String stats() {
 		StringWriter sw = new StringWriter()
@@ -304,6 +313,7 @@ class Player extends ScriptObject {
 		// place a minion in the battlefield or equip a weapon
 		if (c.is_a_minion()) {
 			game.summon(this, c, place)
+
 		} else 	if (c.is_a_weapon()) {
 			hero.equip_weapon(new Weapon( c.card_definition ) )
 		}
@@ -311,6 +321,7 @@ class Player extends ScriptObject {
 		// play battlecry or spell effect
 		c.is_being_played = true // excluded from selection lists
 		new ItIsPlayed(c).check()
+
 		if (c.is_a_minion()) {
 			new AnyMinionIsPlayed(c).check()
 		}
@@ -322,6 +333,7 @@ class Player extends ScriptObject {
 		// for combo test
 		nb_cards_played_this_turn++
 
+        // TODO manage transactions externally
         game.end_transaction()
 
 		return c

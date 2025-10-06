@@ -11,6 +11,7 @@ class Card extends Target {
 
 	List<String> druid_choices // druid
 	List<Closure> get_targets
+    boolean being_copied
 
 	Card(CardDefinition cd) {
 		super(cd.name, cd.type, cd.max_health, cd.game)
@@ -20,56 +21,53 @@ class Card extends Target {
 		is_enraged = false
 		is_a_secret = false
 		play_order = 0
-		is_in_play = false
+        being_copied = false
 		init()
 	}
 	
-	CardDefinition getCard_definition() { ps.card_definition }
-	void setCard_definition(CardDefinition cd) { ps.card_definition = cd }
+	CardDefinition getCard_definition() { state.card_definition }
+	void setCard_definition(CardDefinition cd) { state.card_definition = cd }
 	
-	String getType() { ps.type }
-	void setType(String t) { ps.type = t }
+	String getType() { state.type }
+	void setType(String t) { state.type = t }
 	
-	String getCreature_type() { ps.creature_type }
-	void setCreature_type(String ct) { ps.creature_type = ct }
+	String getCreature_type() { state.creature_type }
+	void setCreature_type(String ct) { state.creature_type = ct }
 	
-	int getCost() { ps.cost }
-	void setCost(int c) { ps.cost = c }
+	int getCost() { state.cost }
+	void setCost(int c) { state.cost = c }
 	
-	String getText() { ps.text }
-	void setText(String t) { ps.text = t }
+	String getText() { state.text }
+	void setText(String t) { state.text = t }
 	
 	void addText(String s) {
 		if (text == null || text == '') {
-			ps.text = s
+			state.text = s
 		}
 		else {
 			if (!text.contains(s)) {
 				if (text[text.size()-1] == '.') {
-					ps.text = ps.text+' '+s
+					state.text = state.text+' '+s
 				}
 				else {
-					ps.text = ps.text+'. '+s
+					state.text = state.text+'. '+s
 				}
 			}
 		}
-		Log.info "      . $this text = ${ps.text}"
+		Log.info "      . $this text = ${state.text}"
 	}
 	
-	boolean getJust_summoned() { ps.just_summoned }
-	void setJust_summoned(boolean js) { ps.just_summoned = js }
+	boolean getJust_summoned() { state.just_summoned }
+	void setJust_summoned(boolean js) { state.just_summoned = js }
 	
-	boolean getIs_enraged() { ps.is_enraged }
-	void setIs_enraged(boolean ie) { ps.is_enraged = ie }
+	boolean getIs_enraged() { state.is_enraged }
+	void setIs_enraged(boolean ie) { state.is_enraged = ie }
 	
-	boolean getIs_a_secret() { ps.is_a_secret }
-	void setIs_a_secret(boolean ias) { ps.is_a_secret = ias }
+	boolean getIs_a_secret() { state.is_a_secret }
+	void setIs_a_secret(boolean ias) { state.is_a_secret = ias }
 	
-	int getPlay_order() { ps.play_order }
-	void setPlay_order(int po) { ps.play_order = po }
-	
-	boolean getIs_in_play() { ps.is_in_play }
-	void setIs_in_play(boolean iip) { ps.is_in_play = iip }
+	int getPlay_order() { state.play_order }
+	void setPlay_order(int po) { state.play_order = po }
 	
 	boolean has_battlecry() {
 		text.contains("Battlecry: ")
@@ -89,14 +87,13 @@ class Card extends Target {
 		max_health = card_definition.max_health
 		text = card_definition.text
 		triggers.clear()
-		card_definition.triggers.each{ Trigger t ->
+        (card_definition.triggers as List<Trigger>).each{ t ->
 			triggers.add( new Trigger(t.event_class, t.script, this, t.comment) )
 		}
 		buffs.clear()
 		is_enraged = false
 		is_a_secret = card_definition.is_a_secret
 		play_order = 0
-		is_in_play = false
 		druid_choices = card_definition.druid_choices
 		get_targets = card_definition.get_targets
 	}
@@ -231,14 +228,13 @@ class Card extends Target {
 			return
 		}
 		assert to != null
+        to.being_copied = true // protects from double itComesInPlay event
 		to.name = from.name
 		to.attack = from.attack
 		to.attack_counter = from.attack_counter
 		to.buffs.clear()
-		from.buffs.each { Buff buff ->
-			to.buffs.add(buff)
-		}
-		to.buffs.each { Buff b -> 
+        (from.buffs as List<Buff>).each {to.buffs.add(it) }
+        (to.buffs as List<Buff>).each { Buff b ->
 			if (b.target == from) {
 				b.target = to
 			} 
@@ -253,7 +249,6 @@ class Card extends Target {
 		to.is_being_played 	= false
 		to.is_destroyed	= false
 		to.is_enraged = from.is_enraged
-		to.is_in_play = from.is_in_play
 		to.just_summoned = from.just_summoned
 		to.max_health = from.max_health
 		to.play_order = 0

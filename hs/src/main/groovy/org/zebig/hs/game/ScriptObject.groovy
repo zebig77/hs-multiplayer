@@ -177,7 +177,7 @@ abstract class ScriptObject {
 	}
 
 	List<Target> getActive_secrets() {
-		return opponent.secrets.storage
+		return opponent.secrets
 	}
 
 	List<Card> getAll_minion_targets() {

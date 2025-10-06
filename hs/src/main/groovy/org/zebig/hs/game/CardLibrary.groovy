@@ -70,13 +70,12 @@ Young Dragonhawk"""
 				throw new InvalidDefinitionException("carte inconnue: $card_name")
 			}
 			try {
-				cd = cd_class.getConstructor().newInstance() as CardDefinition
+				cd = cd_class.getConstructor(Game.class).newInstance(game) as CardDefinition
 			}
 			catch (ReflectiveOperationException e) {
 				println e
 				throw new InvalidDefinitionException("carte invalide: $card_name")
 			}
-            cd.game = game
 			cards[class_name] = cd
 		}
 		return cd

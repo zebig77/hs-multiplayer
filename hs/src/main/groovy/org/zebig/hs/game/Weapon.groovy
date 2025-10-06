@@ -17,8 +17,8 @@ class Weapon extends Target {
 		}
 	}
 	
-	int getDurability() { ps.durability }
-	void setDurability(int d) { ps.durability = d }
+	int getDurability() { state.durability }
+	void setDurability(int d) { state.durability = d }
 	
 	boolean is_a_weapon() {
 		return true

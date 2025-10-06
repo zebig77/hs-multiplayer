@@ -12,7 +12,7 @@ class TestRogue extends TestHelper {
 	@Test
 	void AnubArAmbusher_play_alone() {
 		def ambusher = _play("Anub'ar Ambusher")
-		assert ambusher.is_in_play
+		assert ambusher.is_in_play()
 		ambusher.dies()
 		assert ambusher.is_dead()
 		assert !p1.hand.contains(ambusher)

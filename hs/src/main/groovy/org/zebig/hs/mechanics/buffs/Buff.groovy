@@ -5,7 +5,8 @@ import org.zebig.hs.game.ScriptObject
 import org.zebig.hs.game.Target
 import org.zebig.hs.logger.Log
 import org.zebig.hs.mechanics.Trigger
-import org.zebig.hs.state.ListState
+
+import java.beans.PropertyChangeEvent
 
 class Buff extends ScriptObject {
 	
@@ -19,19 +20,25 @@ class Buff extends ScriptObject {
 	int health_change = -1
 	int spell_damage_increase = 0
 	
-	ListState<Trigger> triggers
+	def triggers = [] as ObservableList
 
 	Buff(BuffType buff_type, Target target) {
         super(target.game)
 		this.buff_type = buff_type
 		this.target = target
-        this.triggers = new ListState<Trigger>(target.game)
+        this.triggers.addPropertyChangeListener {
+            process_triggers_change(it)
+        }
         Log.info "      . added '$this' buff to '$target'"
 	}
-	
+
 	Buff(String buff_string, Target target) {
 		this(BuffType.getInstance(buff_string), target)
 	}
+
+    void process_triggers_change(PropertyChangeEvent event) {
+        target.game.transaction?.process_state_change(triggers, event)
+    }
 
 	def remove_effect() {
 		Log.info "      . '$this' buff is removed from $target"
@@ -91,24 +98,6 @@ class Buff extends ScriptObject {
 		}
 		
 		throw new InvalidDefinitionException( "buff non reconnu: $buff_string ($bs)" )		
-	}
-
-	static Buff create_buff(BuffType bt, Target t) {
-		
-		if (bt in BuffType.STATELESS_BUFFS) {
-			def found = t.buffs.find{it.buff_type == bt}
-			if (found != null) {
-				// no need to add one
-				return found
-			}
-			return new Buff(bt,t)
-		}
-
-		if (bt == BuffType.FROZEN) {
-			return new FrozenBuff(t)
-		}
-
-		throw new InvalidDefinitionException( "Unknown buff: $bt" )
 	}
 
 	@Override

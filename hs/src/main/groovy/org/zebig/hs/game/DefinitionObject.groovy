@@ -3,11 +3,10 @@ package org.zebig.hs.game
 import org.zebig.hs.mechanics.Trigger
 import org.zebig.hs.mechanics.buffs.Buff
 
-class DefinitionObject extends ScriptObject {
+class DefinitionObject extends GameObject {
 
 	String name
 	String text
-	List<Trigger> triggers = []
 	List<Closure> get_targets
 
     DefinitionObject(Game game) {

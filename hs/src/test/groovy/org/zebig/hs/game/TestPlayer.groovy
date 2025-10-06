@@ -20,7 +20,7 @@ class TestPlayer extends TestHelper {
 		p1.hand.add(abo)
 		try {
 			p1.play(abo)
-			fail("aura�t du d�tecter pas assez de mana")
+			fail("aurait dû détecter pas assez de mana")
 		}
 		catch( Exception e ) {
 			println e // OK

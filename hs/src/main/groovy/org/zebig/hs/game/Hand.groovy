@@ -1,27 +1,34 @@
 package org.zebig.hs.game
 
 import org.zebig.hs.logger.Log
-import org.zebig.hs.state.ListState
+
+import java.beans.PropertyChangeEvent
 
 class Hand {
 
-	Player hand_owner
-	ListState<Card> cards
+	Player owner
+	def cards = [] as ObservableList
 
 	Hand(Player hand_owner) {
-		this.hand_owner = hand_owner
-        this.cards = new ListState<Card>(hand_owner.game)
-	}
+		this.owner = hand_owner
+        cards.addPropertyChangeListener {
+            process_cards_change(it)
+        }
+    }
+
+    void process_cards_change(PropertyChangeEvent event) {
+        owner.game.transaction?.process_state_change(cards, event)
+    }
 
 	def add(Card c) {
 		assert c != null
-		c.controller = hand_owner
+		c.controller = owner
 		if (size() >= 10) {
 			Log.info "      . too much cards in hand, $c is discarded"
 			return
 		}
 		cards.add(c)
-		Log.info "      . adding $c to ${hand_owner}'s hand"
+		Log.info "      . adding $c to ${this.owner}'s hand"
 	}
 
 	boolean contains(Card c) {
@@ -31,8 +38,8 @@ class Hand {
 	def discard_random(int n=1) {
 		n.times{
 			if (cards.size() > 0) {
-                Card c = hand_owner.game.random_pick(cards.storage) as Card
-				Log.info "   - discarding at random $c from ${hand_owner}'s hand"
+                Card c = this.owner.game.random_pick(cards) as Card
+				Log.info "   - discarding at random $c from ${this.owner}'s hand"
 				cards.remove(c)
 			}
 		}
@@ -40,7 +47,7 @@ class Hand {
 
 	def remove(Card c) {
 		if (cards.contains(c)) {
-			Log.info "      . $c is removed from ${hand_owner}'s hand"
+			Log.info "      . $c is removed from ${this.owner}'s hand"
 			this.cards.remove(c)
 		}
 	}
@@ -50,6 +57,6 @@ class Hand {
 	}
 
 	String toString() {
-		return "hand of $hand_owner.name : $cards"
+		return "hand of $owner.name : $cards"
 	}
 }

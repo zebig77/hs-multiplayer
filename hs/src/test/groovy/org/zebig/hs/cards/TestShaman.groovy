@@ -1,4 +1,4 @@
-package org.zebig.hs.cards;
+package org.zebig.hs.cards
 
 import static org.zebig.hs.mechanics.buffs.BuffType.*
 import org.zebig.hs.game.Card
@@ -9,7 +9,7 @@ import org.zebig.hs.utils.TestHelper
 class TestShaman extends TestHelper {
 
 	@Test
-	public void AncestralHealing_play() {
+	void AncestralHealing_play() {
 	// Restore a minion to full Health
 		def amb = _play("Amani Berserker")
 		_play_and_target( "Cruel Taskmaster", amb )
@@ -19,13 +19,13 @@ class TestShaman extends TestHelper {
 		_play_and_target( "AncestralHealing", amb )
 		assert amb.get_health() == 3
 		assert amb.get_attack() == 4
-		assert amb.is_enraged == false
+		assert !amb.is_enraged
 		assert amb.has_buff(TAUNT)
 	}
 	
 	
 	@Test
-	public void AncestralSpirit_return_to_battlefield_when_destroyed() {
+	void AncestralSpirit_return_to_battlefield_when_destroyed() {
 		// Give a minion "Deathrattle: Resummon this minion
 		
 		// very tricky, dont know if it is a bug or correct
@@ -37,13 +37,13 @@ class TestShaman extends TestHelper {
 		def emp = _play("Emperor Cobra") // Destroy any minion damaged by this minion
 		_next_turn()
 		g.player_attacks(abo, emp)
-		assert abo.is_dead() == false
-		assert abo.is_in_play() == true
-		assert abo.has_buff(RETURN_TO_BATTLEFIELD_WHEN_DESTROYED) == false
+		assert !abo.is_dead()
+		assert abo.is_in_play()
+		assert !abo.has_buff(RETURN_TO_BATTLEFIELD_WHEN_DESTROYED)
 	}
 	
 	@Test
-	public void Bloodlust_play() {
+	void Bloodlust_play() {
 		// Give your minions +3 Attack this turn
 		
 		def shb = _play("Shieldbearer")
@@ -59,7 +59,7 @@ class TestShaman extends TestHelper {
 	}
 	
 	@Test
-	public void Doomhammer_play() {
+	void Doomhammer_play() {
 		// Windfury. Overload: (2)
 		p1.max_mana = 5
 		p1.available_mana = 5
@@ -82,7 +82,7 @@ class TestShaman extends TestHelper {
 	}
 	
 	@Test
-	public void DustDevil_play() {
+	void DustDevil_play() {
 		def dud = _play("Dust Devil")
 		_should_fail("just summoned") {
 			g.player_attacks(dud, p2.hero)
@@ -98,18 +98,18 @@ class TestShaman extends TestHelper {
 	}
 	
 	@Test
-	public void EarthShock_play() {
+	void EarthShock_play() {
 		def kob = _play("Kobold Geomancer")
 		assert kob.has_buff("Spell Damage +1")
 		assert kob.health == 2
 		_next_turn()
 		_play("Earth Shock", kob)
-		assert kob.has_buff("Spell Damage +1") == false
+		assert !kob.has_buff("Spell Damage +1")
 		assert kob.health == 1
 	}
 	
 	@Test
-	public void FarSight_play() {
+	void FarSight_play() {
 		def elem = g.new_card("Unbound Elemental")
 		assert elem.get_cost() == 3
 		p1.deck.cards.add(0, elem)
@@ -119,7 +119,7 @@ class TestShaman extends TestHelper {
 	}
 	
 	@Test
-	public void FeralSpirit_play() {
+	void FeralSpirit_play() {
 		// Summon two 2/3 Spirit Wolves with Taunt. Overload: (2)
 		_play("Feral Spirit")
 		assert p1.overload == 2
@@ -143,15 +143,15 @@ class TestShaman extends TestHelper {
 	}
 	
 	@Test
-	public void FireElemental_play() {
-		def abo = _play("Abomination")
+	void FireElemental_play() {
+		_play("Abomination")
 		// Battlecry: Deal 3 damage
 		_play("Fire Elemental", p2.hero)
 		assert p2.hero.health == 27
 	}
 	
 	@Test
-	public void FlametongueTotem_play() {
+	void FlametongueTotem_play() {
 		// Adjacent minions have +2 Attack.
 		def lep = _play("Leper Gnome")			// x=0
 		def flt = _play("Flametongue Totem")	// x=1
@@ -165,7 +165,7 @@ class TestShaman extends TestHelper {
 		abo.dies() // deathrattle 'Deal 2 damage to ALL characters'
 		assert lep.is_dead()
 		assert blu.is_dead()
-		assert flt.is_dead() == false // moved to x=0
+		assert !flt.is_dead() // moved to x=0
 		def kor = _play("Kor'kron Elite") // placed at x=1
 		assert kor.get_attack() == kor.attack +2
 		flt.dies()
@@ -173,7 +173,7 @@ class TestShaman extends TestHelper {
 	}
 	
 	@Test
-	public void ForkedLightning_fail_not_enough_target() {
+	void ForkedLightning_fail_not_enough_target() {
 		// Deal 2 damage to 2 random enemy minions. Overload: (2)
 		_should_fail("not enough targets") { _play("Forked Lightning") }
 		_next_turn()
@@ -183,14 +183,14 @@ class TestShaman extends TestHelper {
 	}
 	
 	@Test
-	public void ForkedLightning_play() {
+	void ForkedLightning_play() {
 		// Deal 2 damage to 2 random enemy minions. Overload: (2)
 		def bim = _play("Blood Imp")
 		def bou = _play("Boulderfist Ogre")
 		def abo = _play("Abomination")
 		// Deal 2 damage to 2 random enemy minions. Overload: (2)
 		_next_turn()
-		def kob = _play("Kobold Geomancer") // check spell damage increase
+		_play("Kobold Geomancer") // check spell damage increase
 		_play("Forked Lightning")
 		assert bim.is_dead() || bou.health == bou.max_health - 3
 		assert bim.is_dead() || abo.health == abo.max_health - 3
@@ -198,7 +198,7 @@ class TestShaman extends TestHelper {
 	}
 	
 	@Test
-	public void FrostShock_play() {
+	void FrostShock_play() {
 		// Deal 1 damage to an enemy character and Freeze it
 		def thf = _play("Thrallmar Farseer")
 		_next_turn()
@@ -207,11 +207,11 @@ class TestShaman extends TestHelper {
 		assert thf.health == thf.max_health -1
 		_next_turn()
 		_play("Ironbeak Owl", thf)
-		assert thf.is_frozen() == false
+		assert !thf.is_frozen()
 	}
 	
 	@Test
-	public void HealingTotem_play() {
+	void HealingTotem_play() {
 		// At the end of your turn, restore 1 Health to all friendly minions
 		def abo = _play("Abomination")
 		def kob = _play("Kobold Geomancer")
@@ -237,7 +237,7 @@ class TestShaman extends TestHelper {
 	}
 	
 	@Test
-	public void Hex_play() {
+	void Hex_play() {
 		// Transform a minion into a 0/1 Frog with Taunt
 		def gro = _play("Grommash Hellscream")
 		def old_id = gro.id
@@ -249,8 +249,8 @@ class TestShaman extends TestHelper {
 		assert gro.attack == 0
 		assert gro.health == 1
 		assert gro.max_health == 1
-		assert gro.has_charge() == false
-		assert gro.has_taunt() == true
+		assert !gro.has_charge()
+		assert gro.has_taunt()
 		assert gro.is_a_beast()
 		assert gro.card_definition.name == "Frog"
 		assert gro.id == old_id
@@ -258,7 +258,7 @@ class TestShaman extends TestHelper {
 	}
 	
 	@Test
-	public void LavaBurst_play() {
+	void LavaBurst_play() {
 		// Deal 5 damage. Overload: (2)
 		_play("Kobold Geomancer") // +1 Spell Damage
 		_play("Lava Burst", p2.hero)
@@ -267,7 +267,7 @@ class TestShaman extends TestHelper {
 	}
 	
 	@Test
-	public void LightningBolt_play() {
+	void LightningBolt_play() {
 		// Deal 3 damage. Overload: (1)
 		_play("Kobold Geomancer") // +1 Spell Damage
 		_play("Lightning Bolt", p2.hero)
@@ -276,7 +276,7 @@ class TestShaman extends TestHelper {
 	}
 	
 	@Test
-	public void LightningStorm_play() {
+	void LightningStorm_play() {
 		// Deal 2-3 damage to all enemy minions. Overload: (2)'
 		def bou1 = _play("Boulderfist Ogre")
 		def bou2 = _play("Boulderfist Ogre")
@@ -296,7 +296,7 @@ class TestShaman extends TestHelper {
 	}
 	
 	@Test
-	public void ManaTideTotem_play() { //TODO test with mind control
+	void ManaTideTotem_play() { //TODO test with mind control
 		// At the end of your turn, draw a card.
 		def mtt = _play("Mana Tide Totem")
 		def before_hand_size = p1.hand.size()
@@ -310,7 +310,7 @@ class TestShaman extends TestHelper {
 	}
 	
 	@Test
-	public void Reincarnate_leper_gnome() {
+	void Reincarnate_leper_gnome() {
 		def gnome = _play('Leper Gnome')
 		_play("Reincarnate", gnome)
 		assert p2.hero.health == 28
@@ -320,7 +320,7 @@ class TestShaman extends TestHelper {
 	}
 	
 	@Test
-	public void Reincarnate_nerubian_egg() {
+	void Reincarnate_nerubian_egg() {
 		def egg = _play('Nerubian Egg')
 		_play("Reincarnate", egg)
 		assert p1.board.size() == 2
@@ -329,9 +329,9 @@ class TestShaman extends TestHelper {
 	}
 	
 	@Test
-	public void Reincarnate_sylvanas() {
+	void Reincarnate_sylvanas() {
 		/* Player A */
-		def abo = _play("Abomination")
+		_play("Abomination")
 		_next_turn()
 		
 		/* Player B */
@@ -343,7 +343,7 @@ class TestShaman extends TestHelper {
 	}
 	
 	@Test
-	public void RockbiterWeapon_play() {
+	void RockbiterWeapon_play() {
 		// Give a friendly character +3 Attack this turn
 		
 		// check on hero
@@ -367,7 +367,7 @@ class TestShaman extends TestHelper {
 	}
 	
 	@Test
-	public void TotemicMight_play() {
+	void TotemicMight_play() {
 		List<Card> totems = []
 		totems << _play("Wrath of Air Totem")
 		totems << _play("Mana Tide Totem")
@@ -388,25 +388,25 @@ class TestShaman extends TestHelper {
 	}
 	
 	@Test
-	public void UnboundElemental_play() {
+	void UnboundElemental_play() {
 		// Whenever you play a card with Overload, gain +1/+1
 		
 		def unb = _play("Unbound Elemental")
-		def shb = _play("Shieldbearer") // no overload
+		_play("Shieldbearer") // no overload
 		assert unb.get_attack() == unb.attack
-		assert unb.has_buff('+1/+1') == false
+		assert !unb.has_buff('+1/+1')
 		
 		_play("Doomhammer")	// Windfury. Overload: (2)
 		assert unb.get_attack() == unb.attack + 1
-		assert unb.has_buff('+1/+1') == true
+		assert unb.has_buff('+1/+1')
 		
 		_play("Unbound Elemental") // should have no effect
 		assert unb.get_attack() == unb.attack + 1
-		assert unb.has_buff('+1/+1') == true
+		assert unb.has_buff('+1/+1')
 	}
 	
 	@Test
-	public void Windfury_play() {
+	void Windfury_play() {
 		// Give a minion Windfury	
 	
 		_play("Faerie Dragon")
@@ -428,20 +428,20 @@ class TestShaman extends TestHelper {
 	}
 	
 	@Test
-	public void Windspeaker_play() {
+	void Windspeaker_play() {
 		// Battlecry: Give a friendly minion Windfury
 		
 		// test 1: no minion
 		def wi1 = _play("Windspeaker")
-		assert wi1.has_buff(WINDFURY) == false
+		assert !wi1.has_buff(WINDFURY)
 		
 		// test 2: give windfury
-		def wi2 = _play("Windspeaker", wi1)
+		_play("Windspeaker", wi1)
 		assert wi1.has_buff(WINDFURY)
 	}
 	
 	@Test
-	public void WrathOfAirTotem_play() {
+	void WrathOfAirTotem_play() {
 		// Spell Damage +1
 		
 		_play("Wrath Of Air Totem")

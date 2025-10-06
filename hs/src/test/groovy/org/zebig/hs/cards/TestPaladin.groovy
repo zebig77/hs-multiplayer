@@ -1,7 +1,5 @@
 package org.zebig.hs.cards
 
-import org.zebig.hs.state.StateNode
-
 import static org.zebig.hs.mechanics.buffs.BuffType.*
 import org.zebig.hs.game.Card
 

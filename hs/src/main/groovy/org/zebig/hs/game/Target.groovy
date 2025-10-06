@@ -1,6 +1,9 @@
 package org.zebig.hs.game
 
+import org.zebig.hs.logger.Log
 import org.zebig.hs.mechanics.events.AnyBuffIsEvaluated
+
+import java.beans.PropertyChangeEvent
 
 import static org.zebig.hs.mechanics.buffs.BuffType.*
 import org.zebig.hs.mechanics.buffs.Buff
@@ -21,22 +24,17 @@ import org.zebig.hs.mechanics.events.ItDealsDamage
 import org.zebig.hs.mechanics.events.ItIsDestroyed
 import org.zebig.hs.mechanics.events.ItTakesDamage
 import org.zebig.hs.mechanics.events.ItsControllerHeals
-import org.zebig.hs.state.ListState
-import org.zebig.hs.state.MapState
 
 class Target extends GameObject {
 	
-	MapState ps
-	
-	ListState<Buff> buffs
+	def state = [:] as ObservableMap
+	def buffs = [] as ObservableList
 
 	final int id
 	
 	Target(String name, String target_type, int max_health, Game game) {
         super(game)
 		this.id = game.next_id++
-		this.ps = new MapState(game)
-        this.buffs = new ListState<Buff>(game)
 		this.name = name
 		this.target_type = target_type
 		this.health = max_health
@@ -46,27 +44,48 @@ class Target extends GameObject {
 		this.is_being_played = false
 		this.is_attacking = false
 		this.is_destroyed = false
+        state.addPropertyChangeListener {
+            process_state_change(it)
+        }
+        buffs.addPropertyChangeListener {
+            process_buffs_change(it)
+        }
 	}
 
-    int getPlace() { ps.place }
-    void setPlace(int p) { ps.place = p }
+    void process_state_change(PropertyChangeEvent event) {
+        game.transaction?.process_state_change(state, event)
+    }
+
+    void process_buffs_change(PropertyChangeEvent event) {
+        game.transaction?.process_state_change(buffs, event)
+    }
+
+    int getPlace() { state.place }
+    void setPlace(int p) { state.place = p }
 
     List<Buff> get_buffs() {
-		def result = new ArrayList<Buff>(buffs.storage)
-		def e = new AnyBuffListIsEvaluated(this)
-		e.check()
-		if (e.additional_buffs != []) {
-			println "      . additional buffs added: ${e.additional_buffs}"
-		}
-		return result + e.additional_buffs
+        def e = new AnyBuffListIsEvaluated(this)
+        e.check()
+        if (e.additional_buffs == []) {
+            return buffs
+        }
+        // must append the new buff list
+        Log.info "      . additional buffs added: ${e.additional_buffs}"
+		return buffs + e.additional_buffs
 	}
 	
 	Buff gains(BuffType bt) {
-		def buff = Buff.create_buff(bt, this)
-		this.buffs.add(buff)
+        if (bt in STATELESS_BUFFS) {
+            // ensure target does not already have it
+            def found = (buffs as List<Buff>).find{it.buff_type == bt}
+            if (found) { return found }
+        }
+		def buff = new Buff(bt,this)
+		buffs.add(buff)
 		return buff
 	}
 
+    // dynamic buffs such as +5 Health
 	Buff gains(String bs) {
 		def buff = Buff.create_buff(bs, this)
 		this.buffs.add(buff)
@@ -82,16 +101,16 @@ class Target extends GameObject {
 	}
 
 	def remove_first_buff(BuffType bt) {
-		remove_buff( buffs.find{Buff b -> b.buff_type == bt } )
+		remove_buff( (buffs as List<Buff>).find{Buff b -> b.buff_type == bt } )
 	}
 
 	def remove_first_buff(String buff_type_name) {
 		def btn = normalized(buff_type_name)
-		remove_buff( buffs.find{Buff b -> b.buff_type.name == btn} )
+		remove_buff( (buffs as List<Buff>).find{Buff b -> b.buff_type.name == btn} )
 	}
 
 	def remove_all_buff(BuffType bt) {
-		def to_remove = buffs.findAll{it.buff_type == bt}
+		def to_remove = (buffs as List<Buff>).findAll{it.buff_type == bt}
 		to_remove.each { remove_buff(it) }
 	}
 
@@ -102,38 +121,38 @@ class Target extends GameObject {
 		}
 	}
 	
-	int getAttack() { ps.attack }
-	void setAttack(int a) { ps.attack = a }
+	int getAttack() { state.attack }
+	void setAttack(int a) { state.attack = a }
 	
-	int getAttack_counter() { ps.attack_counter }
-	void setAttack_counter(int ac) { ps.attack_counter = ac }
+	int getAttack_counter() { state.attack_counter }
+	void setAttack_counter(int ac) { state.attack_counter = ac }
 	
-	Player getController() { ps.controller }
-	void setController(Player c) { ps.controller = c }
+	Player getController() { state.controller }
+	void setController(Player c) { state.controller = c }
 	
-	String getName() { ps.name }
-	void setName(String n) { ps.name = n }
+	String getName() { state.name }
+	void setName(String n) { state.name = n }
 	
-	String getTarget_type() { ps.target_type }
-	void setTarget_type(String tt) { ps.target_type = tt }
+	String getTarget_type() { state.target_type }
+	void setTarget_type(String tt) { state.target_type = tt }
 	
-	String getText() { ps.text }
-	void setText(String text) { ps.text = text }
+	String getText() { state.text }
+	void setText(String text) { state.text = text }
 	
-	int getHealth() { ps.health }
-	void setHealth(int h) { ps.health = h }
+	int getHealth() { state.health }
+	void setHealth(int h) { state.health = h }
 	
-	int getMax_health() { ps.max_health }
-	void setMax_health(int maxh) { ps.max_health = maxh }
+	int getMax_health() { state.max_health }
+	void setMax_health(int maxh) { state.max_health = maxh }
 	
-	boolean getIs_being_played() { ps.is_being_played }
-	void setIs_being_played(boolean bp) { ps.is_being_played = bp }
+	boolean getIs_being_played() { state.is_being_played }
+	void setIs_being_played(boolean bp) { state.is_being_played = bp }
 	 
-	boolean getIs_attacking() { ps.is_attacking }
-	void setIs_attacking(boolean at) { ps.is_attacking = at }
+	boolean getIs_attacking() { state.is_attacking }
+	void setIs_attacking(boolean at) { state.is_attacking = at }
 	 
-	boolean getIs_destroyed() { ps.is_destroyed }
-	void setIs_destroyed(boolean at) { ps.is_destroyed = at }
+	boolean getIs_destroyed() { state.is_destroyed }
+	void setIs_destroyed(boolean at) { state.is_destroyed = at }
 
     boolean has_buff(BuffType buff_type) {
         def e = new AnyBuffIsEvaluated(buff_type, this)
@@ -476,7 +495,7 @@ class Target extends GameObject {
 		if (this.controller == null) {
 			return false
 		}
-		return (this as Card).is_in_play
+		return controller.board.cards.contains(this as Card)
 	}
 
 	boolean is_dead() {
@@ -485,9 +504,10 @@ class Target extends GameObject {
 
 	def leave_play() {
 		println "      . $this leaves play"
-		get_buffs().each { Buff b ->
-			remove_buff(b)
-		}
+		//get_buffs().each { Buff b ->
+		//	remove_buff(b)
+		//}
+        buffs.clear()
 		triggers.clear()
 		if (this.is_a_minion()) {
 			(this as Card).init()
@@ -637,9 +657,7 @@ class Target extends GameObject {
 		}
 		println "      . $this silences $c"
 		c.text = ''
-		c.get_buffs().each { Buff b ->
-			c.remove_buff(b)
-		}
+		c.buffs.clear()
 		c.triggers.clear()
 	}
 

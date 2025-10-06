@@ -564,6 +564,7 @@ class TestDruid extends TestHelper {
 	void Wrath_choice1() {
 		// Choose One - Deal 3 damage to a minion; or Deal 1 damage to a minion and draw a card
 		def shi = _play("Shieldbearer")
+        assert shi.has_taunt()
 		_next_turn()
 		p1.next_choices = [ "Deal 3 damage to a minion", shi ]
 		_play("Wrath")

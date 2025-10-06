@@ -1,17 +1,24 @@
 package org.zebig.hs.game
 
 import org.zebig.hs.logger.Log
-import org.zebig.hs.state.ListState
+
+import java.beans.PropertyChangeEvent
 
 class Board {
 
 	Player board_owner
-	ListState<Card> cards
+	def cards = [] as ObservableList
 
     Board(Player owner) {
 		this.board_owner = owner
-        this.cards = new ListState<Card>(owner.game)
+        this.cards.addPropertyChangeListener {
+            process_cards_change(it)
+        }
 	}
+
+    void process_cards_change(PropertyChangeEvent event) {
+        board_owner.game.transaction?.process_state_change(cards, event)
+    }
 
 	def add(Card c, int position) {
 		assert c != null

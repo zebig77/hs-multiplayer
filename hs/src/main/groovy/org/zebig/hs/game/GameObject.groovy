@@ -2,17 +2,23 @@ package org.zebig.hs.game
 
 import org.zebig.hs.logger.Log
 import org.zebig.hs.mechanics.Trigger
-import org.zebig.hs.mechanics.buffs.BuffType
 import org.zebig.hs.mechanics.events.Event
-import org.zebig.hs.state.ListState
+
+import java.beans.PropertyChangeEvent
 
 class GameObject extends ScriptObject {
 
-	ListState<Trigger> triggers
+	def triggers = [] as ObservableList
 
     GameObject(Game game) {
         super(game)
-        this.triggers = new ListState<Trigger>(game)
+        triggers.addPropertyChangeListener {
+            process_triggers_change(it)
+        }
+    }
+
+    void process_triggers_change(PropertyChangeEvent event) {
+        game.transaction?.process_state_change(triggers, event)
     }
 
 	/*

@@ -165,11 +165,11 @@ class TestWarrior extends TestHelper {
 	public void CommandingShout_play_after_minion() {
 		// Your minions can't be reduced below 1 Health this turn. Draw a card
 		def abu1 = _play("Abusive Sergeant")
-		assert abu1.has_buff(BuffType.CANNOT_BE_REDUCED_BELOW_1_HEALTH) == false
+		assert !abu1.has_buff(CANNOT_BE_REDUCED_BELOW_1_HEALTH)
 		_play("Commanding Shout")
-		assert abu1.has_buff(BuffType.CANNOT_BE_REDUCED_BELOW_1_HEALTH) == true
+		assert abu1.has_buff(CANNOT_BE_REDUCED_BELOW_1_HEALTH)
 		_play_and_target("Cruel Taskmaster", abu1)
-		assert abu1.is_dead() == false
+		assert !abu1.is_dead()
 	}
 
 	@Test
@@ -177,12 +177,12 @@ class TestWarrior extends TestHelper {
 		// Your minions can't be reduced below 1 Health this turn. Draw a card
 		_play("Commanding Shout")
 		def abu1 = _play("Abusive Sergeant")
-		assert abu1.has_buff(BuffType.CANNOT_BE_REDUCED_BELOW_1_HEALTH) == true
+		assert abu1.has_buff(CANNOT_BE_REDUCED_BELOW_1_HEALTH)
 		_play_and_target("Cruel Taskmaster", abu1)
-		assert abu1.is_dead() == false
+		assert !abu1.is_dead()
 		def lep = _play("Leper Gnome")
 		def abu2 = _play_and_target("Abusive Sergeant", lep)
-		assert lep.is_dead() == false
+		assert !lep.is_dead()
 	}
 
 	@Test
@@ -190,9 +190,9 @@ class TestWarrior extends TestHelper {
 		// Your minions can't be reduced below 1 Health this turn. Draw a card
 		_play("Commanding Shout")
 		def lep = _play("Leper Gnome")
-		assert lep.has_buff(BuffType.CANNOT_BE_REDUCED_BELOW_1_HEALTH)
+		assert lep.has_buff(CANNOT_BE_REDUCED_BELOW_1_HEALTH)
 		_next_turn()
-		assert lep.has_buff(BuffType.CANNOT_BE_REDUCED_BELOW_1_HEALTH) == false
+		assert !lep.has_buff(CANNOT_BE_REDUCED_BELOW_1_HEALTH)
 	}
 	
 	@Test
@@ -201,7 +201,7 @@ class TestWarrior extends TestHelper {
 		 * 	test 'Battlecry: Deal 1 damage to a minion and give it +2 Attack.'
 		 */
 		def abo = _play("Abomination")
-		def ctm = _play_and_target("Cruel Taskmaster", abo)
+		_play_and_target("Cruel Taskmaster", abo)
 		assert abo.get_attack() == abo.card_definition.attack + 2
 		assert abo.get_health() == abo.card_definition.max_health - 1
 	}
@@ -226,7 +226,7 @@ class TestWarrior extends TestHelper {
 		// test 2 : une cible pas bless�e
 		def abo = _play("Abomination", p2)
 		try {
-			def exe = _play_and_target("Execute", abo)
+			_play_and_target("Execute", abo)
 			fail("aurait d� planter : pas de cible valide")
 		}
 		catch (Exception e) {
@@ -288,7 +288,7 @@ class TestWarrior extends TestHelper {
 		// test 3 : une cible bless�e
 		def abo = _play("Abomination", p2)
 		abo.set_health( abo.get_max_health() -1 ) // hurt
-		def exe = _play_and_target("Execute", abo)
+		_play_and_target("Execute", abo)
 		assert abo.is_dead()
 	}
 	
@@ -296,7 +296,7 @@ class TestWarrior extends TestHelper {
 	public void FrothingBerserker_receive_damage() {
 		// Whenever a minion takes damage, gain +1 Attack
 		def fro = _play("Frothing Berserker")
-		def ctm = _play_and_target("Cruel Taskmaster", fro) // 1 dam +2 Att
+		_play_and_target("Cruel Taskmaster", fro) // 1 dam +2 Att
 		assert fro.health == fro.card_definition.max_health -1
 		assert fro.get_attack() == fro.card_definition.attack + 3
 		_play("Whirlwind") // 1 dam to ALL minions
@@ -334,7 +334,7 @@ class TestWarrior extends TestHelper {
 		_next_turn()
 		def gro = _play("Grommash Hellscream")
 		assert gro.has_charge()
-		assert gro.has_buff("+6 Attack") == false
+		assert !gro.has_buff("+6 Attack")
 		assert gro.get_attack() == gro.attack
 		_attack(gro, shb) // check charge
 		assert shb.is_dead()
@@ -344,10 +344,10 @@ class TestWarrior extends TestHelper {
 		_attack(gro, lep)
 		assert lep.is_dead()
 		assert gro.health < gro.max_health
-		assert gro.has_buff("+6 Attack") == true // check enrage effect
+		assert gro.has_buff("+6 Attack") // check enrage effect
 		_play("Ancestral Healing", gro) // full health, should remove enrage effect	
 		assert gro.health == gro.max_health
-		assert gro.has_buff("+6 Attack") == false
+		assert !gro.has_buff("+6 Attack")
 	}
 	
 	@Test

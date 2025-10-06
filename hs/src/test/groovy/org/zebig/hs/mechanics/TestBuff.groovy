@@ -61,4 +61,23 @@ class TestBuff extends TestHelper {
 		assert p2.hero.get_health() == 28 // abo deathrattle
 	}
 
+    @Test
+    void double_stateless_buff_detected() {
+        // some minion with taunt
+        def shi = _play("Shieldbearer")
+        assert shi.has_taunt()
+        assert shi.buffs.size() == 1
+        shi.gains(TAUNT)
+        assert shi.buffs.size() == 1
+
+        // test multiple dynamic buffs
+        int before_health = shi.get_health()
+        shi.gains("+2 Health")
+        assert shi.buffs.size() == 2
+        shi.gains("+2 Health")
+        assert shi.buffs.size() == 3
+        assert shi.get_health() == before_health + 4
+        assert (shi.buffs as List<Buff>).findAll { it.buff_type.name == "+2 health"}.size() == 2
+    }
+
 }
