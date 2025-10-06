@@ -15,9 +15,7 @@ import org.zebig.hs.mechanics.events.ItIsPlayed
 import org.zebig.hs.mechanics.events.ItsControllerPlaysACard
 import org.zebig.hs.mechanics.events.SpellTargetSelected
 import org.zebig.hs.mechanics.events.ThisPowerIsUsed
-
 import java.beans.PropertyChangeEvent
-import java.beans.PropertyChangeListener
 
 class Player extends ScriptObject {
 
@@ -28,7 +26,6 @@ class Player extends ScriptObject {
 	Deck deck
 	def secrets = [] as ObservableList
 	PlayerArtefact artefact // container for player's triggers
-    PropertyChangeListener listener
 
 	// simulates player's answers for tests
 	def next_choices = []
@@ -243,7 +240,7 @@ class Player extends ScriptObject {
 		return has_combo()
 	}
 
-	def init_turn() {
+	void init_turn() {
 		add_max_mana(1)
 		available_mana = max_mana - overload
 		overload = 0
@@ -273,9 +270,6 @@ class Player extends ScriptObject {
 
 		// check that card can be played
 		Log.info "\n- $this plays $c"
-
-        // TODO externaliser la gestion des transactions
-        game.begin_transaction()
 
 		if (board.size() >= 7 && c.is_a_minion()) {
 			throw new IllegalActionException("no room in battlefield to play a minion")
@@ -314,7 +308,6 @@ class Player extends ScriptObject {
             e.check()
 			if (e.stop_action) {
 				Log.info "      . $c is not played"
-                game.end_transaction()
 				return null
 			}
 		}
@@ -341,9 +334,6 @@ class Player extends ScriptObject {
 
 		// for combo test
 		nb_cards_played_this_turn++
-
-        // TODO manage transactions externally
-        game.end_transaction()
 
 		return c
 	}
@@ -414,7 +404,6 @@ class Player extends ScriptObject {
 		if (!hero.can_use_power(reason)) {
 			throw new IllegalActionException("Cannot use power (${reason.toString()})")
 		}
-        game.begin_transaction()
 		add_available_mana(-hero.power.cost)
         Log.info "\n- $this uses ${hero}'s power: ${hero.power.name}"
 		new ThisPowerIsUsed(hero.power).check()
@@ -422,16 +411,15 @@ class Player extends ScriptObject {
 		// in case a minion has its health = 0 but remains in battlefield
 		game.remove_dead_from_battlefield()
 		game.check_end_of_game()
-        game.end_transaction()
 	}
 
 	@Override
-	public Trigger add_trigger(Class event_class, Closure c) {
+	Trigger add_trigger(Class event_class, Closure c) {
 		return artefact.add_trigger(event_class, c)
 	}
 
 	@Override
-	public Trigger add_trigger(Class event_class, Closure c, String comment) {
+	Trigger add_trigger(Class event_class, Closure c, String comment) {
 		return artefact.add_trigger(event_class, c, comment)
 	}
 

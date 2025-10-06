@@ -29,7 +29,7 @@ class Transaction {
 
     void process_state_change(ObservableList ls, PropertyChangeEvent event) {
         if (!in_rollback) {
-            if (event instanceof ObservableMap.PropertyEvent) {
+            if (event instanceof ObservableList.ElementEvent) {
                 if (event instanceof ObservableList.ElementAddedEvent) {
                     ObservableList.ElementAddedEvent e = event as ObservableList.ElementAddedEvent
                     logListAdd(ls, e.newValue)
