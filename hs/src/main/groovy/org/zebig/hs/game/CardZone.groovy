@@ -17,14 +17,23 @@ abstract class CardZone {
     }
 
     abstract void process_cards_change(PropertyChangeEvent event)
+    abstract String toString()
 
 	def add(Card c) {
 		cards.add(0, c)
 	}
-	
-	boolean isEmpty() {
+
+    def add(int index, Card c) {
+        cards.add(index, c)
+    }
+
+    boolean isEmpty() {
 		return cards.isEmpty()
 	}
+
+    boolean contains(Card c) {
+        return cards.contains(c)
+    }
 	
 	int size() {
 		return cards.size()

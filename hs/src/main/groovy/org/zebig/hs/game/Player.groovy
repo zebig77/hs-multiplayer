@@ -160,16 +160,18 @@ class Player extends ScriptObject {
 		secrets.remove(c)
 	}
 
-	def draw(int n_cards) {
+	List<Card> draw(int n_cards) {
 		if (n_cards <= 0) {
-			return
+			return []
 		}
 		Log.info "      . $this draws $n_cards card" + (n_cards > 1 ? "s" : "")
+        def result = []
 		n_cards.times {
 			Card c = deck.draw()
 			if (c != null) {
 				c.controller = this
 				hand.add(c)
+                result << c
 			}
 			else {
 				Log.info "      . $this cannot draw !"
@@ -179,6 +181,7 @@ class Player extends ScriptObject {
 				game.check_end_of_game()
 			}
 		}
+        return result
 	}
 
 	// previous controller loses control
@@ -268,6 +271,7 @@ class Player extends ScriptObject {
 		// check that card can be played
 		Log.info "\n- $this plays $c"
 
+        // TODO externaliser la gestion des transactions
         game.begin_transaction()
 
 		if (board.size() >= 7 && c.is_a_minion()) {

@@ -13,6 +13,7 @@ class Hand extends CardZone {
         }
     }
 
+    @Override
     void process_cards_change(PropertyChangeEvent event) {
         owner.game.transaction?.process_state_change(cards, event)
     }
@@ -24,12 +25,8 @@ class Hand extends CardZone {
 			Log.info "      . too much cards in hand, $c is discarded"
 			return
 		}
-		cards.add(c)
-		Log.info "      . adding $c to ${this.owner}'s hand"
-	}
-
-	boolean contains(Card c) {
-		return (cards.contains(c))
+		super.add(c)
+		Log.info "      . adding $c to ${owner}'s hand"
 	}
 
 	def discard_random(int n=1) {
@@ -45,14 +42,11 @@ class Hand extends CardZone {
 	def remove(Card c) {
 		if (cards.contains(c)) {
 			Log.info "      . $c is removed from ${this.owner}'s hand"
-			this.cards.remove(c)
+			cards.remove(c)
 		}
 	}
 
-	int size() {
-		return cards.size()
-	}
-
+    @Override
 	String toString() {
 		return "hand of $owner.name : $cards"
 	}

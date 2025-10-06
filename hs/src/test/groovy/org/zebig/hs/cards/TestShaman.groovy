@@ -112,7 +112,7 @@ class TestShaman extends TestHelper {
 	void FarSight_play() {
 		def elem = g.new_card("Unbound Elemental")
 		assert elem.get_cost() == 3
-		p1.deck.cards.add(0, elem)
+		p1.deck.add(0, elem)
 		_play("Far Sight")
 		assert p1.hand.cards.contains(elem)
 		assert elem.get_cost() == 0
