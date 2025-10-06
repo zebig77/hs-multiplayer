@@ -8,7 +8,7 @@ public class TestUtherLightbringer extends TestHelper {
 	
 	@Test
 	void Uther_summon_recruit() {
-		p1.hero = new UtherLightbringer(g)
+		p1.hero = new UtherLightbringer(p1)
 		p1.hero.controller = p1
 		_use_hero_power()
 		assert p1.board.size() == 1

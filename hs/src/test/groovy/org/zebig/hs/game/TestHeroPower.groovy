@@ -10,7 +10,7 @@ class TestHeroPower extends TestHelper {
 	
 	@Test
 	void ArmorUp_play() {
-		p1.hero = new GarroshHellscream(g)
+		p1.hero = new GarroshHellscream(p1)
 		assert p1.hero.armor == 0
 		_use_hero_power()
 		assert p1.hero.armor == 2
@@ -18,7 +18,7 @@ class TestHeroPower extends TestHelper {
 	
 	@Test
 	void DaggerMastery_play() {
-		p1.hero = new ValeeraSanguinar(g)
+		p1.hero = new ValeeraSanguinar(p1)
 		_use_hero_power()
 		assert p1.hero.weapon != null
 		assert p1.hero.weapon.name == "Wicked Knife"
@@ -32,14 +32,14 @@ class TestHeroPower extends TestHelper {
 
 	@Test
 	void Fireblast_play() {
-		p1.hero = new JainaProudmoore(g)
+		p1.hero = new JainaProudmoore(p1)
 		_use_hero_power(p2.hero)
 		assert p2.hero.health == 29
 	}
 	
 	@Test
 	void LesserHeal_play() {
-		p1.hero = new AnduinWrynn(g)
+		p1.hero = new AnduinWrynn(p1)
 		p1.hero.health = 20
 		_use_hero_power(p1.hero)
 		assert p1.hero.health == 22
@@ -47,7 +47,7 @@ class TestHeroPower extends TestHelper {
 	
 	@Test
 	void LifeTap_play() {
-		p1.hero = new Guldan(g)
+		p1.hero = new Guldan(p1)
 		def before = p1.hand.size()
 		_use_hero_power()
 		assert p1.hero.health == 28
@@ -56,7 +56,7 @@ class TestHeroPower extends TestHelper {
 	
 	@Test
 	void Reinforce_play() {
-		p1.hero = new UtherLightbringer(g)
+		p1.hero = new UtherLightbringer(p1)
 		assert p1.board.size() == 0
 		_use_hero_power()
 		assert p1.board.size() == 1
@@ -67,7 +67,7 @@ class TestHeroPower extends TestHelper {
 	
 	@Test
 	void Shapeshift_play() {
-		p1.hero = new MalfurionStormrage(g)
+		p1.hero = new MalfurionStormrage(p1)
 		assert p1.hero.armor == 0
 		assert p1.hero.get_attack() == 0
 		_use_hero_power()
@@ -81,7 +81,7 @@ class TestHeroPower extends TestHelper {
 
 	@Test
 	void TotemicCall_possible() {
-		p1.hero = new Thrall(g)
+		p1.hero = new Thrall(p1)
 		_use_hero_power()
 		assert p1.board.size() == 1
 		assert TotemicCall.power_totems.contains(p1.board.cards[0].name)
@@ -96,7 +96,7 @@ class TestHeroPower extends TestHelper {
 
 	@Test
 	void TotemicCall_not_possible() {
-		p1.hero = new Thrall(g)
+		p1.hero = new Thrall(p1)
 		TotemicCall.power_totems.each {
 			g.summon(p1, it)
 		}
@@ -106,7 +106,7 @@ class TestHeroPower extends TestHelper {
 	
 	@Test
 	void SteadyShot_play() {
-		p1.hero = new Rexxar(g)
+		p1.hero = new Rexxar(p1)
 		_use_hero_power()
 		assert p2.hero.health == 28
 	}

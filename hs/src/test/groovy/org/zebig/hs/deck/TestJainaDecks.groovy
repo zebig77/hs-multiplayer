@@ -10,7 +10,7 @@ class TestJainaDecks extends TestHelper {
 
 	@Test
 	public void JainaDecks_deck1() {
-		def deck1 = new JainaDeck1(g)
+		def deck1 = new JainaDeck1(p1)
 		assert deck1.size() == 30
 		assert deck1.cards.findAll{ it.name == "Ice Lance" }.size() == 2
 	}

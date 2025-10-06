@@ -6,9 +6,9 @@ import org.zebig.hs.mechanics.events.ItComesInPlay
 
 class Hero extends Target {
 	
-	Hero(String hero_name, HeroPowerDefinition power_definition) {
-		super(hero_name, "hero", 30, power_definition.game)
-		this.controller = null // will be set later
+	Hero(Player controller, String hero_name, HeroPowerDefinition power_definition) {
+		super(hero_name, "hero", 30, controller.game)
+		this.controller = controller
 		this.power = new HeroPower(power_definition)
 		this.target_type = 'hero'
 		this.armor = 0
@@ -91,66 +91,66 @@ class Hero extends Target {
 }
 
 class AnduinWrynn extends Hero {
-	AnduinWrynn(Game g) {
-		super( "Anduin Wrynn", new LesserHeal(g))
+	AnduinWrynn(Player p) {
+		super(p, "Anduin Wrynn", new LesserHeal(p.game))
 	}
 }
 
-class GarroshHellscream extends Hero {	
-	GarroshHellscream(Game g) {
-		super( "Garrosh Hellscream", new ArmorUp(g))
+class GarroshHellscream extends Hero {
+	GarroshHellscream(Player p) {
+		super(p, "Garrosh Hellscream", new ArmorUp(p.game))
 	}
 }
 
-class Guldan extends Hero {	
-	Guldan(Game g) {
-		super( "Gul'dan", new LifeTap(g))
+class Guldan extends Hero {
+	Guldan(Player p) {
+		super(p, "Gul'dan", new LifeTap(p.game))
 	}
 }
 
 class JainaProudmoore extends Hero {
-	JainaProudmoore(Game g) {
-		super( "Jaina Proudmoore", new Fireblast(g))
+	JainaProudmoore(Player p) {
+		super(p, "Jaina Proudmoore", new Fireblast(p.game))
 	}
 }
 
-class LordJaraxxus extends Hero {
-	LordJaraxxus(Game g) {
-		super("Lord Jaraxxus", new Inferno(g))
+class LordJaraxxusHero extends Hero {
+	LordJaraxxusHero(Player p) {
+		super(p, "Lord Jaraxxus", new Inferno(p.game))
 	}
-	
+
 	boolean is_a_demon() {
 		return true
 	}
 }
 
 class MalfurionStormrage extends Hero {
-	MalfurionStormrage(Game g) {
-		super("Malfurion Stormrage", new Shapeshift(g))
+	MalfurionStormrage(Player p) {
+		super(p, "Malfurion Stormrage", new Shapeshift(p.game))
 	}
 }
 
 class Rexxar extends Hero {
-	Rexxar(Game g) {
-		super("Rexxar", new SteadyShot(g))
+	Rexxar(Player p) {
+		super(p, "Rexxar", new SteadyShot(p.game))
 	}
 }
 
 class Thrall extends Hero {
-	Thrall(Game g) {
-		super("Thrall", new TotemicCall(g))
+	Thrall(Player p) {
+		super(p, "Thrall", new TotemicCall(p.game))
 	}
 }
 
 class UtherLightbringer extends Hero {
-	UtherLightbringer(Game g) {
-		super("Uther Lightbringer", new Reinforce(g))
+	UtherLightbringer(Player p) {
+		super(p, "Uther Lightbringer", new Reinforce(p.game))
 	}
 }
 
 
 class ValeeraSanguinar extends Hero {
-	ValeeraSanguinar(Game g) {
-		super("Valeera Sanguinar", new DaggerMastery(g))
+	ValeeraSanguinar(Player p) {
+		super(p, "Valeera Sanguinar", new DaggerMastery(p.game))
 	}
 }

@@ -2,6 +2,7 @@ package org.zebig.hs.decks
 
 import org.zebig.hs.game.Deck
 import org.zebig.hs.game.Game
+import org.zebig.hs.game.Player
 
 class JainaDeck1 extends Deck {
 	
@@ -24,8 +25,8 @@ class JainaDeck1 extends Deck {
 		'Archmage'			:1
 		]
 	
-	JainaDeck1(Game g) {
-		super(g)
+	JainaDeck1(Player p) {
+		super(p)
 		build(definition)
 	}
 

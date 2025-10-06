@@ -2,6 +2,7 @@ package org.zebig.hs.decks
 
 import org.zebig.hs.game.Deck
 import org.zebig.hs.game.Game
+import org.zebig.hs.game.Player
 
 class AnduinDeck1 extends Deck {
 	
@@ -24,8 +25,8 @@ class AnduinDeck1 extends Deck {
 		'Stormwind Champion'	:2
 		]
 	
-	AnduinDeck1(Game g) {
-		super(g)
+	AnduinDeck1(Player p) {
+		super(p)
 		build(definition)
 	}
 

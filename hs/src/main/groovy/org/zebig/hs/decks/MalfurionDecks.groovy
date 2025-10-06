@@ -2,6 +2,7 @@ package org.zebig.hs.decks
 
 import org.zebig.hs.game.Deck
 import org.zebig.hs.game.Game
+import org.zebig.hs.game.Player
 
 class MalfurionDeck1 extends Deck {
 	
@@ -27,8 +28,8 @@ class MalfurionDeck1 extends Deck {
 		'Lord of the Arena'	:1
 		]
 	
-	MalfurionDeck1(Game g) {
-		super(g)
+	MalfurionDeck1(Player p) {
+		super(p)
 		build(definition)
 	}
 

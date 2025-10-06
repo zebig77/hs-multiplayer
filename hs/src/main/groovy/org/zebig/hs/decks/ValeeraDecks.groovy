@@ -2,6 +2,7 @@ package org.zebig.hs.decks
 
 import org.zebig.hs.game.Deck
 import org.zebig.hs.game.Game
+import org.zebig.hs.game.Player
 
 class ValeeraDeck1 extends Deck {
 	
@@ -26,8 +27,8 @@ class ValeeraDeck1 extends Deck {
 		'Molten Giant'			:2
 		]
 	
-	ValeeraDeck1(Game g) {
-		super(g)
+	ValeeraDeck1(Player p) {
+		super(p)
 		build(definition)
 	}
 

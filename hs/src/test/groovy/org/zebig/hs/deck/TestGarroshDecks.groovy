@@ -11,7 +11,7 @@ class TestGarroshDecks extends TestHelper {
 
 	@Test
 	public void testGarroshDeck1() {
-		def deck1 = new GarroshDeck1(g)
+		def deck1 = new GarroshDeck1(p1)
 		assert deck1.size() == 30
 		assert deck1.cards.findAll{ it.name == "Execute" }.size() == 2
 	}

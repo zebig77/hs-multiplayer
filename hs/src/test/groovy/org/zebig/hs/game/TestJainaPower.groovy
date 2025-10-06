@@ -9,7 +9,7 @@ public class TestJainaPower extends TestHelper {
 	@Test
 	public void JainaPower_on_Amani_Berserker() {
 		// I want Jaina as p1
-		p1.hero = new JainaProudmoore(g)
+		p1.hero = new JainaProudmoore(p1)
 		p1.hero.controller = p1
 		Card amb = _play("Amani Berserker")
 		assert amb.get_attack() == amb.card_definition.attack

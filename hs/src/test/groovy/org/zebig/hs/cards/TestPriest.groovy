@@ -545,7 +545,9 @@ class TestPriest extends TestHelper {
 		 * Because the 3 hero powers are considered DIFFERENT hero powers,
 		 * you can use Lesser Heal, cast Shadowform, THEN use Mind Spike all on the same turn.
 		 */
-		p1 = new Player( g, "Didou", new AnduinWrynn(g), new AnduinDeck1(g) )
+		p1 = new Player( g, "Didou")
+        p1.hero = new AnduinWrynn(p1)
+        p1.deck = new AnduinDeck1(p1)
 		g.players = [p1, p2]
 		g.active_player = p1
 		g.passive_player = p2

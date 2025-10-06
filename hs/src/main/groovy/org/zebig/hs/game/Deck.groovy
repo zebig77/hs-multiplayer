@@ -4,8 +4,8 @@ import java.beans.PropertyChangeEvent
 
 class Deck extends CardZone {
 
-    Deck(Game game) {
-        super(game)
+    Deck(Player owner) {
+        super(owner)
         this.cards.addPropertyChangeListener {
             process_cards_change(it)
         }

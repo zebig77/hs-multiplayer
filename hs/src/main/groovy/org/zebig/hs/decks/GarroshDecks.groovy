@@ -2,6 +2,7 @@ package org.zebig.hs.decks
 
 import org.zebig.hs.game.Deck
 import org.zebig.hs.game.Game
+import org.zebig.hs.game.Player
 
 class GarroshDeck1 extends Deck {
 	
@@ -28,8 +29,8 @@ class GarroshDeck1 extends Deck {
 		'Stormwind Champion':1
 		]
 	
-	GarroshDeck1(Game g) {
-		super(g)
+	GarroshDeck1(Player p) {
+		super(p)
 		build(definition)
 	}
 

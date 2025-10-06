@@ -5,10 +5,12 @@ import java.beans.PropertyChangeEvent
 abstract class CardZone {
 
     Game game
+    Player owner
 	def cards = [] as ObservableList
 
-    CardZone(Game game) {
-        this.game = game
+    CardZone(Player owner) {
+        this.game = owner.game
+        this.owner = owner
         this.cards.addPropertyChangeListener {
             process_cards_change(it)
         }

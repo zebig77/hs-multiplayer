@@ -33,11 +33,9 @@ class Player extends ScriptObject {
 	// simulates player's answers for tests
 	def next_choices = []
 
-	Player(Game game, String name, Hero hero, Deck deck) {
+	Player(Game game, String name) {
         super(game)
 		this.name = name
-		this.hero = hero
-		this.deck = deck
 		this.hand = new Hand(this)
         this.board = new Board(this)
 		this.overload = 0
@@ -60,6 +58,10 @@ class Player extends ScriptObject {
 
     void process_secrets_change(PropertyChangeEvent event) {
         game.transaction?.process_state_change(secrets, event)
+    }
+
+    void setDeck(Deck deck) {
+        this.deck = deck
     }
 
     Hero getHero() { state.hero }

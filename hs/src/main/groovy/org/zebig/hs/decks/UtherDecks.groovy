@@ -2,6 +2,7 @@ package org.zebig.hs.decks
 
 import org.zebig.hs.game.Deck
 import org.zebig.hs.game.Game
+import org.zebig.hs.game.Player
 
 class UtherDeck1 extends Deck {
 	
@@ -24,8 +25,8 @@ class UtherDeck1 extends Deck {
 		'Leeroy Jenkins'		:1
 		]
 	
-	UtherDeck1(Game g) {
-		super(g)
+	UtherDeck1(Player p) {
+		super(p)
 		build(definition)
 	}
 

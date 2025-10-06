@@ -4,13 +4,10 @@ import org.zebig.hs.logger.Log
 
 import java.beans.PropertyChangeEvent
 
-class Hand {
+class Hand extends CardZone {
 
-	Player owner
-	def cards = [] as ObservableList
-
-	Hand(Player hand_owner) {
-		this.owner = hand_owner
+	Hand(Player owner) {
+		super(owner)
         cards.addPropertyChangeListener {
             process_cards_change(it)
         }

@@ -1138,7 +1138,7 @@ class TestNeutral extends TestHelper {
 		// Can't be targeted by Spells or Hero Powers
 
 		// give Jaina's power to p1 hero
-		p1.hero = new JainaProudmoore(g)
+		p1.hero = new JainaProudmoore(p1)
 		def fae = _play("Faerie Dragon")
 		p1.next_choices = [fae]
 		_should_fail("not a valid choice") { _use_hero_power() }
@@ -2437,7 +2437,7 @@ class TestNeutral extends TestHelper {
 		def sk = _play("Spectral Knight")
 		assert sk.has_buff(CANNOT_BE_TARGETED_BY_SPELL_OR_POWER)
 		_should_fail("no valid target") { _play("Silence", sk) }
-		p1.hero = new JainaProudmoore(g)
+		p1.hero = new JainaProudmoore(p1)
 		p1.next_choices = [sk]
 		_should_fail("not a valid choice") { _use_hero_power() }
 	}

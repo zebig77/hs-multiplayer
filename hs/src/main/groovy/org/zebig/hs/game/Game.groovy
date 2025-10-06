@@ -47,12 +47,21 @@ class Game {
 
     Game(String p1_name, Class p1_hero, Class p1_deck, String p2_name, Class p2_hero, Class p2_deck) {
         this()
-        Deck deck1 = p1_deck.getConstructor(Game.class).newInstance(this) as Deck
-        Deck deck2 = p2_deck.getConstructor(Game.class).newInstance(this) as Deck
-        Hero hero1 = p1_hero.getConstructor(Game.class).newInstance(this) as Hero
-        Hero hero2 = p2_hero.getConstructor(Game.class).newInstance(this) as Hero
-        players.add(new Player(this, p1_name, hero1, deck1))
-        players.add(new Player(this, p2_name, hero2, deck2))
+        def p1 = new Player(this, p1_name)
+        def p2 = new Player(this, p2_name)
+
+        Deck deck1 = p1_deck.getConstructor(Player.class).newInstance(p1) as Deck
+        Deck deck2 = p2_deck.getConstructor(Player.class).newInstance(p2) as Deck
+        Hero hero1 = p1_hero.getConstructor(Player.class).newInstance(p1) as Hero
+        Hero hero2 = p2_hero.getConstructor(Player.class).newInstance(p1) as Hero
+
+        p1.deck = deck1
+        p1.hero = hero1
+        p2.deck = deck2
+        p2.hero = hero2
+
+        players.add(p1)
+        players.add(p2)
     }
 
     long nextSeq() {

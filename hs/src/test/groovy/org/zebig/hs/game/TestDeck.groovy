@@ -9,7 +9,7 @@ class TestDeck extends TestHelper {
 
 	@Test
 	void Deck_fail_wrong_card_name() {
-		Deck d = new Deck(g)
+		Deck d = new Deck(p1)
 		try { 
 			d.build( [ 'nexistepas':1 ] )
 			fail("ça aurait du planter because ça n'existe pas...")
@@ -21,7 +21,7 @@ class TestDeck extends TestHelper {
 
 	@Test
 	void Deck_fail_not_deckable() {
-		Deck d = new Deck(g)
+		Deck d = new Deck(p1)
 		try {
 			d.build( [ 'leokk':1 ] )
 			fail("ça aurait du planter because il n'est pas deckable...")
@@ -33,7 +33,7 @@ class TestDeck extends TestHelper {
 
 	@Test
 	void Deck_fail_not_30_cards() {
-		Deck d = new Deck(g)
+		Deck d = new Deck(p1)
 	try {
 			d.build( [ 'Azure Drake':1 ] )
 			fail("ça aurait du planter because y en a pas 30...")
@@ -45,7 +45,7 @@ class TestDeck extends TestHelper {
 		
 	@Test
 	void Deck_success() {
-		Deck d = new Deck(g)
+		Deck d = new Deck(p1)
 		d.build( MalfurionDeck1.definition ) // �a doit marcher
 	}
 

@@ -9,7 +9,7 @@ class TestMalfurionDecks extends TestHelper {
 
 	@Test
 	public void TestMalfurionDecks_deck1() {
-		def deck1 = new MalfurionDeck1(g)
+		def deck1 = new MalfurionDeck1(p1)
 		assert deck1.size() == 30
 		assert deck1.cards.findAll{ it.name == "Swipe" }.size() == 2
 	}
