@@ -38,4 +38,12 @@ abstract class CardZone {
 	int size() {
 		return cards.size()
 	}
+
+    List<Card> cardsNamed(String name) {
+        return (cards as List<Card>).findAll {it.name == name }
+    }
+
+    List<Card> minions() {
+        return (cards as List<Card>).findAll {it.is_a_minion() }
+    }
 }

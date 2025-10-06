@@ -259,10 +259,13 @@ class Player extends ScriptObject {
 	// create a copy to avoid java.util.ConcurrentModificationException
 	ArrayList<Card> minions() {
 		// if a minion is being played it is not yet considered part of the minions
-        ArrayList<Card> result = new ArrayList<Card>(board.cards.findAll{ Card c ->
-            c.is_a_minion() && !c.is_being_played && !c.is_destroyed
-		}).sort{it.play_order}
-        return result
+        List<Card> result = []
+        board.minions().each {
+            if (!it.is_being_played && !it.is_destroyed) {
+                result << it
+            }
+        }
+        return result.sort {it.play_order}
 	}
 
 	/** play a card from hand, with place specified */

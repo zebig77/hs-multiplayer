@@ -8,10 +8,10 @@ import org.zebig.hs.decks.AnduinDeck1
 class TestAnduinDecks extends TestHelper {
 
 	@Test
-	public void testAnduinDeck1() {
+	void testAnduinDeck1() {
 		def deck1 = new AnduinDeck1(p1)
 		assert deck1.size() == 30
-		assert deck1.cards.findAll{ it.name == "Northshire Cleric" }.size() == 2
+		assert deck1.cardsNamed("Northshire Cleric").size() == 2
 	}
 
 }

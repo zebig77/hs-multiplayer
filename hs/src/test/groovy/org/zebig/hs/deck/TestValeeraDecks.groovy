@@ -11,7 +11,7 @@ class TestValeeraDecks extends TestHelper {
 	public void testValeeraDeck1() {
 		def deck1 = new ValeeraDeck1(p1)
 		assert deck1.size() == 30
-		assert deck1.cards.findAll{ it.name == "Molten Giant" }.size() == 2
+		assert deck1.cardsNamed("Molten Giant").size() == 2
 	}
 
 }

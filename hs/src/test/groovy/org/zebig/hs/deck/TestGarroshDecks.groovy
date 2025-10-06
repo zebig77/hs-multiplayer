@@ -10,10 +10,10 @@ import org.zebig.hs.decks.GarroshDeck1
 class TestGarroshDecks extends TestHelper {
 
 	@Test
-	public void testGarroshDeck1() {
+	void testGarroshDeck1() {
 		def deck1 = new GarroshDeck1(p1)
 		assert deck1.size() == 30
-		assert deck1.cards.findAll{ it.name == "Execute" }.size() == 2
+		assert deck1.cardsNamed("Execute").size() == 2
 	}
 
 }
