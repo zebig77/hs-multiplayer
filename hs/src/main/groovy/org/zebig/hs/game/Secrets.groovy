@@ -4,10 +4,10 @@ import org.zebig.hs.logger.Log
 
 import java.beans.PropertyChangeEvent
 
-class Board extends CardZone {
+class Secrets extends CardZone {
 
-    Board(Player owner) {
-		super(owner, "board", true, true)
+    Secrets(Player owner) {
+		super(owner, "secrets", true, false)
         this.cards.addPropertyChangeListener {
             process_cards_change(it)
         }
@@ -21,22 +21,15 @@ class Board extends CardZone {
 		assert c != null
 		c.controller = owner
         if (size() >= 7) {
-            throw new IllegalActionException("Board is full. Cannot add $c")
+            throw new IllegalActionException("Secrets are full. Cannot add $c")
         }
 		super.add(position, c)
-		Log.info "      . adding $c to ${owner}'s board"
+		Log.info "      . adding $c to ${owner}'s secrets"
 	}
 
     // add to the right
     void add(Card c) {
         add(c, size())
     }
-
-	void remove(Card c) {
-		if (cards.contains(c)) {
-			Log.info "      . $c is removed from ${owner}'s board"
-			cards.remove(c)
-		}
-	}
 
 }

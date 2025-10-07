@@ -67,10 +67,10 @@ class AlarmOBot extends CardDefinition {
         name = 'Alarm-O-Bot'; type = 'minion'; cost = 3; attack = 0; max_health = 3
         text = 'At the start of your turn, swap this minion with a random one in your hand.'
         when_its_controller_turn_starts(text) {
-            def m = random_card(you.hand.cards.findAll { (it as Card).type == 'minion' })
+            def m = random_card(your_hand.cards.findAll { (it as Card).type == 'minion' })
             if (m != null) {
                 this_minion.return_to_hand()
-                you.hand.remove(m)
+                your_hand.remove(m)
                 game.summon(you, m)
             }
         }
@@ -382,12 +382,12 @@ class CaptainsParrot extends CardDefinition {
         name = "Captain's Parrot"; type = 'minion'; creature_type = 'beast'; cost = 2; attack = 1; max_health = 1
         text = 'Battlecry: Put a random Pirate from your deck into your hand.'
         when_played(text) {
-            def pirates = you.deck.cards.findAll { (it as Card).creature_type == "pirate" }
+            def pirates = your_deck.cards.findAll { (it as Card).creature_type == "pirate" }
             if (pirates.size() > 0) {
                 Collections.shuffle(pirates)
                 def pirate_card = pirates[0]
-                you.deck.cards.remove(pirate_card)
-                you.hand.add(pirate_card)
+                your_deck.cards.remove(pirate_card)
+                your_hand.add(pirate_card)
                 Log.info "   - $this_minion added $pirate_card to ${you}'s hand"
             }
         }
@@ -563,7 +563,7 @@ class Deathwing extends CardDefinition {
         text = 'Battlecry: Destroy all other minions and discard your hand.'
         when_played(text) {
             this_minion.destroy(all_minions - this_minion)
-            you.hand.cards.clear()
+            your_hand.cards.clear()
         }
     }
 }
@@ -2361,7 +2361,7 @@ class TwilightDrake extends CardDefinition {
         name = 'Twilight Drake'; type = 'minion'; creature_type = 'dragon'; cost = 4; attack = 4; max_health = 1
         text = 'Battlecry: Gain +1 Health for each card in your hand.'
         when_played(text) {
-            this_minion.gains("+${you.hand.size()} Health")
+            this_minion.gains("+${your_hand.size()} Health")
         }
     }
 }

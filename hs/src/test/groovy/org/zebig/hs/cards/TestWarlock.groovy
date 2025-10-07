@@ -238,7 +238,7 @@ class TestWarlock extends TestHelper {
 		assert p1.hero.health == 27
 		_play("Explosive Trap") // not possible, I know
 		assert p1.secrets.size() != 0
-		assert p1.secrets[0].name == "Explosive Trap"
+		assert p1.secrets.get(0).name == "Explosive Trap"
 		_play("Flame Imp") // just to check that the trap doesn't trigger
 		assert p1.secrets.size() != 0
 		assert p1.hero.health == 24	

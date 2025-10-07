@@ -405,7 +405,7 @@ class WildGrowth extends CardDefinition {
         reserved_to = "Druid"
         when_played(text) {
             if (you.max_mana >= 10) {
-                you.hand.add(game.new_card("Excess Mana"))
+                your_hand.add(game.new_card("Excess Mana"))
             } else {
                 you.max_mana += 1
             }

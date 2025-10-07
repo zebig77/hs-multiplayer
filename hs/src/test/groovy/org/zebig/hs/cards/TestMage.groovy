@@ -176,7 +176,7 @@ class TestMage extends TestHelper {
 	void Duplicate_play_unfriendly_minion_dies() {
 		/* Player A */ _play("Duplicate")
 		assert p1.secrets.size() == 1
-		assert p1.secrets[0].name == "Duplicate"
+		assert p1.secrets.get(0).name == "Duplicate"
 		
 		/* Player A */ 
 		def abo = _play("Abomination")
@@ -200,7 +200,7 @@ class TestMage extends TestHelper {
 		/* Player B */ 
 		_play("Duplicate")
 		assert p1.secrets.size() == 1
-		assert p1.secrets[0].name == "Duplicate"
+		assert p1.secrets.get(0).name == "Duplicate"
 		def blu = _play("Bluegill Warrior")	
 		def before_hand_size = p1.hand.size()
 		def blu_cnt1 = p1.hand.cards.findAll { it.name == "Bluegill Warrior" }.size()

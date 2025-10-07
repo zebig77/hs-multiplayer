@@ -7,7 +7,7 @@ import java.beans.PropertyChangeEvent
 class Hand extends CardZone {
 
 	Hand(Player owner) {
-		super(owner)
+		super(owner, "hand", true, false)
         cards.addPropertyChangeListener {
             process_cards_change(it)
         }
@@ -18,7 +18,8 @@ class Hand extends CardZone {
         owner.game.transaction?.process_state_change(cards, event)
     }
 
-	def add(Card c) {
+    @Override
+	void add(Card c) {
 		assert c != null
 		c.controller = owner
 		if (size() >= 10) {
@@ -29,7 +30,7 @@ class Hand extends CardZone {
 		Log.info "      . adding $c to ${owner}'s hand"
 	}
 
-	def discard_random(int n=1) {
+	void discard_random(int n=1) {
 		n.times{
 			if (cards.size() > 0) {
                 Card c = this.owner.game.random_pick(cards) as Card
@@ -39,15 +40,4 @@ class Hand extends CardZone {
 		}
 	}
 
-	def remove(Card c) {
-		if (cards.contains(c)) {
-			Log.info "      . $c is removed from ${this.owner}'s hand"
-			cards.remove(c)
-		}
-	}
-
-    @Override
-	String toString() {
-		return "hand of $owner.name : $cards"
-	}
 }

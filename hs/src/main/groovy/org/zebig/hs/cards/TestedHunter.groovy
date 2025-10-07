@@ -454,18 +454,17 @@ class Tracking extends CardDefinition {
         name = 'Tracking'; type = 'spell'; cost = 1
         text = 'Look at the top three cards of your deck. Draw one and discard the others.'
         reserved_to = "Hunter"
-        get_targets = [{ [you.deck.cards[0], you.deck.cards[1], you.deck.cards[2]] }]
         before_play("check deck size") {
-            check(you.deck.cards.size() >= 3, "not enough cards in your deck")
+            check(your_deck.size() >= 3, "not enough cards in your deck")
         }
         when_played(text) {
-            def choices = [you.deck.cards[0], you.deck.cards[1], you.deck.cards[2]]
+            def choices = [your_deck.get(0), your_deck.get(1), your_deck.get(2)]
             def to_keep = select_card(choices)
             3.times {
-                if (you.deck.cards[0] == to_keep) {
+                if (your_deck.get(0) == to_keep) {
                     you.draw(1)
                 } else {
-                    you.deck.cards.remove(0)    // discard
+                    your_deck.cards.remove(0)    // discard
                 }
             }
         }

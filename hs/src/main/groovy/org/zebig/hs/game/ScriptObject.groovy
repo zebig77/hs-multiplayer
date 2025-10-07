@@ -177,7 +177,7 @@ abstract class ScriptObject {
 	}
 
 	List<Target> getActive_secrets() {
-		return opponent.secrets
+		return opponent.secrets.cards
 	}
 
 	List<Card> getAll_minion_targets() {
@@ -331,9 +331,25 @@ abstract class ScriptObject {
 		return game.active_player
 	}
 
-	Hero getYour_hero() {
+    Deck getYour_deck() {
+        return game.active_player.deck
+    }
+
+    Hand getYour_hand() {
+        return game.active_player.hand
+    }
+
+    Secrets getYour_secrets() {
+        return game.active_player.secrets
+    }
+
+    Hero getYour_hero() {
 		return game.active_player.hero
 	}
+
+    void setYour_hero(Hero hero) {
+        game.active_player.hero = hero
+    }
 
 	List<Card> getYour_minion_targets() {
 		return game.active_player.minions().findAll{ it.can_be_targeted() }

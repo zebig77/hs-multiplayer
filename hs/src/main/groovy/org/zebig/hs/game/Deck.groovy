@@ -5,7 +5,7 @@ import java.beans.PropertyChangeEvent
 class Deck extends CardZone {
 
     Deck(Player owner) {
-        super(owner)
+        super(owner, "deck", false, false)
         this.cards.addPropertyChangeListener {
             process_cards_change(it)
         }
@@ -13,11 +13,6 @@ class Deck extends CardZone {
 
     void process_cards_change(PropertyChangeEvent event) {
         game.transaction?.process_state_change(cards, event)
-    }
-
-    @Override
-    String toString() {
-        return "deck of $owner.name : $cards"
     }
 
     def build(Map<String, Integer> definition) {

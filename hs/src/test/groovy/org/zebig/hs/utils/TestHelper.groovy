@@ -12,6 +12,8 @@ import org.junit.runner.Description
 import org.zebig.hs.state.*
 import org.zebig.hs.decks.*
 
+import static org.junit.Assert.fail
+
 class TestHelper {
 	
 	Game g

@@ -295,7 +295,7 @@ class TestHunter extends TestHelper{
 		// no minion in play
 		_play("Misdirection")
 		assert p1.secrets.size() == 1
-		assert p1.secrets[0].name == "Misdirection"
+		assert p1.secrets.get(0).name == "Misdirection"
 		_next_turn()
 		p1.hero.equip_weapon(2,2)
 		_attack(p1.hero, p2.hero)	// should NOT trigger Misdirection
@@ -311,7 +311,7 @@ class TestHunter extends TestHelper{
 		// only 1 possible target: attacker's hero
 		_play("Misdirection")
 		assert p1.secrets.size() == 1
-		assert p1.secrets[0].name == "Misdirection"
+		assert p1.secrets.get(0).name == "Misdirection"
 		_next_turn()
 		def blu = _play("Bluegill Warrior")
 		_attack(blu, p2.hero) // should trigger Misdirection
@@ -327,7 +327,7 @@ class TestHunter extends TestHelper{
 		def lep = _play("Leper Gnome") // another possible target		
 		_play("Misdirection")
 		assert p1.secrets.size() == 1
-		assert p1.secrets[0].name == "Misdirection"
+		assert p1.secrets.get(0).name == "Misdirection"
 		_next_turn()
 		def blu = _play("Bluegill Warrior")
 		_attack(blu, p2.hero) // should trigger Misdirection
@@ -415,7 +415,7 @@ class TestHunter extends TestHelper{
 		
 		_play("Snake Trap")
 		assert p1.secrets.size() == 1
-		assert p1.secrets[0].name == "Snake Trap"
+		assert p1.secrets.get(0).name == "Snake Trap"
 		
 		def lep = _play("Leper Gnome")
 		_next_turn()
@@ -442,7 +442,7 @@ class TestHunter extends TestHelper{
 		
 		_play("Snipe")
 		assert p1.secrets.size() == 1
-		assert p1.secrets[0].name == "Snipe"
+		assert p1.secrets.get(0).name == "Snipe"
 		
 		def blu = _play("Bluegill Warrior") // should not be affected
 		assert blu.is_dead() == false
@@ -501,7 +501,7 @@ class TestHunter extends TestHelper{
 	public void Tracking_play() {
 		// Look at the top three cards of your deck. Draw one and discard the others.
 		
-		p1.deck.cards.clear()
+		p1.deck.clear()
 		_should_fail("not enough cards in your deck") {
 			_play("Tracking")
 		}
@@ -509,11 +509,11 @@ class TestHunter extends TestHelper{
 		def c1 = g.new_card("Timber Wolf")
 		def c2 = g.new_card("Leper Gnome")
 		def c3 = g.new_card("Explosive Trap")
-		p1.deck.cards.add(0,c1)
-		p1.deck.cards.add(0,c2)
-		p1.deck.cards.add(0,c3)
+		p1.deck.add(0,c1)
+		p1.deck.add(0,c2)
+		p1.deck.add(0,c3)
 		
-		p1.hand.cards.clear()
+		p1.hand.clear()
 		
 		_play("Tracking", c3)
 		assert p1.deck.isEmpty()

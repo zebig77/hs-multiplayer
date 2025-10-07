@@ -32,7 +32,7 @@ class TestPaladin extends TestHelper {
 		assert protector1.has_divine_shield()
 		_play("Avenge")
 		assert p1.secrets.size() == 1
-		assert p1.secrets[0].name == "Avenge"
+		assert p1.secrets.get(0).name == "Avenge"
 		_next_turn()
 		
 		/* Player B */

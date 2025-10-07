@@ -24,7 +24,7 @@ class Player extends ScriptObject {
 	Hand hand
     Board board
 	Deck deck
-	def secrets = [] as ObservableList
+	Secrets secrets
 	PlayerArtefact artefact // container for player's triggers
 
 	// simulates player's answers for tests
@@ -35,6 +35,7 @@ class Player extends ScriptObject {
 		this.name = name
 		this.hand = new Hand(this)
         this.board = new Board(this)
+        this.secrets = new Secrets(this)
 		this.overload = 0
 		this.nb_cards_played_this_turn = 0
 		this.available_mana = 0
@@ -44,17 +45,10 @@ class Player extends ScriptObject {
         this.state.addPropertyChangeListener {
             process_state_change(it)
         }
-        this.secrets.addPropertyChangeListener {
-            process_secrets_change(it)
-        }
 	}
 
     void process_state_change(PropertyChangeEvent event) {
         game.transaction?.process_state_change(state, event)
-    }
-
-    void process_secrets_change(PropertyChangeEvent event) {
-        game.transaction?.process_state_change(secrets, event)
     }
 
     void setDeck(Deck deck) {
