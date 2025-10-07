@@ -14,7 +14,7 @@ class GameChange {
     TODO public     HeroTakesDamage(player_name, hero_health, damage_amount)
     TODO public     MinionIsHealed(card_detail, minion_health, heal_amount)
     TODO public     MinionDies(card_detail)
-    TODO public     DamageInflicted(target_detail)
+    TODO public     HeroPowerUsed(player_name, [target])
     TODO public     SpellPlayed(card_detail, [target], [effect_chosen]) note: non-secret spells
     TODO private    SecretPlayed(card_detail)
     TODO public     SecretRevealed(card_detail)

@@ -91,24 +91,6 @@ Finished test: ${description.getMethodName()}
 			"Aurélien", JainaProudmoore.class, JainaDeck1.class)	
 		}
 
-    static void check(boolean check_result, String error_message) {
-        if (!check_result) {
-            throw new IllegalActionException("check failed: $error_message")
-        }
-    }
-
-	Player _get_player(String player_name) {
-		def p = [p1, p2].find{ it.name = player_name }
-		assert p != null
-		return p
-	}
-
-	Player _get_player_with_hero(String hero_name) {
-		def p = [p1, p2].find{ it.hero.name = hero_name }
-		assert p != null
-		return p
-	}
-
 	Card _play(String card_name, Player p = p1) {
 		Card c = g.new_card(card_name)
 		c.controller = p
@@ -139,13 +121,6 @@ Finished test: ${description.getMethodName()}
 		return _play( card_name )
 	}
 
-	def _set_active_player(Player p) {
-		if (p != p1) {
-			p2 = p1
-			p1 = p
-		}
-	}
-	
 	def _next_random_int(int value) {
 		g.random.forced_ints = [ value ]
 	}
@@ -155,8 +130,8 @@ Finished test: ${description.getMethodName()}
 		p1 = g.active_player
 		p2 = g.passive_player
 	}
-	
-	def _should_fail(String reason="", Closure c) {
+
+    static _should_fail(String reason="", Closure c) {
 		try {
 			c.call()
 			fail("Should fail: $reason")

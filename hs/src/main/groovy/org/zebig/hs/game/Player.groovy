@@ -48,7 +48,7 @@ class Player extends ScriptObject {
 	}
 
     void process_state_change(PropertyChangeEvent event) {
-        game.transaction?.process_state_change(state, event)
+        game.transaction?.process_state_change(state, event, this)
     }
 
     void setDeck(Deck deck) {

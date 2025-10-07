@@ -12,7 +12,7 @@ class Deck extends CardZone {
     }
 
     void process_cards_change(PropertyChangeEvent event) {
-        game.transaction?.process_state_change(cards, event)
+        game.transaction?.process_state_change(cards, event, this)
     }
 
     def build(Map<String, Integer> definition) {

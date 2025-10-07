@@ -14,7 +14,7 @@ class Secrets extends CardZone {
 	}
 
     void process_cards_change(PropertyChangeEvent event) {
-        owner.game.transaction?.process_state_change(cards, event)
+        owner.game.transaction?.process_state_change(cards, event, this)
     }
 
 	void add(Card c, int position) {

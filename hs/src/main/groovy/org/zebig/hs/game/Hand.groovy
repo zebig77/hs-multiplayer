@@ -15,7 +15,7 @@ class Hand extends CardZone {
 
     @Override
     void process_cards_change(PropertyChangeEvent event) {
-        owner.game.transaction?.process_state_change(cards, event)
+        owner.game.transaction?.process_state_change(cards, event, this)
     }
 
     @Override

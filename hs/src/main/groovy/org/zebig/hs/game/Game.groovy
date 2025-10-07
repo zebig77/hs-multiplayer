@@ -42,7 +42,7 @@ class Game {
     }
 
     void process_state_change(PropertyChangeEvent event) {
-        transaction?.process_state_change(state, event)
+        transaction?.process_state_change(state, event, this)
     }
 
     Game(String p1_name, Class p1_hero, Class p1_deck, String p2_name, Class p2_hero, Class p2_deck) {

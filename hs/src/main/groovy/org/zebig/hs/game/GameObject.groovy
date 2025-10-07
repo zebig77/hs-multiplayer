@@ -18,7 +18,7 @@ class GameObject extends ScriptObject {
     }
 
     void process_triggers_change(PropertyChangeEvent event) {
-        game.transaction?.process_state_change(triggers, event)
+        game.transaction?.process_state_change(triggers, event, this)
     }
 
 	/*

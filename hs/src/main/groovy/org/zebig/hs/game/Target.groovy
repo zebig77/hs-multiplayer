@@ -53,11 +53,11 @@ class Target extends GameObject {
 	}
 
     void process_state_change(PropertyChangeEvent event) {
-        game.transaction?.process_state_change(state, event)
+        game.transaction?.process_state_change(state, event, this)
     }
 
     void process_buffs_change(PropertyChangeEvent event) {
-        game.transaction?.process_state_change(buffs, event)
+        game.transaction?.process_state_change(buffs, event, this)
     }
 
     int getPlace() { state.place }

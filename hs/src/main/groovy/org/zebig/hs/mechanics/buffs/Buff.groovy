@@ -37,7 +37,7 @@ class Buff extends ScriptObject {
 	}
 
     void process_triggers_change(PropertyChangeEvent event) {
-        target.game.transaction?.process_state_change(triggers, event)
+        target.game.transaction?.process_state_change(triggers, event, this)
     }
 
 	def remove_effect() {
