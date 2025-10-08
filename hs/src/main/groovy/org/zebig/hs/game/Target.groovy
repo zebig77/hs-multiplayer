@@ -53,11 +53,11 @@ class Target extends GameObject {
 	}
 
     void process_state_change(PropertyChangeEvent event) {
-        game.transaction?.process_state_change(state, event, this)
+        game.transaction?.process_state_change(state, event)
     }
 
     void process_buffs_change(PropertyChangeEvent event) {
-        game.transaction?.process_state_change(buffs, event, this)
+        game.transaction?.process_state_change(buffs, event)
     }
 
     int getPlace() { state.place }
@@ -549,6 +549,7 @@ class Target extends GameObject {
 		new ItTakesDamage(this).check()
 		
 		add_health( -amount )
+        game.transaction?.record("") //TODO
 	}
 	
 	int receive_combat_damage(int amount) {

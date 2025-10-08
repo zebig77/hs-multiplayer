@@ -61,12 +61,25 @@ class TestTransaction {
     }
 
     @Test
-    void testChangePlayerBecomesActive() {
+    void testChangeStartGame() {
         _initGame()
         g.begin_transaction()
         g.start()
-        def ch = g.transaction.game_changes.find{it.name = "PlayerBecomesActive"}
+        def ch = g.transaction.game_changes["PlayerBecomesActive"]
         assert ch != null
-        assert ch.properties["player"] == g.active_player
+        assert ch.properties["player_name"] == g.active_player.name
+        def ch2 = g.transaction.game_changes["ManaStatusChanged"]
+        assert ch2 != null
+        assert ch2.properties == [player_name:g.active_player.name, max_mana:1, available_mana:1, overload:0]
+        def lch3 = g.transaction.game_changes.findAll {name, properties ->
+            name.startsWith("CardDrawn")
+        }
+        assert lch3.size() == 8
+        assert lch3.findAll {name, change ->
+            change.properties["player_name"] == g.active_player.name
+        }.size() == 4
+        assert lch3.findAll {name, change ->
+            change.properties["player_name"] == g.passive_player.name
+        }.size() == 4
     }
 }

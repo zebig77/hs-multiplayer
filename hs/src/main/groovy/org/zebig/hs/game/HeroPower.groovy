@@ -26,7 +26,7 @@ class HeroPower extends GameObject {
 	}
 
     void process_state_change(PropertyChangeEvent event) {
-        game.transaction?.process_state_change(state, event, this)
+        game.transaction?.process_state_change(state, event)
     }
 	
 	String getName() { state.name }

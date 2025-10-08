@@ -14,7 +14,7 @@ class Board extends CardZone {
 	}
 
     void process_cards_change(PropertyChangeEvent event) {
-        owner.game.transaction?.process_state_change(cards, event, this)
+        owner.game.transaction?.process_state_change(cards, event)
     }
 
 	void add(Card c, int position) {

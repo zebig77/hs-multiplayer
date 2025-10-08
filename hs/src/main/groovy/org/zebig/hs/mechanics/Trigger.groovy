@@ -23,7 +23,7 @@ class Trigger {
 	}
 
     void process_state_change(PropertyChangeEvent event) {
-        container.game.transaction?.process_state_change(state, event, this)
+        container.game.transaction?.process_state_change(state, event)
     }
 	
 	Trigger(Class event_class, Closure script, container, comment ) {

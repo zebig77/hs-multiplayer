@@ -48,7 +48,7 @@ class Player extends ScriptObject {
 	}
 
     void process_state_change(PropertyChangeEvent event) {
-        game.transaction?.process_state_change(state, event, this)
+        game.transaction?.process_state_change(state, event)
     }
 
     void setDeck(Deck deck) {
@@ -58,21 +58,31 @@ class Player extends ScriptObject {
     Hero getHero() { state.hero }
 	void setHero(Hero h) { state.hero = h; h.controller = this }
 
-	int getOverload() { state.overload }
+	int getOverload() { default0(state.overload) }
 	void setOverload(int o) { state.overload = o }
 
 	int getNb_cards_played_this_turn() { state.nb_cards_played_this_turn }
 	void setNb_cards_played_this_turn(int n) { state.nb_cards_played_this_turn = n }
 
-	int getAvailable_mana() { state.available_mana }
+	int getAvailable_mana() { default0(state.available_mana) }
 	void setAvailable_mana(int am) {
         state.available_mana = am
+        game.transaction?.record("ManaStatusChanged", [
+                player_name:this.name,
+                max_mana:max_mana,
+                available_mana:available_mana,
+                overload:overload])
     }
 
-	int getMax_mana() { return state.max_mana }
-	void setMax_mana(int max_mana) {	state.max_mana = max_mana }
+    static int default0(Object x) {
+        if (x == null) { return 0 }
+        return x as int
+    }
 
-	int getFatigue() { return state.fatigue	}
+	int getMax_mana() { return default0(state.max_mana) }
+	void setMax_mana(int max_mana) { state.max_mana = max_mana }
+
+	int getFatigue() {return default0(state.fatigue) }
 	void setFatigue(int fatigue) { state.fatigue = fatigue }
 
 	String stats() {
@@ -165,6 +175,26 @@ class Player extends ScriptObject {
 				c.controller = this
 				hand.add(c)
                 result << c
+                if (c.is_a_spell()) {
+                    game.transaction?.record("CardDrawn[$c.id]", [
+                            player_name: this.name,
+                            name: c.card_definition.name,
+                            type: c.card_definition.type,
+                            cost: c.card_definition.cost,
+                            text: c.card_definition.text
+                    ], false)
+                }
+                else { // minion or weapon
+                    game.transaction?.record("CardDrawn[$c.id]", [
+                            player_name: this.name,
+                            name: c.card_definition.name,
+                            type: c.card_definition.type,
+                            cost: c.card_definition.cost,
+                            text: c.card_definition.text,
+                            attack: c.card_definition.attack,
+                            max_health: c.card_definition.max_health
+                    ], false)
+                }
 			}
 			else {
 				Log.info "      . $this cannot draw !"

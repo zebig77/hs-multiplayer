@@ -2,16 +2,16 @@ package org.zebig.hs.state
 
 class GameChange {
     /*
-    TODO pubLic     PlayerBecomesActive(player_name)
-    TODO public     ManaStatusChanged(player_name, mana_status)
-    TODO private    CardDrawn(card_detail)
-    TODO private    CardCostChanged(card_detail)
+    DONE pubLic     PlayerBecomesActive(player_name)
+    DONE public     ManaStatusChanged(player_name, max_mana, available_mana, overload)
+    DONE private    CardDrawn[CardId](player_name, name, type, cost, text, attack, max_health)
+    TODO public     HeroTakesDamage(player_name, hero_health, damage_amount)
+    TODO private    CardCostChanged(player_name, cost)
     TODO public     CardTransformed(old_card_detail, new_card_detail)
     TODO public     MinionPlayed(card_detail, position, [target], [effect_chosen])
     TODO public     MinionAttacks(card_detail, target, attack_power)
     TODO public     MinionTakesDamage(card_detail, minion_health, damage_amount)
     TODO public     MinionIsHealed(card_detail, minion_health, heal_amount)
-    TODO public     HeroTakesDamage(player_name, hero_health, damage_amount)
     TODO public     MinionIsHealed(card_detail, minion_health, heal_amount)
     TODO public     MinionDies(card_detail)
     TODO public     HeroPowerUsed(player_name, [target])
@@ -39,6 +39,10 @@ class GameChange {
     }
 
     String toString() {
-        "$name:$properties"
+        if (this.is_public) {
+            return "public: $name:$properties"
+        } else {
+            return "private: $name:$properties"
+        }
     }
 }

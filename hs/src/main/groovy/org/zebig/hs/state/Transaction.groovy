@@ -1,7 +1,5 @@
 package org.zebig.hs.state
 
-import org.zebig.hs.game.GameObject
-
 import java.beans.PropertyChangeEvent
 
 /* log elementary raw changes to be able to rollback if needed (invalid action detected or bug) */
@@ -9,9 +7,9 @@ class Transaction {
 	
 	Stack<Change> change_log = new Stack<Change>()
 	boolean in_rollback = false
-    List<GameChange> game_changes = []
+    Map<String, GameChange> game_changes = [:]
 
-    void process_state_change(ObservableMap ms, PropertyChangeEvent event, source) {
+    void process_state_change(ObservableMap ms, PropertyChangeEvent event) {
         if (!in_rollback) {
             if (event instanceof ObservableMap.PropertyEvent) {
                 if (event instanceof ObservableMap.PropertyAddedEvent) {
@@ -30,7 +28,7 @@ class Transaction {
         }
     }
 
-    void process_state_change(ObservableList ls, PropertyChangeEvent event, source) {
+    void process_state_change(ObservableList ls, PropertyChangeEvent event) {
         if (!in_rollback) {
             if (event instanceof ObservableList.ElementEvent) {
                 if (event instanceof ObservableList.ElementAddedEvent) {
@@ -81,7 +79,7 @@ class Transaction {
         log(new ListChange(sl, oldValue, 'U', index))
     }
 	
-    void record(String change_name, Map<String,Object> properties) {
-        game_changes << new GameChange(change_name, properties)
+    void record(String change_name, Map<String,Object> properties, boolean is_public=true) {
+        game_changes[change_name] = new GameChange(change_name, properties, is_public)
     }
 }

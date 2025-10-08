@@ -42,7 +42,7 @@ class Game {
     }
 
     void process_state_change(PropertyChangeEvent event) {
-        transaction?.process_state_change(state, event, this)
+        transaction?.process_state_change(state, event)
     }
 
     Game(String p1_name, Class p1_hero, Class p1_deck, String p2_name, Class p2_hero, Class p2_deck) {
@@ -129,7 +129,7 @@ class Game {
 
     void setActive_player(Player p) {
         state.active_player = p
-        transaction?.record("PlayerBecomesActive", ["player":p])
+        transaction?.record("PlayerBecomesActive", ["player_name":p.name])
     }
 
     Player getPassive_player() { state.passive_player }
@@ -483,8 +483,9 @@ class Game {
     void start() {
         players.each { Player p ->
             p.deck.cards.shuffle()
-            p.available_mana = 0
             p.max_mana = 0
+            p.overload = 0
+            p.available_mana = 0
         }
         active_player = players[random.get_random_int(2)]
         passive_player = players.find { it != active_player }
