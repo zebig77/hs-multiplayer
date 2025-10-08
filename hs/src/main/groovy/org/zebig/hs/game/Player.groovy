@@ -65,7 +65,9 @@ class Player extends ScriptObject {
 	void setNb_cards_played_this_turn(int n) { state.nb_cards_played_this_turn = n }
 
 	int getAvailable_mana() { state.available_mana }
-	void setAvailable_mana(int am) { state.available_mana = am }
+	void setAvailable_mana(int am) {
+        state.available_mana = am
+    }
 
 	int getMax_mana() { return state.max_mana }
 	void setMax_mana(int max_mana) {	state.max_mana = max_mana }

@@ -8,7 +8,6 @@ import org.zebig.hs.game.Game
 import org.zebig.hs.game.GarroshHellscream
 import org.zebig.hs.game.MalfurionStormrage
 import org.zebig.hs.game.Player
-import org.zebig.hs.utils.TestHelper
 
 class TestTransaction {
 
@@ -23,11 +22,15 @@ class TestTransaction {
         return p.play(c)
     }
 
-    @Test
-    void testInitialState() {
+    void _initGame() {
         g = new Game(
                 "Didier", GarroshHellscream.class, GarroshDeck1.class,
                 "Aurélien", MalfurionStormrage.class, MalfurionDeck1.class)
+    }
+
+    @Test
+    void testInitialState() {
+        _initGame()
         assert g.transaction == null
         g.begin_transaction()
         assert g.transaction != null
@@ -40,14 +43,11 @@ class TestTransaction {
 
     @Test
     void testPlayEffectOnTransaction() {
-
-        g = new Game(
-                "Didier", GarroshHellscream.class, GarroshDeck1.class,
-                "Aurélien", MalfurionStormrage.class, MalfurionDeck1.class)
+        _initGame()
         g.start()
+        g.begin_transaction()
         p1 = g.active_player
         p2 = g.passive_player
-        g.begin_transaction()
         assert p1.available_mana == 1
         assert p1.board.size() == 0
         _play("Angry Chicken")
@@ -58,5 +58,15 @@ class TestTransaction {
         g.rollback_transaction()
         assert p1.board.size() == 0
         assert p1.available_mana == 1
+    }
+
+    @Test
+    void testChangePlayerBecomesActive() {
+        _initGame()
+        g.begin_transaction()
+        g.start()
+        def ch = g.transaction.game_changes.find{it.name = "PlayerBecomesActive"}
+        assert ch != null
+        assert ch.properties["player"] == g.active_player
     }
 }

@@ -27,4 +27,18 @@ class GameChange {
     TODO public     TargetFreeze(target_detail)
     TODO public     TargetUnFreeze(target_detail)
      */
+
+    String name
+    Map<String,Object> properties
+    boolean is_public
+
+    GameChange(String name, Map<String,Object> properties, boolean is_public=true) {
+        this.name = name
+        this.properties = properties
+        this.is_public = is_public
+    }
+
+    String toString() {
+        "$name:$properties"
+    }
 }

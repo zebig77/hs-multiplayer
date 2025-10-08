@@ -127,7 +127,10 @@ class Game {
 
     Player getActive_player() { state.active_player }
 
-    void setActive_player(Player p) { state.active_player = p }
+    void setActive_player(Player p) {
+        state.active_player = p
+        transaction?.record("PlayerBecomesActive", ["player":p])
+    }
 
     Player getPassive_player() { state.passive_player }
 

@@ -9,6 +9,7 @@ class Transaction {
 	
 	Stack<Change> change_log = new Stack<Change>()
 	boolean in_rollback = false
+    List<GameChange> game_changes = []
 
     void process_state_change(ObservableMap ms, PropertyChangeEvent event, source) {
         if (!in_rollback) {
@@ -80,8 +81,7 @@ class Transaction {
         log(new ListChange(sl, oldValue, 'U', index))
     }
 	
-	void logListClear(ObservableList sl) {
-        log(new ListChange(sl, sl.clone(), 'C'))
-	}
-	
+    void record(String change_name, Map<String,Object> properties) {
+        game_changes << new GameChange(change_name, properties)
+    }
 }
