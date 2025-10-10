@@ -79,7 +79,28 @@ class Transaction {
         log(new ListChange(sl, oldValue, 'U', index))
     }
 	
-    void record(String change_name, Map<String,Object> properties, boolean is_public=true) {
-        game_changes[change_name] = new GameChange(change_name, properties, is_public)
+    void record(GameChange.Type type, String target_id, Map<String,Object> properties, boolean is_public=true) {
+        def change = new GameChange(type, target_id, properties, is_public)
+        game_changes[change.name] = change
+    }
+
+    List<GameChange> findChanges(GameChange.Type type) {
+        def result = []
+        game_changes.each { k, v ->
+            if (v.type == type) {
+                result << v
+            }
+        }
+        return result
+    }
+
+    List<GameChange> findChanges(GameChange.Type type, String target_id) {
+        def result = []
+        game_changes.each { k, v ->
+            if (v.type == type && v.target_id == target_id) {
+                result << v
+            }
+        }
+        return result
     }
 }

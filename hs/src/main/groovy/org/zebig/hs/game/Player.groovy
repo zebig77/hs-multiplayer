@@ -17,6 +17,8 @@ import org.zebig.hs.mechanics.events.SpellTargetSelected
 import org.zebig.hs.mechanics.events.ThisPowerIsUsed
 import java.beans.PropertyChangeEvent
 
+import static org.zebig.hs.state.GameChange.Type.*
+
 class Player extends ScriptObject {
 
 	def state = [:] as ObservableMap
@@ -67,7 +69,7 @@ class Player extends ScriptObject {
 	int getAvailable_mana() { default0(state.available_mana) }
 	void setAvailable_mana(int am) {
         state.available_mana = am
-        game.transaction?.record("ManaStatusChanged", [
+        game.transaction?.record(ManaStatusChanged, this.name, [
                 player_name:this.name,
                 max_mana:max_mana,
                 available_mana:available_mana,
@@ -176,8 +178,9 @@ class Player extends ScriptObject {
 				hand.add(c)
                 result << c
                 if (c.is_a_spell()) {
-                    game.transaction?.record("CardDrawn[$c.id]", [
+                    game.transaction?.record(CardDrawn, c.id as String, [
                             player_name: this.name,
+                            card_id:c.id,
                             name: c.card_definition.name,
                             type: c.card_definition.type,
                             cost: c.card_definition.cost,
@@ -185,8 +188,9 @@ class Player extends ScriptObject {
                     ], false)
                 }
                 else { // minion or weapon
-                    game.transaction?.record("CardDrawn[$c.id]", [
+                    game.transaction?.record(CardDrawn, c.id as String, [
                             player_name: this.name,
+                            card_id:c.id,
                             name: c.card_definition.name,
                             type: c.card_definition.type,
                             cost: c.card_definition.cost,

@@ -9,6 +9,7 @@ import org.zebig.hs.utils.RandomGenerator
 import java.beans.PropertyChangeEvent
 
 import static org.zebig.hs.mechanics.buffs.BuffType.*
+import static org.zebig.hs.state.GameChange.Type.*
 
 class Game {
 
@@ -129,7 +130,7 @@ class Game {
 
     void setActive_player(Player p) {
         state.active_player = p
-        transaction?.record("PlayerBecomesActive", ["player_name":p.name])
+        transaction?.record(PlayerBecomesActive, p.name, ["player_name":p.name])
     }
 
     Player getPassive_player() { state.passive_player }

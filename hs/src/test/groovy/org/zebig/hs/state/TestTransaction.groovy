@@ -9,6 +9,8 @@ import org.zebig.hs.game.GarroshHellscream
 import org.zebig.hs.game.MalfurionStormrage
 import org.zebig.hs.game.Player
 
+import static org.zebig.hs.state.GameChange.Type.*
+
 class TestTransaction {
 
     Game g
@@ -22,10 +24,20 @@ class TestTransaction {
         return p.play(c)
     }
 
+    void _attack(attacker, attacked) {
+        g.player_attacks(attacker, attacked)
+    }
+
     void _initGame() {
         g = new Game(
                 "Didier", GarroshHellscream.class, GarroshDeck1.class,
                 "Aurélien", MalfurionStormrage.class, MalfurionDeck1.class)
+    }
+
+    void _startGame() {
+        g.start()
+        p1 = g.active_player
+        p2 = g.passive_player
     }
 
     @Test
@@ -35,19 +47,15 @@ class TestTransaction {
         g.begin_transaction()
         assert g.transaction != null
         assert g.transaction.change_log.size() == 0
-        g.start()
-        p1 = g.active_player
-        p2 = g.passive_player
+        _startGame()
         assert g.transaction.change_log.size() > 0
     }
 
     @Test
     void testPlayEffectOnTransaction() {
         _initGame()
-        g.start()
+        _startGame()
         g.begin_transaction()
-        p1 = g.active_player
-        p2 = g.passive_player
         assert p1.available_mana == 1
         assert p1.board.size() == 0
         _play("Angry Chicken")
@@ -64,22 +72,34 @@ class TestTransaction {
     void testChangeStartGame() {
         _initGame()
         g.begin_transaction()
-        g.start()
-        def ch = g.transaction.game_changes["PlayerBecomesActive"]
-        assert ch != null
-        assert ch.properties["player_name"] == g.active_player.name
-        def ch2 = g.transaction.game_changes["ManaStatusChanged"]
-        assert ch2 != null
-        assert ch2.properties == [player_name:g.active_player.name, max_mana:1, available_mana:1, overload:0]
-        def lch3 = g.transaction.game_changes.findAll {name, properties ->
-            name.startsWith("CardDrawn")
-        }
-        assert lch3.size() == 8
-        assert lch3.findAll {name, change ->
-            change.properties["player_name"] == g.active_player.name
-        }.size() == 4
-        assert lch3.findAll {name, change ->
-            change.properties["player_name"] == g.passive_player.name
-        }.size() == 4
+        _startGame()
+
+        def lch = g.transaction.findChanges(PlayerBecomesActive)
+        assert lch.size() == 1
+        def ch = lch.first
+        assert ch.target_id == p1.name
+        assert ch.properties["player_name"] == p1.name
+
+        def lch2 = g.transaction.findChanges(ManaStatusChanged, p1.name)
+        assert lch2.size() == 1
+        def ch2 = lch2.first
+        assert ch2.target_id ==  p1.name
+        assert ch2.properties == [player_name:p1.name, max_mana:1, available_mana:1, overload:0]
+
+        def lch3 = g.transaction.findChanges(CardDrawn)
+        assert lch3.size() == 8 // fist player draws initially 3 + 1 when turn starts, passive player draws 4 + a coin (not a card draw)
+        assert lch3.findAll {it.properties.player_name == p1.name}.size() == 4
+        assert lch3.findAll {it.properties.player_name == p2.name}.size() == 4
+    }
+
+    @Test
+    void testHeroTakesDamage() {
+        _initGame()
+        _startGame()
+        g.begin_transaction()
+        def blu = _play("BluegillWarrior")
+        assert g.transaction.findChanges(HeroTakesDamage, p2.name).size() == 0
+        _attack(blu, p2.hero)
+        assert g.transaction.findChanges(HeroTakesDamage, p2.name).size() == 1
     }
 }

@@ -6,6 +6,8 @@ import org.zebig.hs.mechanics.events.AnyBuffIsEvaluated
 import java.beans.PropertyChangeEvent
 
 import static org.zebig.hs.mechanics.buffs.BuffType.*
+import static org.zebig.hs.state.GameChange.Type.*
+
 import org.zebig.hs.mechanics.buffs.Buff
 import org.zebig.hs.mechanics.buffs.BuffType
 import org.zebig.hs.mechanics.events.AnyAttackIsEvaluated
@@ -328,6 +330,7 @@ class Target extends GameObject {
 
 	def dies() {
 		if (this.is_destroyed) {
+            // already dead...
 			return
 		}
 		println "      . $this dies..."
@@ -340,11 +343,16 @@ class Target extends GameObject {
 			if (!this.is_destroyed) { // saved somehow...
 				return
 			}
+            game.transaction?.record(MinionDies, id as String, [card_id:id])
 			leave_play()
 			if (will_return) {
 				game.summon(controller, this as Card)
 			}
 		}
+        else { // Hero
+            assert this.is_a_hero()
+            game.transaction?.record(HeroDies, controller.name, [player_name: controller.name])
+        }
 	}
 
     static void freeze(Target t ) {
@@ -531,7 +539,7 @@ class Target extends GameObject {
 		return [this, t]
 	}
 
-	def receive_damage(int amount) {
+	void receive_damage(int amount) {
 		if (amount <= 0) {
 			return
 		}
@@ -549,7 +557,19 @@ class Target extends GameObject {
 		new ItTakesDamage(this).check()
 		
 		add_health( -amount )
-        game.transaction?.record("") //TODO
+        if (this.is_a_hero()) {
+            game.transaction?.record(HeroTakesDamage, id as String, [
+                    player_name:controller.name,
+                    hero_health:health,
+                    damage_amount:amount])
+        }
+        else {
+            assert this.is_a_minion()
+            game.transaction?.record(MinionTakesDamage, id as String, [
+                    card_if:id,
+                    minion_health:health,
+                    damage_amount:amount])
+        }
 	}
 	
 	int receive_combat_damage(int amount) {
@@ -571,6 +591,19 @@ class Target extends GameObject {
 			}
 		}
 		this.health -= amount
+        if (this.is_a_hero()) {
+            game.transaction?.record(HeroTakesDamage, controller.name, [
+                    player_name:controller.name,
+                    hero_health:health,
+                    damage_amount:amount])
+        }
+        else {
+            assert this.is_a_minion()
+            game.transaction?.record(MinionTakesDamage, controller.name, [
+                    card_if:id,
+                    minion_health:health,
+                    damage_amount:amount])
+        }
 		println "      . $this receives $amount combat damage, new health=${this.health}"
 		return amount
 	}
