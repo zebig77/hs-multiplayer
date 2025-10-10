@@ -558,7 +558,7 @@ class Target extends GameObject {
 		
 		add_health( -amount )
         if (this.is_a_hero()) {
-            game.transaction?.record(HeroTakesDamage, id as String, [
+            game.transaction?.record(HeroTakesDamage, controller.name, [
                     player_name:controller.name,
                     hero_health:health,
                     damage_amount:amount])
