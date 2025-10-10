@@ -40,6 +40,12 @@ class TestTransaction {
         p2 = g.passive_player
     }
 
+    def _next_turn() {
+        g.next_turn()
+        p1 = g.active_player
+        p2 = g.passive_player
+    }
+
     @Test
     void testInitialState() {
         _initGame()
@@ -101,5 +107,21 @@ class TestTransaction {
         assert g.transaction.findChanges(HeroTakesDamage, p2.name).size() == 0
         _attack(blu, p2.hero)
         assert g.transaction.findChanges(HeroTakesDamage, p2.name).size() == 1
+    }
+
+    @Test
+    void testMinionsTakesDamage() {
+        _initGame()
+        _startGame()
+        def blu = _play("BluegillWarrior")
+        _next_turn()
+        def bbb = _play("BootyBayBodyguard")
+        _next_turn()
+        g.begin_transaction()
+        assert g.transaction.findChanges(MinionTakesDamage).size() == 0
+        _attack(blu, bbb)
+        assert g.transaction.findChanges(MinionTakesDamage).size() == 2
+        assert g.transaction.findChanges(MinionTakesDamage,"card_id", blu.id as String).size() == 1
+        assert g.transaction.findChanges(MinionTakesDamage,"card_id", bbb.id as String).size() == 1
     }
 }

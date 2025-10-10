@@ -566,7 +566,7 @@ class Target extends GameObject {
         else {
             assert this.is_a_minion()
             game.transaction?.record(MinionTakesDamage, id as String, [
-                    card_if:id,
+                    card_id:id,
                     minion_health:health,
                     damage_amount:amount])
         }
@@ -600,7 +600,7 @@ class Target extends GameObject {
         else {
             assert this.is_a_minion()
             game.transaction?.record(MinionTakesDamage, controller.name, [
-                    card_if:id,
+                    card_id:id,
                     minion_health:health,
                     damage_amount:amount])
         }

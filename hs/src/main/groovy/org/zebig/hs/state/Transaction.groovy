@@ -103,4 +103,14 @@ class Transaction {
         }
         return result
     }
+
+    List<GameChange> findChanges(GameChange.Type type, String key, String value) {
+        def result = []
+        game_changes.each { k, v ->
+            if (v.type == type && v.properties[key] as String == value ) {
+                result << v
+            }
+        }
+        return result
+    }
 }
