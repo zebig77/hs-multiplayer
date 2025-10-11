@@ -32,11 +32,4 @@ class Board extends CardZone {
         add(c, size())
     }
 
-	void remove(Card c) {
-		if (cards.contains(c)) {
-			Log.info "      . $c is removed from ${owner}'s board"
-			cards.remove(c)
-		}
-	}
-
 }

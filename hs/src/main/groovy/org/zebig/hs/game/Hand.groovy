@@ -35,7 +35,7 @@ class Hand extends CardZone {
 			if (cards.size() > 0) {
                 Card c = this.owner.game.random_pick(cards) as Card
 				Log.info "   - discarding at random $c from ${this.owner}'s hand"
-				cards.remove(c)
+				super.remove(c)
 			}
 		}
 	}

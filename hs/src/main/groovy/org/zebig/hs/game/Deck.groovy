@@ -35,7 +35,7 @@ class Deck extends CardZone {
 	Card draw() {
 		if (cards.isEmpty())
 			return null
-		return (cards as List<Card>).remove(0)
+		return super.remove(0)
 	}
 	
 }

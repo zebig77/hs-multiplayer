@@ -10,6 +10,7 @@ class GameChange {
         MinionDies,
         HeroTakesDamage,
         HeroDies,
+        ZoneSizeChange,
     }
     /*
     pubLic     PlayerBecomesActive(player_name)
@@ -17,8 +18,9 @@ class GameChange {
     private    CardDrawn[CardId](player_name, card_id, name, type, cost, text, attack, max_health)
     public     HeroTakesDamage(player_name, hero_health, damage_amount)
     public     MinionTakesDamage[CardId](card_id, minion_health, damage_amount)
+    public     MinionDies[CardId](card_id)
+    TODO public     ZoneSizeChange[player_name](zone_name, new_size) // deck, board, hand, secrets
     TODO public     HeroDies(player_name)
-    TODO public     MinionDies[CardId](card_id)
     TODO private    CardCostChanged(player_name, cost)
     TODO public     CardTransformed(old_card_detail, new_card_detail)
     TODO public     MinionPlayed(card_detail, position, [target], [effect_chosen])
@@ -31,7 +33,6 @@ class GameChange {
     TODO public     SecretRevealed(card_detail)
     TODO public     WeaponReady(card_detail)
     TODO public     WeaponDestroyed(card_detail)
-    TODO public     ZoneSizeChange(zone_name, new_size) deck, board, hand, secrets)
     TODO public     HealingReceived(target)
     TODO public     HeroTakesFatigue(player_name, fatigue_amount, new_hero_health)
     TODO public     TargetFreeze(target_detail)

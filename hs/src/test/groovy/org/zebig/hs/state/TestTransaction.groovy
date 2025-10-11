@@ -107,6 +107,7 @@ class TestTransaction {
         assert g.transaction.findChanges(HeroTakesDamage, p2.name).size() == 0
         _attack(blu, p2.hero)
         assert g.transaction.findChanges(HeroTakesDamage, p2.name).size() == 1
+        assert g.transaction.findChanges(HeroTakesDamage, "damage_amount", "2").size() == 1
     }
 
     @Test
@@ -123,5 +124,68 @@ class TestTransaction {
         assert g.transaction.findChanges(MinionTakesDamage).size() == 2
         assert g.transaction.findChanges(MinionTakesDamage,"card_id", blu.id as String).size() == 1
         assert g.transaction.findChanges(MinionTakesDamage,"card_id", bbb.id as String).size() == 1
+        assert g.transaction.findChanges(MinionDies,"card_id", blu.id as String).size() == 1
+    }
+
+    @Test
+    void testZoneSizeChange() {
+        /*
+        hand <- + card drawn, - card played
+        board <- + card played, - card dies
+        deck <- - card drawn
+         */
+        _initGame()
+
+        g.begin_transaction()
+
+        assert g.transaction.findChanges(ZoneSizeChange).size() == 0
+        _startGame()
+        def lch0 = g.transaction.findChanges(ZoneSizeChange, "zone_name", "hand")
+        assert lch0.size() == 2
+        lch0.each {
+            if (it.target_id == p1.name) {
+                assert it.properties.new_size == 4
+                assert it.is_public
+            }
+            if (it.target_id == p2.name) {
+                assert it.properties.new_size == 5
+                assert it.is_public
+            }
+        }
+
+        g.end_transaction()
+        g.begin_transaction()
+
+        def blu = _play("BluegillWarrior")
+        def lch = g.transaction.findChanges(ZoneSizeChange, "zone_name", "board")
+        assert lch.size() == 1
+        def ch = lch.first
+        assert ch.target_id == p1.name
+
+        _next_turn()
+
+        def bbb = _play("BootyBayBodyguard")
+        def lch2 = g.transaction.findChanges(ZoneSizeChange, "zone_name", "board")
+        assert lch2.size() == 2 // one for each player
+        lch2.each {
+            if (it.target_id == p1.name) {
+                assert it.properties.new_size == 1
+                assert it.is_public
+            }
+            if (it.target_id == p2.name) {
+                assert it.properties.new_size == 1
+                assert it.is_public
+            }
+        }
+
+        _next_turn()
+
+        g.end_transaction()
+        g.begin_transaction()
+
+        _attack(blu, bbb) // expect p1 board size = 0 (blu died) and p2 board same size (no change)
+        def lch3 = g.transaction.findChanges(ZoneSizeChange, "zone_name", "board")
+        assert lch3.size() == 1
+
     }
 }

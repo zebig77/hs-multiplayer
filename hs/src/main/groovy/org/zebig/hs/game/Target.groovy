@@ -512,9 +512,6 @@ class Target extends GameObject {
 
 	def leave_play() {
 		println "      . $this leaves play"
-		//get_buffs().each { Buff b ->
-		//	remove_buff(b)
-		//}
         buffs.clear()
 		triggers.clear()
 		if (this.is_a_minion()) {
