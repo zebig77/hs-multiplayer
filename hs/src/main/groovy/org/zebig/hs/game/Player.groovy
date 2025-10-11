@@ -362,6 +362,32 @@ class Player extends ScriptObject {
 		}
 		c.is_being_played = false
 
+        if (c.is_a_spell()) {
+            game.transaction?.record(CardPlayed, c.id as String, [
+                    player_name: this.name,
+                    card_id    : c.id as String,
+                    position   : place as String,
+                    name       : c.name,
+                    type       : c.type,
+                    cost       : c.cost,
+                    text       : c.text,
+            ])
+        }
+        else {
+            assert c.is_a_minion() || c.is_a_weapon()
+            game.transaction?.record(CardPlayed, c.id as String, [
+                    player_name: this.name,
+                    card_id    : c.id as String,
+                    position   : place as String,
+                    name       : c.name,
+                    type       : c.type,
+                    cost       : c.cost,
+                    text       : c.text,
+                    attack     : c.attack,
+                    max_health : c.max_health
+            ])
+        }
+
 		// for combo test
 		nb_cards_played_this_turn++
 

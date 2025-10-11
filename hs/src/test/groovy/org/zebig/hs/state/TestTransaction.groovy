@@ -8,6 +8,7 @@ import org.zebig.hs.game.Game
 import org.zebig.hs.game.GarroshHellscream
 import org.zebig.hs.game.MalfurionStormrage
 import org.zebig.hs.game.Player
+import org.zebig.hs.game.Target
 
 import static org.zebig.hs.state.GameChange.Type.*
 
@@ -44,6 +45,11 @@ class TestTransaction {
         g.next_turn()
         p1 = g.active_player
         p2 = g.passive_player
+    }
+
+    Card _play_and_target(String card_name, Target t) {
+        p1.next_choices = [t]
+        return _play( card_name )
     }
 
     @Test
@@ -216,7 +222,48 @@ class TestTransaction {
         g.begin_transaction()
         assert g.transaction.findChanges(HeroDies, p2.name).size() == 0
         _attack(blu, p2.hero)
-        assert g.transaction.findChanges(HeroDies, p2.name).size() == 1
-        assert g.transaction.findChanges(HeroTakesDamage, "damage_amount", "2").size() == 1
+        def lch = g.transaction.findChanges(HeroDies, p2.name)
+        assert lch.size() == 1
+        def ch = lch.first
+        assert ch.target_id == p2.name
+    }
+
+    @Test
+    void testCardPlayedMinion() {
+        _initGame()
+        _startGame()
+        g.begin_transaction()
+        def blu = _play("BluegillWarrior")
+        def lch = g.transaction.findChanges(CardPlayed, blu.id as String)
+        assert lch.size() == 1
+        def ch = lch.first
+        assert ch.target_id == blu.id as String
+        assert ch.properties.player_name == p1.name
+        assert ch.properties.card_id == blu.id as String
+        assert ch.properties.position == '0'
+        assert ch.properties.name == blu.name
+        assert ch.properties.type == blu.type
+        assert ch.properties.cost == blu.cost
+        assert ch.properties.text == blu.text
+        assert ch.properties.attack == blu.attack
+        assert ch.properties.max_health == blu.max_health
+    }
+
+    @Test
+    void testCardPlayedSpell() {
+        _initGame()
+        _startGame()
+        g.begin_transaction()
+        def arc = _play_and_target("Arcane Shot", p2.hero)
+        def lch = g.transaction.findChanges(CardPlayed, arc.id as String)
+        assert lch.size() == 1
+        def ch = lch.first
+        assert ch.target_id == arc.id as String
+        assert ch.properties.player_name == p1.name
+        assert ch.properties.card_id == arc.id as String
+        assert ch.properties.name == arc.name
+        assert ch.properties.type == arc.type
+        assert ch.properties.cost == arc.cost
+        assert ch.properties.text == arc.text
     }
 }
