@@ -19,7 +19,7 @@ class GameChange {
     public     HeroTakesDamage(player_name, hero_health, damage_amount)
     public     MinionTakesDamage[CardId](card_id, minion_health, damage_amount)
     public     MinionDies[CardId](card_id)
-    TODO public     ZoneSizeChange[player_name](zone_name, new_size) // deck, board, hand, secrets
+    public     ZoneSizeChange[player_name](zone_name, new_size) // deck, board, hand, secrets
     TODO public     HeroDies(player_name)
     TODO private    CardCostChanged(player_name, cost)
     TODO public     CardTransformed(old_card_detail, new_card_detail)

@@ -160,7 +160,7 @@ class TestTransaction {
         def lch = g.transaction.findChanges(ZoneSizeChange, "zone_name", "board")
         assert lch.size() == 1
         def ch = lch.first
-        assert ch.target_id == p1.name
+        assert ch.target_id == "board of $p1.name"
 
         _next_turn()
 
@@ -186,6 +186,23 @@ class TestTransaction {
         _attack(blu, bbb) // expect p1 board size = 0 (blu died) and p2 board same size (no change)
         def lch3 = g.transaction.findChanges(ZoneSizeChange, "zone_name", "board")
         assert lch3.size() == 1
+        def ch3 = lch3.first
+        assert ch3.target_id == "board of $p1.name"
+        assert ch3.properties.new_size == 0
+    }
 
+    @Test
+    void testDeckZoneChange() {
+        _initGame()
+        _startGame()
+        g.begin_transaction()
+        assert g.transaction.findChanges(ZoneSizeChange, "zone_name", "deck").size() == 0
+        def previous_deck_size = p1.deck.size()
+        p1.draw(1)
+        assert g.transaction.findChanges(ZoneSizeChange).size() == 2 // +1 hand, -1 deck
+        def lch = g.transaction.findChanges(ZoneSizeChange, "zone_name", "deck")
+        assert lch.size() == 1
+        def ch = lch.first
+        assert ch.properties.new_size == p1.deck.size()
     }
 }

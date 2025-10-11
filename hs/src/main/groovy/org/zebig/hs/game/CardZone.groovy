@@ -43,7 +43,7 @@ abstract class CardZone {
 
     void add(int index, Card c) {
         cards.add(index, c)
-        game.transaction?.record(ZoneSizeChange, owner.name, [zone_name:name, new_size:size()])
+        game.transaction?.record(ZoneSizeChange, toString(), [zone_name:name, new_size:size()])
     }
 
     boolean isEmpty() {
@@ -68,14 +68,14 @@ abstract class CardZone {
 
     void clear() {
         cards.clear()
-        game.transaction?.record(ZoneSizeChange, owner.name, [zone_name:name, new_size:size()])
+        game.transaction?.record(ZoneSizeChange, toString(), [zone_name:name, new_size:size()])
     }
 
     Card remove(Card c) {
         if (cards.contains(c)) {
             Log.info "      . $c is removed from ${owner}'s $name"
             cards.remove(c)
-            game.transaction?.record(ZoneSizeChange, owner.name, [zone_name:name, new_size:size()])
+            game.transaction?.record(ZoneSizeChange, toString(), [zone_name:name, new_size:size()])
             return c
         }
         return null
