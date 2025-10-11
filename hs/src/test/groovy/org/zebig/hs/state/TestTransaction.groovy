@@ -25,7 +25,7 @@ class TestTransaction {
         return p.play(c)
     }
 
-    void _attack(attacker, attacked) {
+    void _attack(Target attacker, Target attacked) {
         g.player_attacks(attacker, attacked)
     }
 
@@ -265,5 +265,24 @@ class TestTransaction {
         assert ch.properties.type == arc.type
         assert ch.properties.cost == arc.cost
         assert ch.properties.text == arc.text
+    }
+
+    @Test
+    void testMinionHealedChange() {
+        _initGame()
+        _startGame()
+        def bbb = _play("BootyBayBodyguard")
+        _play_and_target("Arcane Shot", bbb)
+        g.begin_transaction()
+        _play("Circle of Healing") // Restore 4 Health to ALL minions.
+        def lch = g.transaction.findChanges(MinionIsHealed, bbb.id as String)
+        assert lch.size() == 1
+        def ch = lch.first
+        assert ch.target_id == bbb.id as String
+        assert ch.properties.player_name == p1.name
+        assert ch.properties.card_id == bbb.id as String
+        assert ch.properties.heal_amount == 2 // max_health - health before heal
+        assert ch.properties.health == 4
+        assert ch.properties.max_health == 4
     }
 }

@@ -424,6 +424,7 @@ class Player extends ScriptObject {
 	}
 
 	Target select(int howmany, List<Target> choices) {
+        assert howmany == 1 // > 1 not managed yet
 		if (choices.isEmpty()) {
 			Log.info "      . list of choices is empty, no selection"
 			return null
@@ -438,17 +439,19 @@ class Player extends ScriptObject {
 		if (! choices.contains(next_choices[0])) {
 			throw new IllegalActionException("${next_choices[0]} is not a valid choice (${choices})")
 		}
-		if (howmany == 1) {
+		//if (howmany == 1) {
 			Log.info "      . selected: ${next_choices.getAt(0)}"
 			return next_choices.remove(0) // single value
-		}
+		//}
+        /*
 		def result = []
 		howmany.times{
 			next_choices.remove(0)
 			result.add( choices )
 		}
 		Log.info "      . selected: $result"
-		return result as Target // multiple values
+		return result as Target // multiple values TODO check (dubious)
+		*/
 	}
 
 	String toString() {

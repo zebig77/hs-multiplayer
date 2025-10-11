@@ -674,6 +674,13 @@ class Target extends GameObject {
 		}
 		println "      . new health for $this = ${get_health()}"
 		check_enrage_status()
+        game.transaction?.record(MinionIsHealed, id as String, [
+                player_name: this.controller.name,
+                card_id: this.id as String,
+                heal_amount: amount,
+                health: health,
+                max_health: max_health
+        ])
 	}
 	
 	def set_health(int amount) {

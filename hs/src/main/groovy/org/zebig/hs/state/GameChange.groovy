@@ -8,8 +8,10 @@ class GameChange {
         CardDrawn,
         CardPlayed,
         MinionTakesDamage,
+        MinionIsHealed,
         MinionDies,
         HeroTakesDamage,
+        HeroIsHealed,
         HeroDies,
         ZoneSizeChange,
         TargetSelected,
@@ -23,14 +25,14 @@ class GameChange {
     public  MinionDies[CardId](card_id)
     public  ZoneSizeChange[player_name](zone_name, new_size) // deck, board, hand, secrets
     public  HeroDies(player_name)
-    TODO public     MinionPlayed[card_id](player_name, card_id, position, name, type, cost, text, attack, max_health))
+    public  MinionPlayed[card_id](player_name, card_id, position, name, type, cost, text, attack, max_health))
+    public  SpellPlayed[card_id](player_name, card_id, position, name, type, cost, text)) note: non-secret spells
+    TODO public     MinionIsHealed(card_detail, minion_health, heal_amount)
+    TODO public     HeroIsHealed(card_detail, minion_health, heal_amount)
     TODO private    CardCostChanged(player_name, cost)
     TODO public     CardTransformed(old_card_detail, new_card_detail)
     TODO public     MinionAttacks(card_detail, target, attack_power)
-    TODO public     MinionIsHealed(card_detail, minion_health, heal_amount)
-    TODO public     MinionIsHealed(card_detail, minion_health, heal_amount)
     TODO public     HeroPowerUsed(player_name, [target])
-    TODO public     SpellPlayed(card_detail, [target], [effect_chosen]) note: non-secret spells
     TODO private    SecretPlayed(card_detail)
     TODO public     SecretRevealed(card_detail)
     TODO public     WeaponReady(card_detail)
