@@ -199,10 +199,24 @@ class TestTransaction {
         assert g.transaction.findChanges(ZoneSizeChange, "zone_name", "deck").size() == 0
         def previous_deck_size = p1.deck.size()
         p1.draw(1)
+        assert p1.deck.size() == previous_deck_size-1
         assert g.transaction.findChanges(ZoneSizeChange).size() == 2 // +1 hand, -1 deck
         def lch = g.transaction.findChanges(ZoneSizeChange, "zone_name", "deck")
         assert lch.size() == 1
         def ch = lch.first
         assert ch.properties.new_size == p1.deck.size()
+    }
+
+    @Test
+    void testHeroDies() {
+        _initGame()
+        _startGame()
+        def blu = _play("BluegillWarrior")
+        p2.hero.health = 1
+        g.begin_transaction()
+        assert g.transaction.findChanges(HeroDies, p2.name).size() == 0
+        _attack(blu, p2.hero)
+        assert g.transaction.findChanges(HeroDies, p2.name).size() == 1
+        assert g.transaction.findChanges(HeroTakesDamage, "damage_amount", "2").size() == 1
     }
 }
