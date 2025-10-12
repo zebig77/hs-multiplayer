@@ -297,15 +297,53 @@ class Game {
         // triggered events are checked later
 
         // check if attacked takes damage and compute how much
-        def attacker_damage = attacker.get_attack()
+        def attack_damage = attacker.get_attack()
         def attacked_health_loss = 0
-        if (attacker_damage > 0) {
+        if (attack_damage > 0) {
+            if (attacker.is_a_minion()) {
+                if (attacked.is_a_minion()) {
+                    transaction?.record(MinionAttacksMinion, attacker.id as String, [
+                            player_name  : attacker.controller.name,
+                            attacker_id  : attacker.id as String,
+                            attacked_id  : attacked.id as String,
+                            attack_damage: attack_damage as String
+                    ])
+                }
+                else {
+                    assert attacked.is_a_hero()
+                    transaction?.record(MinionAttacksHero, attacker.id as String, [
+                            player_name  : attacker.controller.name,
+                            attacker_id  : attacker.id as String,
+                            attacked_player_name  : attacked.controller.name,
+                            attack_damage: attack_damage as String
+                    ])
+                }
+            }
+            else {
+                assert attacker.is_a_hero()
+                if (attacked.is_a_minion()) {
+                    transaction?.record(HeroAttacksMinion, attacker.controller.name, [
+                            player_name  : attacker.controller.name,
+                            attacked_id  : attacked.id as String,
+                            attack_damage: attack_damage as String
+                    ])
+                }
+                else {
+                    assert attacked.is_a_hero()
+                    transaction?.record(HeroAttacksHero, attacker.id as String, [
+                            player_name  : attacker.controller.name,
+                            attacker_id  : attacker.id as String,
+                            attacked_player_name  : attacked.controller.name,
+                            attack_damage: attack_damage as String
+                    ])
+                }
+            }
             if (!attacked.has_buff(IMMUNE)) {
                 if (attacked.has_buff(DIVINE_SHIELD)) {
                     Log.info "      . $attacked loses its divine shield and takes no damage"
                     attacked.remove_all_buff(DIVINE_SHIELD)
                 } else { // no divine shield
-                    attacked_health_loss = attacked.receive_combat_damage(attacker_damage)
+                    attacked_health_loss = attacked.receive_combat_damage(attack_damage)
                 }
             } else { // immune
                 Log.info "      . $attacked receives no damage because it is immune"

@@ -4,12 +4,16 @@ class GameChange {
 
     enum Type {
         PlayerBecomesActive,
-        ManaStatusChanged,
+        ManaChanged,
         CardDrawn,
         CardPlayed,
+        MinionAttacksMinion,
+        MinionAttacksHero,
         MinionTakesDamage,
         MinionIsHealed,
         MinionDies,
+        HeroAttacksMinion,
+        HeroAttacksHero,
         HeroTakesDamage,
         HeroIsHealed,
         HeroDies,
@@ -29,10 +33,10 @@ class GameChange {
     public  SpellPlayed[card_id](player_name, card_id, position, name, type, cost, text)) note: non-secret spells
     public  MinionIsHealed[card_id](player_name, card_id, health, heal_amount, max_health)
     public  HeroIsHealed[player_name](heal_amount, health, max_health)
-    TODO public     MinionAttacksMinion[card_id](player_name, card_id, target_id, attack_power)
-    TODO public     MinionAttacksHero[card_id](player_name, card_id, target_player_name, attack_power)
-    TODO public     HeroAttacksMinion[player_name](player_name, target_id, attack_power)
-    TODO public     HeroAttacksHero[player_name](player_name, target_player_name, attack_power)
+    public  MinionAttacksMinion[attacker_id](player_name, attacker_id, attacked_id, attack_damage)
+    TODO public     MinionAttacksHero[attacker_id](player_name, attacker_id, attacked_player_name, attack_damage)
+    TODO public     HeroAttacksMinion[player_name](player_name, attacked_id, attack_damage)
+    TODO public     HeroAttacksHero[player_name](player_name, attacked_player_name, attack_damage)
     TODO private    CardCostChanged[card_id](player_name, cost)
     TODO public     CardTransformed(old_card_detail, new_card_detail)
     TODO public     HeroPowerUsed(player_name, [target])

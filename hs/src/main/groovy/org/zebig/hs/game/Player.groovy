@@ -69,11 +69,11 @@ class Player extends ScriptObject {
 	int getAvailable_mana() { default0(state.available_mana) }
 	void setAvailable_mana(int am) {
         state.available_mana = am
-        game.transaction?.record(ManaStatusChanged, this.name, [
+        game.transaction?.record(ManaChanged, this.name, [
                 player_name:this.name,
-                max_mana:max_mana,
-                available_mana:available_mana,
-                overload:overload])
+                max_mana:max_mana as String,
+                available_mana:available_mana as String,
+                overload:overload as String])
     }
 
     static int default0(Object x) {

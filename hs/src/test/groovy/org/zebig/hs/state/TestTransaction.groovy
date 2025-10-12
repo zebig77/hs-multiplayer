@@ -92,11 +92,11 @@ class TestTransaction {
         assert ch.target_id == p1.name
         assert ch.properties["player_name"] == p1.name
 
-        def lch2 = g.transaction.findChanges(ManaStatusChanged, p1.name)
+        def lch2 = g.transaction.findChanges(ManaChanged, p1.name)
         assert lch2.size() == 1
         def ch2 = lch2.first
         assert ch2.target_id ==  p1.name
-        assert ch2.properties == [player_name:p1.name, max_mana:1, available_mana:1, overload:0]
+        assert ch2.properties == [player_name:p1.name, max_mana:"1", available_mana:"1", overload:"0"]
 
         def lch3 = g.transaction.findChanges(CardDrawn)
         assert lch3.size() == 8 // fist player draws initially 3 + 1 when turn starts, passive player draws 4 + a coin (not a card draw)
@@ -302,4 +302,41 @@ class TestTransaction {
         assert ch.properties.health == "12"
         assert ch.properties.max_health == "30"
     }
+
+    @Test
+    void testMinionAttacksMinion() {
+        _initGame()
+        _startGame()
+        def bbb = _play("BootyBayBodyguard")
+        _next_turn()
+        def blu = _play("BluegillWarrior")
+        g.begin_transaction()
+        _attack(blu, bbb)
+        def lch = g.transaction.findChanges(MinionAttacksMinion, blu.id as String)
+        assert lch.size() == 1
+        def ch = lch.first
+        assert ch.target_id == blu.id as String
+        assert ch.properties.player_name == blu.controller.name
+        assert ch.properties.attacker_id == blu.id as String
+        assert ch.properties.attacked_id == bbb.id as String
+        assert ch.properties.attack_damage == "2"
+    }
+
+    @Test
+    void testMinionAttacksHero() {
+        _initGame()
+        _startGame()
+        def blu = _play("BluegillWarrior")
+        g.begin_transaction()
+        _attack(blu, p2.hero)
+        def lch = g.transaction.findChanges(MinionAttacksHero, blu.id as String)
+        assert lch.size() == 1
+        def ch = lch.first
+        assert ch.target_id == blu.id as String
+        assert ch.properties.player_name == blu.controller.name
+        assert ch.properties.attacker_id == blu.id as String
+        assert ch.properties.attacked_player_name == p2.name
+        assert ch.properties.attack_damage == "2"
+    }
+
 }
