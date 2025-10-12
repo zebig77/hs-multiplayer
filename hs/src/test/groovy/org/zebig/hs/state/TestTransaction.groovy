@@ -1,5 +1,6 @@
 package org.zebig.hs.state
 
+import groovy.transform.CompileStatic
 import org.junit.Test
 import org.zebig.hs.decks.GarroshDeck1
 import org.zebig.hs.decks.MalfurionDeck1
@@ -14,6 +15,7 @@ import org.zebig.hs.game.Target
 import static org.junit.Assert.fail
 import static org.zebig.hs.state.GameChange.Type.*
 
+@CompileStatic
 class TestTransaction {
 
     Game g

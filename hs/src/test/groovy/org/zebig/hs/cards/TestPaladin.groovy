@@ -130,7 +130,7 @@ class TestPaladin extends TestHelper {
 	@Test
 	void DivineFavor_play() {
 		// Draw cards until you have as many in hand as your opponent
-		p1.hand.cards.clear()
+		p1.hand.clear()
 		assert p2.hand.size() > 0
 		_play("Divine Favor")
 		assert p1.hand.size() == p2.hand.size()
@@ -342,7 +342,7 @@ class TestPaladin extends TestHelper {
 		def dur = p1.hero.weapon.get_durability()
 		_use_hero_power() // summon a 1/1 Silver Hand Recruit
 		assert p1.board.size() == 1
-		def shr = p1.board.cards[0]
+		def shr = p1.board.get(0)
 		assert shr.get_attack() == shr.attack + 1
 		assert shr.get_health() == shr.health + 1
 		assert p1.hero.weapon.get_durability() == dur - 1	// 4

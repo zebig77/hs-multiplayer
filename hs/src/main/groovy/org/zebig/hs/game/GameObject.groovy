@@ -8,7 +8,7 @@ import java.beans.PropertyChangeEvent
 
 class GameObject extends ScriptObject {
 
-	def triggers = [] as ObservableList
+	ObservableList triggers = []
 
     GameObject(Game game) {
         super(game)

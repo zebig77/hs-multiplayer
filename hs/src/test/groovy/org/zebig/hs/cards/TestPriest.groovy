@@ -329,8 +329,8 @@ class TestPriest extends TestHelper {
 
 		// return to current controller's hand, not initial
 		_next_turn()
-		 p1.hand.cards.clear() // to avoid exceeding 10 cards
-		 p2.hand.cards.clear() // to avoid exceeding 10 cards
+		 p1.hand.clear() // to avoid exceeding 10 cards
+		 p2.hand.clear() // to avoid exceeding 10 cards
 		 _play("Vanish") // Return all minions to their owner's hand
 		 assert p1.board.size() == 0
 		 assert p2.board.size() == 0
@@ -361,7 +361,7 @@ class TestPriest extends TestHelper {
 		def c1 = g.new_card("Arcanite Reaper") // not a minion
 		def c2 = g.new_card("Execute") // not a minion
 		def c3 = g.new_card("Molten Giant") // a minion ;)
-		p1.deck.cards.clear()
+		p1.deck.clear()
 		p1.deck.add(c1)
 		p1.deck.add(c2)
 		p1.deck.add(c3)
@@ -369,7 +369,7 @@ class TestPriest extends TestHelper {
 		_play("Mindgames")
 		assert p2.deck.cards.size() == 3 // create a copy, do not steal
 		assert p1.board.size() == 1
-		assert p1.board.cards[0].name == "Molten Giant" // lucky
+		assert p1.board.get(0).name == "Molten Giant" // lucky
 	}
 	
 	@Test
@@ -377,14 +377,14 @@ class TestPriest extends TestHelper {
 		// Put a copy of a random minion from your opponent's deck into the battlefield		
 		def c1 = g.new_card("Arcanite Reaper") // not a minion
 		def c2 = g.new_card("Execute") // not a minion
-		p1.deck.cards.clear()
+		p1.deck.clear()
 		p1.deck.add(c1)
 		p1.deck.add(c2)
 		_next_turn()
 		_play("Mindgames")
 		assert p2.deck.cards.size() == 2 // no change
 		assert p1.board.size() == 1
-		assert p1.board.cards[0].name == "Shadow of Nothing" // not lucky ;)
+		assert p1.board.get(0).name == "Shadow of Nothing" // not lucky ;)
 	}
 	
 	@Test
@@ -392,26 +392,26 @@ class TestPriest extends TestHelper {
 		// Put a copy of a random card in your opponent's hand into your hand
 		
 		// no card in opponent's hand
-		p2.hand.cards.clear()
+		p2.hand.clear()
 		_should_fail("no card in opponent's hand") { _play("Mind Vision") }
 		
 		// test with 1 card in hand
-		p1.hand.cards.clear()
+		p1.hand.clear()
 		p2.hand.cards.add  g.new_card("The Coin")
 		_play("Mind Vision")
 		assert p1.hand.size() == 1
 		assert p2.hand.size() == 1 // copy, not steal
-		assert p1.hand.cards[0].name == "The Coin"
+		assert p1.hand.get(0).name == "The Coin"
 
 		// test with 2 cards in hand
-        p1.hand.cards.clear()
-		p2.hand.cards.clear()
+        p1.hand.clear()
+		p2.hand.clear()
 		p2.hand.cards.add g.new_card("The Coin")
         p2.hand.cards.add g.new_card("Abomination")
 		_play("Mind Vision")
 		assert p1.hand.size() == 1
 		assert p2.hand.size() == 2 // copy, not steal
-		assert p1.hand.cards[0].name in [ "The Coin", "Abomination" ]
+		assert p1.hand.get(0).name in [ "The Coin", "Abomination" ]
 	}
 	
 	@Test
@@ -623,7 +623,7 @@ class TestPriest extends TestHelper {
 	void Thoughtsteal_empty_deck() {
 		// Copy 2 cards from your opponents deck and put them into your hand
 		
-		p2.deck.cards.clear()
+		p2.deck.clear()
 		_should_fail("not enough cards in opponent's deck") { _play("Thoughtsteal") }
 	}
 	
@@ -631,16 +631,16 @@ class TestPriest extends TestHelper {
 	void Thoughtsteal_non_empty_deck() {
 		// Copy 2 cards from your opponents deck and put them into your hand
 
-		p2.deck.cards.clear()
+		p2.deck.clear()
 		def c1 = g.new_card("Assassinate")		
 		def c2 = g.new_card("Headcrack")		
 		p2.deck.cards.add(0,c1)
 		p2.deck.cards.add(0,c2)
-		p1.hand.cards.clear()
+		p1.hand.clear()
 		_play("Thoughtsteal")
 		assert p1.hand.size() == 2
-		assert p1.hand.cards[0].name in [ "Assassinate", "Headcrack" ]
-		assert p1.hand.cards[1].name in [ "Assassinate", "Headcrack" ]
+		assert p1.hand.get(0).name in [ "Assassinate", "Headcrack" ]
+		assert p1.hand.get(1).name in [ "Assassinate", "Headcrack" ]
 	}
 	
 }

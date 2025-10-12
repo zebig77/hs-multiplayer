@@ -38,7 +38,7 @@ class TestWarlock extends TestHelper {
 		def abu = _play("Abusive Sergeant")
 		_next_random_int(0)
 		_play_and_target("Bane of Doom", abu)
-		assert p1.board.cards[0].name == "Dread Infernal"
+		assert p1.board.get(0).name == "Dread Infernal"
 	}
 	
 	@Test
@@ -48,11 +48,11 @@ class TestWarlock extends TestHelper {
 		def abu = _play("Abusive Sergeant")
 		_next_random_int(1)
 		_play_and_target("Bane of Doom", abu)
-		assert p1.board.cards[0].name == "Succubus"
+		assert p1.board.get(0).name == "Succubus"
 		
 		// Test Succubus play - hand contains only succubus
 		def suc = g.new_card("Succubus")
-		p1.hand.cards.clear()
+		p1.hand.clear()
 		p1.hand.add(suc)
 		p1.available_mana = suc.cost
 		p1.play(suc)
@@ -62,7 +62,7 @@ class TestWarlock extends TestHelper {
 		// Test Succubus play - hand contains another card
 		def blu2 = g.new_card("Bluegill Warrior") // should be discarded
 		def suc2 = g.new_card("Succubus")
-		p1.hand.cards.clear()
+		p1.hand.clear()
 		[ suc2, blu2 ].each { p1.hand.add(it) }
 		p1.available_mana = suc2.cost
 		p1.play(suc2)
@@ -73,7 +73,7 @@ class TestWarlock extends TestHelper {
 		def lep3 = g.new_card("Leper Gnome") // could be discarded
 		def blu3 = g.new_card("Bluegill Warrior") // could be discarded
 		def suc3 = g.new_card("Succubus")
-		p1.hand.cards.clear()
+		p1.hand.clear()
 		[ suc3, blu3, lep3 ].each { p1.hand.add(it) }
 		p1.available_mana = suc3.cost
 		p1.play(suc3)
@@ -89,7 +89,7 @@ class TestWarlock extends TestHelper {
 		def abu = _play("Abusive Sergeant")
 		_next_random_int(2)
 		_play_and_target("Bane of Doom", abu)
-		assert p1.board.cards[0].name == "Voidwalker"
+		assert p1.board.get(0).name == "Voidwalker"
 	}
 
 	@Test
@@ -99,7 +99,7 @@ class TestWarlock extends TestHelper {
 		def abu = _play("Abusive Sergeant")
 		_next_random_int(3)
 		_play_and_target("Bane of Doom", abu)
-		assert p1.board.cards[0].name == "Blood Imp"
+		assert p1.board.get(0).name == "Blood Imp"
 	}
 
 	@Test
@@ -109,7 +109,7 @@ class TestWarlock extends TestHelper {
 		def abu = _play("Abusive Sergeant")
 		_next_random_int(4)
 		_play_and_target("Bane of Doom", abu)
-		assert p1.board.cards[0].name == "Felguard"
+		assert p1.board.get(0).name == "Felguard"
 	}
 	
 	@Test
@@ -273,10 +273,10 @@ class TestWarlock extends TestHelper {
 		
 		_use_hero_power() // Inferno: Summon a 6/6 Infernal
 		assert p1.board.size() == 1
-		assert p1.board.cards[0].name == "Infernal"
-		assert p1.board.cards[0].attack == 6
-		assert p1.board.cards[0].health == 6
-		assert p1.board.cards[0].creature_type == "demon"		
+		assert p1.board.get(0).name == "Infernal"
+		assert p1.board.get(0).attack == 6
+		assert p1.board.get(0).health == 6
+		assert p1.board.get(0).creature_type == "demon"		
 	}
 	
 	@Test
@@ -302,7 +302,7 @@ class TestWarlock extends TestHelper {
 		
 		_play("Lord Jaraxxus")
 		assert p2.board.size() == 1
-		assert p2.board.cards[0].name == 'Lord Jaraxxus'
+		assert p2.board.get(0).name == 'Lord Jaraxxus'
 	}
 	
 	@Test
@@ -390,7 +390,7 @@ class TestWarlock extends TestHelper {
 	void SenseDemons_2_demons_in_deck() {
 		// Put 2 random Demons from your deck into your hand
 		
-		p1.deck.cards.clear()
+		p1.deck.clear()
 		def d1 = g.new_card("Blood Imp")
 		def d2 = g.new_card("Succubus")
 		p1.deck.add( d1 )	// demon #1
@@ -408,7 +408,7 @@ class TestWarlock extends TestHelper {
 	void SenseDemons_1_demon_in_deck() {
 		// Put 2 random Demons from your deck into your hand
 		
-		p1.deck.cards.clear()
+		p1.deck.clear()
 		def d1 = g.new_card("Blood Imp")
 		p1.deck.add( d1 )	// demon #1
 		p1.deck.add( g.new_card("Leper Gnome"))	// not a demon
@@ -426,22 +426,22 @@ class TestWarlock extends TestHelper {
 		// If you have no more demons (or never had any if you got this card with a mind vision or something)
 		// you will draw  Worthless Imps instead.
 		
-		p1.deck.cards.clear()
+		p1.deck.clear()
 		p1.deck.add( g.new_card("Leper Gnome"))	// not a demon
 		p1.deck.add( g.new_card("Sacrificial Pact"))
 		p1.deck.add( g.new_card("Ironbeak Owl"))
 
-		p1.hand.cards.clear()		
+		p1.hand.clear()		
 		_play("Sense Demons")
 		assert p1.hand.cards.size() == 2
-		assert p1.hand.cards[0].name == "Worthless Imp"
-		assert p1.hand.cards[0].cost == 1
-		assert p1.hand.cards[0].attack == 1
-		assert p1.hand.cards[0].health == 1
-		assert p1.hand.cards[1].name == "Worthless Imp"
-		assert p1.hand.cards[1].cost == 1
-		assert p1.hand.cards[1].attack == 1
-		assert p1.hand.cards[1].health == 1
+		assert p1.hand.get(0).name == "Worthless Imp"
+		assert p1.hand.get(0).cost == 1
+		assert p1.hand.get(0).attack == 1
+		assert p1.hand.get(0).health == 1
+		assert p1.hand.get(1).name == "Worthless Imp"
+		assert p1.hand.get(1).cost == 1
+		assert p1.hand.get(1).attack == 1
+		assert p1.hand.get(1).health == 1
 	}
 	
 	@Test
@@ -517,7 +517,7 @@ class TestWarlock extends TestHelper {
 		assert p1.hand.size() == before_hand_size - 1
 		
 		// no card in hand
-		p1.hand.cards.clear()
+		p1.hand.clear()
 		_play("Soulfire", p2.hero) // should not fail
 		assert p2.hero.health == 30 - 4 - 1 - 4 - 1	
 	}
@@ -530,7 +530,7 @@ class TestWarlock extends TestHelper {
 		Card c1 = g.new_card("Drain Life") // not a minion
 		Card c2 = g.new_card("Blood Imp") // cost=1
 		Card c3 = g.new_card("Felguard") // cost=3
-		p1.hand.cards.clear()
+		p1.hand.clear()
 		p1.hand.add(c1)
 		p1.hand.add(c2)
 		p1.hand.add(c3)
@@ -540,33 +540,33 @@ class TestWarlock extends TestHelper {
 		
 		_next_turn()
 		Card c4 = g.new_card("Abomination")
-		p1.hand.cards.clear()
+		p1.hand.clear()
 		p1.hand.add(c4)
 		assert c4.get_cost() == c4.cost // only your minions 
 	}
 	
 	@Test
 	void Voidcaller_play_no_summon() {
-		p1.hand.cards.clear()
+		p1.hand.clear()
 		def v = _play("Voidcaller")
 		assert v.has_deathrattle()
 		assert p1.board.size() == 1
-		assert p1.board.cards[0].name == "Voidcaller"
+		assert p1.board.get(0).name == "Voidcaller"
 		v.dies()
 		assert p1.board.size() == 0
 	}
 	
 	@Test
 	void Voidcaller_play_summon() {
-		p1.hand.cards.clear()
+		p1.hand.clear()
 		p1.hand.cards.add(g.new_card("Blood Imp"))
 		def v = _play("Voidcaller")
 		assert v.has_deathrattle()
 		assert p1.board.size() == 1
-		assert p1.board.cards[0].name == "Voidcaller"
+		assert p1.board.get(0).name == "Voidcaller"
 		v.dies()
 		assert p1.board.size() == 1
-		assert p1.board.cards[0].name == "Blood Imp"
+		assert p1.board.get(0).name == "Blood Imp"
 	}
 	
 	@Test

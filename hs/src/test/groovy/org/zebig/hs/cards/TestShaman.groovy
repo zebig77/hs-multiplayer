@@ -124,14 +124,14 @@ class TestShaman extends TestHelper {
 		_play("Feral Spirit")
 		assert p1.overload == 2
 		assert p1.board.size() == 2
-		assert p1.board.cards[0].name == "Spirit Wolf"
-		assert p1.board.cards[0].attack == 2
-		assert p1.board.cards[0].health == 3
-		assert p1.board.cards[0].has_buff(TAUNT)
-		assert p1.board.cards[1].name == "Spirit Wolf"
-		assert p1.board.cards[1].attack == 2
-		assert p1.board.cards[1].health == 3
-		assert p1.board.cards[1].has_buff(TAUNT)
+		assert p1.board.get(0).name == "Spirit Wolf"
+		assert p1.board.get(0).attack == 2
+		assert p1.board.get(0).health == 3
+		assert p1.board.get(0).has_buff(TAUNT)
+		assert p1.board.get(1).name == "Spirit Wolf"
+		assert p1.board.get(1).attack == 2
+		assert p1.board.get(1).health == 3
+		assert p1.board.get(1).has_buff(TAUNT)
 		_play("Dust Devil")
 		assert p1.overload == 2+2
 		p1.available_mana = 0
@@ -315,8 +315,8 @@ class TestShaman extends TestHelper {
 		_play("Reincarnate", gnome)
 		assert p2.hero.health == 28
 		assert p1.board.size() == 1
-		assert p1.board.cards[0].name == 'Leper Gnome'
-		assert p1.board.cards[0] != gnome
+		assert p1.board.get(0).name == 'Leper Gnome'
+		assert p1.board.get(0) != gnome
 	}
 	
 	@Test
@@ -324,8 +324,8 @@ class TestShaman extends TestHelper {
 		def egg = _play('Nerubian Egg')
 		_play("Reincarnate", egg)
 		assert p1.board.size() == 2
-		assert p1.board.cards[0].name == 'Nerubian'
-		assert p1.board.cards[1].name == 'Nerubian Egg'
+		assert p1.board.get(0).name == 'Nerubian'
+		assert p1.board.get(1).name == 'Nerubian Egg'
 	}
 	
 	@Test
@@ -338,8 +338,8 @@ class TestShaman extends TestHelper {
 		def syl = _play("Sylvanas Windrunner")
 		_play("Reincarnate", syl)
 		assert p1.board.size() == 2
-		assert p1.board.cards[0].name == 'Abomination'
-		assert p1.board.cards[1].name == 'Sylvanas Windrunner'
+		assert p1.board.get(0).name == 'Abomination'
+		assert p1.board.get(1).name == 'Sylvanas Windrunner'
 	}
 	
 	@Test

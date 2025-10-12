@@ -109,19 +109,19 @@ class Player extends ScriptObject {
 		Log.info "      . available mana for $this = $available_mana"
 	}
 
-	def add_max_mana(int amount) {
+	void add_max_mana(int amount) {
 		max_mana += amount
 		if (max_mana > 10) { max_mana = 10 }
 		if (max_mana < 0) { max_mana = 0 }
 		Log.info "      . max mana for $this = $max_mana"
 	}
 
-	def add_overload(int amount) {
+	void add_overload(int amount) {
 		this.overload += amount
 		Log.info "      . $this's overload = ${overload}"
 	}
 
-	def choose(List<String> choices, List<Closure> scripts) {
+	void choose(List<String> choices, List<Closure> scripts) {
 		//Log.info " - $this has to choose between '${choices[0]}' and '${choices[1]}'"
 		if (next_choices.isEmpty()) {
 			throw new IllegalActionException("no choice made !")
@@ -145,7 +145,7 @@ class Player extends ScriptObject {
 		return c
 	}
 
-	def update_minions_place() {
+	void update_minions_place() {
 		// re-compute the minions places
 		def place=0
 		this.minions().sort{it.place}.each  {
@@ -157,7 +157,7 @@ class Player extends ScriptObject {
 		}
 	}
 
-	def reveal(Card c) {
+	void reveal(Card c) {
 		// 11 March 2014 Patch: "Secrets can now only activate on your opponent's turn."
 		assert c.controller != game.active_player
 		Log.info "      . secret '$c.name' is revealed"
@@ -212,7 +212,7 @@ class Player extends ScriptObject {
 	}
 
 	// previous controller loses control
-	def take_control(Target t) {
+	void take_control(Target t) {
 		assert t != null
 		assert t.is_a_minion()
 		assert t.controller != null
@@ -223,11 +223,11 @@ class Player extends ScriptObject {
 		gain_control(t)
 	}
 
-	def gain_control(Target t) {
+	void gain_control(Target t) {
 		controls(t, board.size())
 	}
 
-	def controls(Target t, int place) {
+	void controls(Target t, int place) {
 		assert t != null
 		assert t.is_a_minion()
 		t.controller = this
@@ -394,7 +394,7 @@ class Player extends ScriptObject {
 		return c
 	}
 
-	def play(Card c) {
+	Card play(Card c) {
 		def played
 		if (c.is_a_minion()) {
 			played = play(c, this.board.size()) // rightmost position

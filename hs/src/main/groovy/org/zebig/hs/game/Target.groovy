@@ -12,8 +12,8 @@ import static org.zebig.hs.state.GameChange.Type.*
 
 class Target extends GameObject {
 
-    def state = [:] as ObservableMap
-    def buffs = [] as ObservableList
+    ObservableMap state = [:]
+    ObservableList buffs = []
 
     final int id
 

@@ -1,11 +1,14 @@
 package org.zebig.hs.cards
 
+import groovy.transform.CompileStatic
 import org.junit.Test
 import org.zebig.hs.game.Card
+import org.zebig.hs.mechanics.Trigger
 import org.zebig.hs.utils.TestHelper
 
 import static org.zebig.hs.mechanics.buffs.BuffType.*
 
+@CompileStatic
 class TestMage extends TestHelper {
 
 	@Test
@@ -66,21 +69,21 @@ class TestMage extends TestHelper {
 	void ArchmageAntonidas_play_1_spell() {
 		// Whenever you cast a spell, put a 'Fireball' spell into your hand
 		_play("Archmage Antonidas")
-		def nb_fireball = p1.hand.cards.findAll{it.name == "Fireball"}.size()
+		def nb_fireball = p1.hand.cards.findAll{(it as Card).name == "Fireball"}.size()
 		_play_and_target("Ice Lance", p2.hero)
-		assert p1.hand.cards.findAll{it.name == "Fireball"}.size() == nb_fireball + 1
+		assert p1.hand.cards.findAll{(it as Card).name == "Fireball"}.size() == nb_fireball + 1
 	}
 
 	@Test
 	void ArchmageAntonidas_play_2_spells() {
 		// Whenever you cast a spell, put a 'Fireball' spell into your hand
 		_play("Archmage Antonidas")
-		def nb_fireball = p1.hand.cards.findAll{it.name == "Fireball"}.size()
+		def nb_fireball = p1.hand.cards.findAll{(it as Card).name == "Fireball"}.size()
 		_play_and_target("Ice Lance", p2.hero)
 		assert p2.hero.is_frozen()
 		_play_and_target("Ice Lance", p2.hero)
 		assert p2.hero.get_health() == 26
-		assert p1.hand.cards.findAll{it.name == "Fireball"}.size() == nb_fireball + 2
+		assert p1.hand.cards.findAll{(it as Card).name == "Fireball"}.size() == nb_fireball + 2
 	}
 	
 	@Test
@@ -203,7 +206,7 @@ class TestMage extends TestHelper {
 		assert p1.secrets.get(0).name == "Duplicate"
 		def blu = _play("Bluegill Warrior")	
 		def before_hand_size = p1.hand.size()
-		def blu_cnt1 = p1.hand.cards.findAll { it.name == "Bluegill Warrior" }.size()
+		def blu_cnt1 = p1.hand.cards.findAll { (it as Card).name == "Bluegill Warrior" }.size()
 		_next_turn()
 		
 		/* Player A */
@@ -213,7 +216,7 @@ class TestMage extends TestHelper {
 		/* Player B */ 
 		assert p1.secrets.size() == 0
 		assert p1.hand.size() == before_hand_size + 3 // draw + 2 duplicates
-		def blu_cnt2 = p1.hand.cards.findAll { it.name == "Bluegill Warrior" }.size()
+		def blu_cnt2 = p1.hand.cards.findAll { (it as Card).name == "Bluegill Warrior" }.size()
 		assert blu_cnt2 == blu_cnt1 + 2
 	}
 	
@@ -269,7 +272,7 @@ class TestMage extends TestHelper {
 	void IceBlock_fatal_damage() {
 		// Secret: When your hero takes fatal damage, prevent it and become Immune this turn
 		def ice = _play("Ice Block")
-		assert p1.hero.triggers.size() == 1 // when_a_hero_takes_damage
+		assert (p1.hero.triggers as List<Trigger>).size() == 1 // when_a_hero_takes_damage
 		p1.hero.health = 1
 		assert p1.secrets.size() == 1
 		assert p1.secrets.contains(ice)
@@ -406,8 +409,8 @@ class TestMage extends TestHelper {
 		assert p1.board.size() == 1 // copy, doesn't steal
 		assert p2.board.size() == 1 // should have a copy of Elven Archer
 		assert p1.hero.health == 30	  // battlecry of copied minion should not trigger
-		Card a1 = p1.board.cards[0]
-		Card a2 = p2.board.cards[0]
+		Card a1 = p1.board.get(0)
+		Card a2 = p2.board.get(0)
 		assert a1.id != a2.id
 		assert a1.name == a2.name
 		assert a1.attack == a2.attack
@@ -447,18 +450,18 @@ class TestMage extends TestHelper {
 		// test with buff
 		_next_turn()
 		_play("Mirror Entity") // create the secret
-		p1.board.cards.clear()
-		p2.board.cards.clear()
+		p1.board.clear()
+		p2.board.clear()
 		_next_turn()
 		_play("Shieldbearer") // has taunt
 		assert p1.board.size() == 1 // copy, doesn't steal
 		assert p2.board.size() == 1 // should have a copy of Shieldbearer
-		assert (p1.board.cards[0] as Card).has_taunt()
-		assert (p2.board.cards[0] as Card).has_taunt()
-		assert (p1.board.cards[0] as Card).buffs == (p2.board.cards[0] as Card).buffs
-		_play("Silence", p2.board.cards[0] as Card) // the copy
-		assert (p1.board.cards[0] as Card).has_taunt()
-		assert !(p2.board.cards[0] as Card).has_taunt()
+		assert (p1.board.get(0) as Card).has_taunt()
+		assert (p2.board.get(0) as Card).has_taunt()
+		assert (p1.board.get(0) as Card).buffs == (p2.board.get(0) as Card).buffs
+		_play("Silence", p2.board.get(0) as Card) // the copy
+		assert (p1.board.get(0) as Card).has_taunt()
+		assert !(p2.board.get(0) as Card).has_taunt()
 	}
 	
 	@Test
@@ -467,12 +470,12 @@ class TestMage extends TestHelper {
 		_play("Mirror Image")
 		assert p1.board.size() == 2
 		[0,1].each {
-			assert p1.board.cards[it].name == "Mirror Image"
-			assert p1.board.cards[it].type == "minion"
-			assert p1.board.cards[it].cost == 0
-			assert p1.board.cards[it].attack == 0
-			assert p1.board.cards[it].health == 2
-			assert p1.board.cards[it].has_taunt()
+			assert p1.board.get(it).name == "Mirror Image"
+			assert p1.board.get(it).type == "minion"
+			assert p1.board.get(it).cost == 0
+			assert p1.board.get(it).attack == 0
+			assert p1.board.get(it).health == 2
+			assert p1.board.get(it).has_taunt()
 		}
 		_play("Mirror Image")
 		assert p1.board.size() == 4
@@ -524,8 +527,8 @@ class TestMage extends TestHelper {
 		_play("Pyroblast", p2.hero)
 		assert p2.hero.health == 30 - 10 - 1
 	}
-	
-	@Test
+
+    @Test
 	void Spellbender_play() {
 		// Secret: When an enemy casts a spell on a minion, summon a 1/3 as the new target
 		
@@ -538,7 +541,7 @@ class TestMage extends TestHelper {
 		assert p2.secrets.size() == 0
 		assert mal.is_in_play()
 		
-		def m = p2.hand.cards.find{it.name == "Spellbender" && it.is_a_minion()}
+		Card m = p2.hand.cards.find{(it as Card).name == "Spellbender" && (it as Card).is_a_minion()} as Card
 		assert m != null
 		assert m.cost == 0
 		assert m.attack == 1
@@ -549,7 +552,7 @@ class TestMage extends TestHelper {
 	void SorcerersApprentice_play() {
 		// Your spells cost (1) less
 		
-		p1.hand.cards.clear()
+		p1.hand.clear()
 		def spell1 = g.new_card("Fireball")
 		def spell2 = g.new_card("Silence")		// cost==0 !
 		def blu = g.new_card("Bluegill Warrior")
@@ -562,7 +565,7 @@ class TestMage extends TestHelper {
 		assert spell2.get_cost() == 0
 		assert blu.get_cost() == blu.cost // not a spell
 		
-		p2.hand.cards.clear()
+		p2.hand.clear()
 		def spell3 = g.new_card("Assassinate")
 		p2.hand.add(spell3)
 		assert spell3.get_cost() == spell3.cost // not one of your spells

@@ -1,55 +1,57 @@
-package org.zebig.hs.cards;
+package org.zebig.hs.cards
 
+import groovy.transform.CompileStatic
 import org.zebig.hs.game.Card
-import org.zebig.hs.mechanics.buffs.BuffType
 
 import org.junit.Test
 
 import org.zebig.hs.utils.TestHelper
 
+import static org.junit.Assert.fail
 import static org.zebig.hs.mechanics.buffs.BuffType.*
 
+@CompileStatic
 class TestHunter extends TestHelper{
 
 	/* Animal companion:  Summon a random Beast Companion */
 	
 	@Test
-	public void AnimalCompanion_summon_Misha() {
+	void AnimalCompanion_summon_Misha() {
 		_next_random_int(0)
 		_play("Animal Companion")
 		assert p1.board.size() == 1
-		assert p1.board.cards[0].name == "Misha" // taunt
-		assert p1.board.cards[0].has_taunt()
+		assert p1.board.get(0).name == "Misha" // taunt
+		assert p1.board.get(0).has_taunt()
 	}
 
 	@Test
-	public void AnimalCompanion_summon_Leokk() {
+	void AnimalCompanion_summon_Leokk() {
 		_next_random_int(1)
 		_play("Animal Companion")
 		assert p1.board.size() == 1
-		assert p1.board.cards[0].name == "Leokk" // other friendly minions have +1 Attack
+		assert p1.board.get(0).name == "Leokk" // other friendly minions have +1 Attack
 		def lep = _play("Leper Gnome")
 		assert lep.attack == 2
 		assert lep.get_attack() == 3
 	}
 
 	@Test
-	public void AnimalCompanion_summon_Huffer() {
+	void AnimalCompanion_summon_Huffer() {
 		_next_random_int(2)
 		_play("Animal Companion")
 		assert p1.board.size() == 1
-		assert p1.board.cards[0].name == "Huffer" // charge
-		assert p1.board.cards[0].has_charge()
+		assert p1.board.get(0).name == "Huffer" // charge
+		assert p1.board.get(0).has_charge()
 	}
 	
 	@Test
-	public void AnimalCompanion_random() {
+	void AnimalCompanion_random() {
 		_play("Animal Companion")
 		assert p1.board.size() == 1
 	}
 	
 	@Test
-	public void ArcaneShot_hero() {
+	void ArcaneShot_hero() {
 		// Deal 2 damage
 		_play_and_target("Arcane Shot", p2.hero)
 		assert p2.hero.get_health() == 28
@@ -57,7 +59,7 @@ class TestHunter extends TestHelper{
 
 	
 	@Test
-	public void BestialWrath_fails_no_target() {
+	void BestialWrath_fails_no_target() {
 		// Give a Beast +2 Attack and Immune this turn
 		try {
 			_play("Bestial Wrath")
@@ -69,7 +71,7 @@ class TestHunter extends TestHelper{
 	}
 
 	@Test
-	public void BestialWrath_fails_no_beast_in_play() {
+	void BestialWrath_fails_no_beast_in_play() {
 		// Give a Beast +2 Attack and Immune this turn
 		try {
 			_play("Abomination")
@@ -82,7 +84,7 @@ class TestHunter extends TestHelper{
 	}
 
 	@Test
-	public void BestialWrath_ok() {
+	void BestialWrath_ok() {
 		// Give a Beast +2 Attack and Immune this turn
 		def tiw = _play("Timber Wolf")
 		_play_and_target("Bestial Wrath", tiw)
@@ -94,7 +96,7 @@ class TestHunter extends TestHelper{
 	}
 	
 	@Test
-	public void DeadlyShot_random() {
+	void DeadlyShot_random() {
 		// Destroy a random enemy minion
 		def abo = _play("Abomination")
 		_next_turn()
@@ -105,7 +107,7 @@ class TestHunter extends TestHelper{
 	}
 
 	@Test
-	public void EaglehornBow_play() {
+	void EaglehornBow_play() {
 		// Whenever a friendly Secret is revealed, gain +1 Durability
 		def eag = _play("Eaglehorn Bow")
 		def eag_weapon = p1.hero.weapon
@@ -126,7 +128,7 @@ class TestHunter extends TestHelper{
 	}
 	
 	@Test
-	public void ExplosiveShot_play_no_neighbor() {
+	void ExplosiveShot_play_no_neighbor() {
 		// Deal 5 damage to a minion and 2 damage to adjacent ones
 		def abo = _play("Abomination")
 		_next_turn()
@@ -136,7 +138,7 @@ class TestHunter extends TestHelper{
 
 	
 	@Test
-	public void ExplosiveShot_play_1_right_neighbor() {
+	void ExplosiveShot_play_1_right_neighbor() {
 		// Deal 5 damage to a minion and 2 damage to adjacent ones
 		def abo = _play("Abomination")
 		def blu = _play("Bluegill Warrior")
@@ -147,7 +149,7 @@ class TestHunter extends TestHelper{
 	}
 
 	@Test
-	public void ExplosiveShot_play_1_left_neighbor() {
+	void ExplosiveShot_play_1_left_neighbor() {
 		// Deal 5 damage to a minion and 2 damage to adjacent ones
 		def blu = _play("Bluegill Warrior")
 		def abo = _play("Abomination")
@@ -158,7 +160,7 @@ class TestHunter extends TestHelper{
 	}
 	
 	@Test
-	public void ExplosiveShot_play_2_neighbors() {
+	void ExplosiveShot_play_2_neighbors() {
 		// Deal 5 damage to a minion and 2 damage to adjacent ones
 		def blu = _play("Bluegill Warrior")
 		def abo = _play("Abomination")
@@ -173,7 +175,7 @@ class TestHunter extends TestHelper{
 	}
 	
 	@Test
-	public void ExplosiveTrap_play() {
+	void ExplosiveTrap_play() {
 		// Secret: When your hero is attacked, deal 2 damage to all enemies
 		_play("Explosive Trap")
 		_next_turn()
@@ -186,7 +188,7 @@ class TestHunter extends TestHelper{
 	}
 	
 	@Test
-	public void Flare_play() {
+	void Flare_play() {
 		// All minions lose Stealth. Destroy all enemy secret. Draw a card
 		def bim = _play("Blood Imp")
 		_play("Explosive trap")
@@ -207,7 +209,7 @@ class TestHunter extends TestHelper{
 	}
 	
 	@Test
-	public void FreezingTrap_play() {
+	void FreezingTrap_play() {
 		// Secret: When an enemy attacks, return it to its owner's hand and it cost (2) more
 		_play("Freezing Trap")
 		assert p1.secrets.size() == 1
@@ -227,7 +229,7 @@ class TestHunter extends TestHelper{
 	}
 	
 	@Test
-	public void GladiatorsLongbow_play() {
+	void GladiatorsLongbow_play() {
 		// Your hero is Immune while attacking
 		def bou = _play("Boulderfist Ogre")
 		_next_turn()
@@ -245,7 +247,7 @@ class TestHunter extends TestHelper{
 	}
 	
 	@Test
-	public void Houndmaster_play() {
+	void Houndmaster_play() {
 		// Battlecry: Give a friendly Beast +2/+2 and Taunt
 		def owl = _play("Ironbeak Owl")
 		_play("Houndmaster", owl)
@@ -254,7 +256,7 @@ class TestHunter extends TestHelper{
 	}
 	
 	@Test
-	public void HuntersMark_play() {
+	void HuntersMark_play() {
 		// Change a minion's Health to 1 
 		def c = _play("Abomination")
 		assert c.get_health() == 4
@@ -266,7 +268,7 @@ class TestHunter extends TestHelper{
 	}
 	
 	@Test
-	public void KillCommand_play() {
+	void KillCommand_play() {
 		// Deal 3 damage. If you have a Beast, deal 5 damage instead
 		_play("Kobold Geomancer") // +1 Spell Damage
 		
@@ -281,7 +283,7 @@ class TestHunter extends TestHelper{
 	}
 	
 	@Test
-	public void KingKrush_play() {
+	void KingKrush_play() {
 		// Charge
 		def kkr = _play("King Krush")
 		assert kkr.has_charge()
@@ -289,7 +291,7 @@ class TestHunter extends TestHelper{
 	}
 	
 	@Test
-	public void Misdirection_no_target() {
+	void Misdirection_no_target() {
 		// Secret: When a character attacks your hero, instead he attacks another random character
 		
 		// no minion in play
@@ -305,7 +307,7 @@ class TestHunter extends TestHelper{
 	}
 	
 	@Test
-	public void Misdirection_one_target() {
+	void Misdirection_one_target() {
 		// Secret: When a character attacks your hero, instead he attacks another random character
 		
 		// only 1 possible target: attacker's hero
@@ -321,10 +323,10 @@ class TestHunter extends TestHelper{
 	}
 	
 	@Test
-	public void Misdirection_2_targets() {
+	void Misdirection_2_targets() {
 		// Secret: When a character attacks your hero, instead he attacks another random character
 
-		def lep = _play("Leper Gnome") // another possible target		
+		_play("Leper Gnome") // another possible target
 		_play("Misdirection")
 		assert p1.secrets.size() == 1
 		assert p1.secrets.get(0).name == "Misdirection"
@@ -336,7 +338,7 @@ class TestHunter extends TestHelper{
 	}
 	
 	@Test
-	public void MultiShot_play() {
+	void MultiShot_play() {
 		// Deal 3 damage to two random enemy minions
 		
 		_play("Kobold Geomancer") // +1 Spell Damage
@@ -356,7 +358,7 @@ class TestHunter extends TestHelper{
 	}
 	
 	@Test
-	public void SavannahHighmane_play() {
+	void SavannahHighmane_play() {
 		// Deathrattle: Summon two 2/2 Hyenas
 		
 		def sav = _play("Savannah Highmane")	// 6/5
@@ -366,18 +368,18 @@ class TestHunter extends TestHelper{
 		_attack(sav, bou)	// sav should be killed
 		assert sav.is_dead()
 		assert p1.board.size() == 2
-		assert p1.board.cards[0].name == "Hyena"
-		assert p1.board.cards[0].cost == 2
-		assert p1.board.cards[0].attack == 2
-		assert p1.board.cards[0].health == 2
-		assert p1.board.cards[1].name == "Hyena"
-		assert p1.board.cards[1].cost == 2
-		assert p1.board.cards[1].attack == 2
-		assert p1.board.cards[1].health == 2
+		assert p1.board.get(0).name == "Hyena"
+		assert p1.board.get(0).cost == 2
+		assert p1.board.get(0).attack == 2
+		assert p1.board.get(0).health == 2
+		assert p1.board.get(1).name == "Hyena"
+		assert p1.board.get(1).cost == 2
+		assert p1.board.get(1).attack == 2
+		assert p1.board.get(1).health == 2
 	}
 	
 	@Test
-	public void ScavengingHyena_play() {
+	void ScavengingHyena_play() {
 		// Whenever a friendly Beast dies, gain +2/+1
 		
 		def owl = _play("Ironbeak Owl")
@@ -410,7 +412,7 @@ class TestHunter extends TestHelper{
 	}
 	
 	@Test
-	public void SnakeTrap_play() {
+	void SnakeTrap_play() {
 		// Secret: When one of your minions is attacked, summon three 1/1 Snakes
 		
 		_play("Snake Trap")
@@ -427,17 +429,17 @@ class TestHunter extends TestHelper{
 		assert p2.secrets.size() == 0
 		assert p2.board.size() == 3 // the 3 snakes
 		(0..2).each {
-			assert p2.board.cards[it].name == "Snake"
-			assert p2.board.cards[it].cost == 0
-			assert p2.board.cards[it].creature_type == "beast"
-			assert p2.board.cards[it].attack == 1
-			assert p2.board.cards[it].health == 1
-			assert p2.board.cards[it].place == it
+			assert p2.board.get(it).name == "Snake"
+			assert p2.board.get(it).cost == 0
+			assert p2.board.get(it).creature_type == "beast"
+			assert p2.board.get(it).attack == 1
+			assert p2.board.get(it).health == 1
+			assert p2.board.get(it).place == it
 		}
 	}
 	
 	@Test
-	public void Snipe_play() {
+	void Snipe_play() {
 		// Secret: When your opponent plays a minion, deal 4 damage to it
 		
 		_play("Snipe")
@@ -445,7 +447,7 @@ class TestHunter extends TestHelper{
 		assert p1.secrets.get(0).name == "Snipe"
 		
 		def blu = _play("Bluegill Warrior") // should not be affected
-		assert blu.is_dead() == false
+		assert !blu.is_dead()
 		
 		// opponent plays a minion
 		_next_turn()
@@ -455,7 +457,7 @@ class TestHunter extends TestHelper{
 	}
 	
 	@Test
-	public void StarvingBuzzard_play() {
+	void StarvingBuzzard_play() {
 		// Whenever you summon a Beast, draw a card
 		
 		_play("Starving Buzzard")
@@ -482,7 +484,7 @@ class TestHunter extends TestHelper{
 	}
 	
 	@Test
-	public void TimberWolf_play() {
+	void TimberWolf_play() {
 		// Your other Beasts have +1 Attack
 		Card abo = _play("Abomination") // non-beast
 		Card huf = _play("Huffer") // a beast
@@ -498,7 +500,7 @@ class TestHunter extends TestHelper{
 	}
 	
 	@Test
-	public void Tracking_play() {
+	void Tracking_play() {
 		// Look at the top three cards of your deck. Draw one and discard the others.
 		
 		p1.deck.clear()
@@ -522,33 +524,33 @@ class TestHunter extends TestHelper{
 	}
 
 	@Test
-	public void TundraRhino_play() {
+	void TundraRhino_play() {
 		// Your Beasts have Charge
 		
 		def cro = _play("River Crocolisk")	// for opponent
 		assert cro.is_a_beast()
-		assert cro.has_charge() == false
+		assert !cro.has_charge()
 		_next_turn()
 		
 		def tim = _play("Timber Wolf")
 		assert tim.is_a_beast()
-		assert tim.has_charge() == false
+		assert !tim.has_charge()
 		
 		def tun = _play("Tundra Rhino")
-		assert tim.has_charge() == true
-		assert cro.has_charge() == false 	// not one of your beasts
+		assert tim.has_charge()
+		assert !cro.has_charge()    // not one of your beasts
 		
 		def lep = _play("Leper Gnome")	// not a beast
-		assert lep.has_charge() == false
+		assert !lep.has_charge()
 		
 		_next_turn()
 		_play("Silence", tun)
-		assert tun.has_charge() == false
-		assert tim.has_charge() == false
+		assert !tun.has_charge()
+		assert !tim.has_charge()
 	}
 	
 	@Test
-	public void UnleashtheHounds_play() {
+	void UnleashtheHounds_play() {
 		// For each enemy minion, summon a 1/1 Hound with Charge
 		
 		// summon enemy minions
@@ -570,10 +572,10 @@ class TestHunter extends TestHelper{
 	}
 	
 	@Test
-	public void Webspinner_play() {
+	void Webspinner_play() {
 		/* Player A */
 		def webspinner = _play("Webspinner")
-		p1.hand.cards.clear()
+		p1.hand.clear()
 		_next_turn()
 		
 		/* Player B */
@@ -582,6 +584,6 @@ class TestHunter extends TestHelper{
 		assert webspinner.is_dead()
 
 		assert p2.hand.size() == 1
-		assert p2.hand.cards[0].creature_type == "beast"		
+		assert p2.hand.get(0).creature_type == "beast"
 	}
 }
