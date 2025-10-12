@@ -6,13 +6,16 @@ import org.zebig.hs.mechanics.events.ItIsDestroyed
 
 
 class Weapon extends Target {
+
+    String text
 	
 	Weapon(CardDefinition weapon_definition) {
 		super( weapon_definition.name, 'weapon', weapon_definition.max_health, weapon_definition.game )
+        this.text = weapon_definition.text
 		attack = weapon_definition.attack
-		durability = weapon_definition.max_health 
+		durability = weapon_definition.max_health
 		triggers.clear()
-		weapon_definition.triggers.each{ t ->
+        (weapon_definition.triggers as List<Trigger>).each{ t ->
 			triggers.add( new Trigger(t.event_class, t.script, this) )
 		}
 	}

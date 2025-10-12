@@ -379,13 +379,32 @@ class TestTransaction {
         }
         try {
             g.begin_transaction()
-            _attack(p1.hero, p2.hero) // should fail
-            fail("should have detected an IllegalActionException")
+            _attack(p1.hero, p2.hero) // should fail, has already attacked twice
+            fail("should have detected an illegal action")
         }
-        catch(IllegalActionException e) {
+        catch(IllegalActionException ignored) {
             // OK
             assert g.transaction.findChanges(HeroAttacksHero).size() == 0
             g.rollback_transaction()
         }
+    }
+
+    @Test
+    void testWeaponEquipped() {
+        _initGame()
+        _startGame()
+        g.begin_transaction()
+        _play("Doomhammer")
+        def w = p1.hero.weapon
+        assert w != null
+        def lch = g.transaction.findChanges(WeaponEquipped, p1.name)
+        assert lch.size() == 1
+        def ch = lch.first
+        assert ch.target_id == p1.name
+        assert ch.properties.player_name == p1.name
+        assert ch.properties.name == w.name
+        assert ch.properties.text == w.text
+        assert ch.properties.attack == w.attack as String
+        assert ch.properties.durability == w.durability as String
     }
 }

@@ -4,6 +4,8 @@ import org.zebig.hs.logger.Log
 import org.zebig.hs.mechanics.events.BeforeUsePower
 import org.zebig.hs.mechanics.events.ItComesInPlay
 
+import static org.zebig.hs.state.GameChange.Type.WeaponEquipped
+
 class Hero extends Target {
 	
 	Hero(Player controller, String hero_name, HeroPowerDefinition power_definition) {
@@ -71,6 +73,13 @@ class Hero extends Target {
 		w.controller = this.controller
         Log.info "      . $this equips $w (${w.get_attack()}/${w.get_durability()})"
 		new ItComesInPlay(w).check()
+        game.transaction?.record(WeaponEquipped, w.controller.name, [
+                player_name:w.controller.name,
+                name: w.name,
+                text: w.text,
+                attack: w.attack as String,
+                durability: w.durability as String
+        ])
 	}
 	
 	// builds dynamically a weapon

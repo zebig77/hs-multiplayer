@@ -3,22 +3,24 @@ package org.zebig.hs.state
 class GameChange {
 
     enum Type {
-        PlayerBecomesActive,
-        ManaChanged,
         CardDrawn,
         CardPlayed,
-        MinionAttacksMinion,
-        MinionAttacksHero,
-        MinionTakesDamage,
-        MinionIsHealed,
-        MinionDies,
-        HeroAttacksMinion,
         HeroAttacksHero,
+        HeroAttacksMinion,
+        HeroDies,
         HeroTakesDamage,
         HeroIsHealed,
-        HeroDies,
-        ZoneSizeChange,
+        ManaChanged,
+        MinionAttacksMinion,
+        MinionAttacksHero,
+        MinionDies,
+        MinionIsHealed,
+        MinionTakesDamage,
+        PlayerBecomesActive,
         TargetSelected,
+        WeaponDestroyed,
+        WeaponEquipped,
+        ZoneSizeChange,
     }
     /*
     pubLic  PlayerBecomesActive(player_name)
@@ -34,15 +36,16 @@ class GameChange {
     public  MinionIsHealed[card_id](player_name, card_id, health, heal_amount, max_health)
     public  HeroIsHealed[player_name](heal_amount, health, max_health)
     public  MinionAttacksMinion[attacker_id](player_name, attacker_id, attacked_id, attack_damage)
-    TODO public     MinionAttacksHero[attacker_id](player_name, attacker_id, attacked_player_name, attack_damage)
-    TODO public     HeroAttacksMinion[player_name](player_name, attacked_id, attack_damage)
-    TODO public     HeroAttacksHero[player_name](player_name, attacked_player_name, attack_damage)
+    public  MinionAttacksHero[attacker_id](player_name, attacker_id, attacked_player_name, attack_damage)
+    public  HeroAttacksMinion[player_name](player_name, attacked_id, attack_damage)
+    public  HeroAttacksHero[player_name](player_name, attacked_player_name, attack_damage)
+    public  WeaponEquipped[card_id](player_name, card_id, name, text, attack, durability)
+    TODO  WeaponDestroyed[card_id](player_name, card_id)
     TODO private    CardCostChanged[card_id](player_name, cost)
     TODO public     CardTransformed(old_card_detail, new_card_detail)
     TODO public     HeroPowerUsed(player_name, [target])
     TODO private    SecretPlayed(card_detail)
     TODO public     SecretRevealed(card_detail)
-    TODO public     WeaponReady(card_detail)
     TODO public     WeaponDestroyed(card_detail)
     TODO public     HealingReceived(target)
     TODO public     HeroTakesFatigue(player_name, fatigue_amount, new_hero_health)
