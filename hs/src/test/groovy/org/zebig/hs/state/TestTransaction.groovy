@@ -378,11 +378,13 @@ class TestTransaction {
             g.end_transaction()
         }
         try {
+            g.begin_transaction()
             _attack(p1.hero, p2.hero) // should fail
             fail("should have detected an IllegalActionException")
         }
         catch(IllegalActionException e) {
             // OK
+            assert g.transaction.findChanges(HeroAttacksHero).size() == 0
             g.rollback_transaction()
         }
     }
