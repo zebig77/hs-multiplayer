@@ -330,9 +330,8 @@ class Game {
                 }
                 else {
                     assert attacked.is_a_hero()
-                    transaction?.record(HeroAttacksHero, attacker.id as String, [
+                    transaction?.record(HeroAttacksHero, attacker.controller.name, [
                             player_name  : attacker.controller.name,
-                            attacker_id  : attacker.id as String,
                             attacked_player_name  : attacked.controller.name,
                             attack_damage: attack_damage as String
                     ])

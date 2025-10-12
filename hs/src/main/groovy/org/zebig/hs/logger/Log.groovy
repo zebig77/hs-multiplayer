@@ -6,4 +6,8 @@ class Log {
 		println msg
 	}
 
+    static error(String msg) {
+        System.err.println msg
+    }
+
 }

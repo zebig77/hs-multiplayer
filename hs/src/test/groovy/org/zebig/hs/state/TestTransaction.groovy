@@ -6,10 +6,12 @@ import org.zebig.hs.decks.MalfurionDeck1
 import org.zebig.hs.game.Card
 import org.zebig.hs.game.Game
 import org.zebig.hs.game.GarroshHellscream
+import org.zebig.hs.game.IllegalActionException
 import org.zebig.hs.game.MalfurionStormrage
 import org.zebig.hs.game.Player
 import org.zebig.hs.game.Target
 
+import static org.junit.Assert.fail
 import static org.zebig.hs.state.GameChange.Type.*
 
 class TestTransaction {
@@ -339,4 +341,49 @@ class TestTransaction {
         assert ch.properties.attack_damage == "2"
     }
 
+
+    @Test
+    void testHeroAttacksMinion() {
+        _initGame()
+        _startGame()
+        def bbb = _play("BootyBayBodyguard")
+        _next_turn()
+        _play("Doomhammer")
+        g.begin_transaction()
+        _attack(g.active_player.hero as Target, bbb)
+        def lch = g.transaction.findChanges(HeroAttacksMinion, g.active_player.name)
+        assert lch.size() == 1
+        def ch = lch.first
+        assert ch.target_id == g.active_player.name
+        assert ch.properties.player_name == g.active_player.name
+        assert ch.properties.attacked_id == bbb.id as String
+        assert ch.properties.attack_damage == "2"
+    }
+
+    @Test
+    void testHeroAttacksHero() {
+        _initGame()
+        _startGame()
+        _play("Doomhammer")
+        2.times {// Since Doomhammer has Windfury
+            g.begin_transaction()
+            _attack(p1.hero, p2.hero)
+            def lch = g.transaction.findChanges(HeroAttacksHero, p1.name)
+            assert lch.size() == 1
+            def ch = lch.first
+            assert ch.target_id == p1.name
+            assert ch.properties.player_name == p1.name
+            assert ch.properties.attacked_player_name == p2.name
+            assert ch.properties.attack_damage == "2"
+            g.end_transaction()
+        }
+        try {
+            _attack(p1.hero, p2.hero) // should fail
+            fail("should have detected an IllegalActionException")
+        }
+        catch(IllegalActionException e) {
+            // OK
+            g.rollback_transaction()
+        }
+    }
 }
