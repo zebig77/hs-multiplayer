@@ -450,7 +450,7 @@ class Player extends ScriptObject {
 			result.add( choices )
 		}
 		Log.info "      . selected: $result"
-		return result as Target // multiple values TODO check (dubious)
+		return result as Target // multiple values
 		*/
 	}
 

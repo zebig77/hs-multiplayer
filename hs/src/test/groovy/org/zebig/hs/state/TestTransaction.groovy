@@ -285,4 +285,21 @@ class TestTransaction {
         assert ch.properties.health == 4
         assert ch.properties.max_health == 4
     }
+
+    @Test
+    void testHeroHealedChange() {
+        _initGame()
+        _startGame()
+        p1.hero.health = 10
+        g.begin_transaction()
+        _play_and_target("Drain Life", p2.hero)
+        def lch = g.transaction.findChanges(HeroIsHealed, p1.name)
+        assert lch.size() == 1
+        def ch = lch.first
+        assert ch.target_id == p1.name
+        assert ch.properties.player_name == p1.name
+        assert ch.properties.heal_amount == 2 // max_health - health before heal
+        assert ch.properties.health == 12
+        assert ch.properties.max_health == 30
+    }
 }
