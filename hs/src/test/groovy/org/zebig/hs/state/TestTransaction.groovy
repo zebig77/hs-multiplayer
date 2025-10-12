@@ -243,10 +243,10 @@ class TestTransaction {
         assert ch.properties.position == '0'
         assert ch.properties.name == blu.name
         assert ch.properties.type == blu.type
-        assert ch.properties.cost == blu.cost
+        assert ch.properties.cost == blu.cost as String
         assert ch.properties.text == blu.text
-        assert ch.properties.attack == blu.attack
-        assert ch.properties.max_health == blu.max_health
+        assert ch.properties.attack == blu.attack as String
+        assert ch.properties.max_health == blu.max_health as String
     }
 
     @Test
@@ -263,7 +263,7 @@ class TestTransaction {
         assert ch.properties.card_id == arc.id as String
         assert ch.properties.name == arc.name
         assert ch.properties.type == arc.type
-        assert ch.properties.cost == arc.cost
+        assert ch.properties.cost == arc.cost as String
         assert ch.properties.text == arc.text
     }
 
@@ -281,9 +281,9 @@ class TestTransaction {
         assert ch.target_id == bbb.id as String
         assert ch.properties.player_name == p1.name
         assert ch.properties.card_id == bbb.id as String
-        assert ch.properties.heal_amount == 2 // max_health - health before heal
-        assert ch.properties.health == 4
-        assert ch.properties.max_health == 4
+        assert ch.properties.heal_amount == "2" // max_health - health before heal
+        assert ch.properties.health == "4"
+        assert ch.properties.max_health == "4"
     }
 
     @Test
@@ -298,8 +298,8 @@ class TestTransaction {
         def ch = lch.first
         assert ch.target_id == p1.name
         assert ch.properties.player_name == p1.name
-        assert ch.properties.heal_amount == 2 // max_health - health before heal
-        assert ch.properties.health == 12
-        assert ch.properties.max_health == 30
+        assert ch.properties.heal_amount == "2" // max_health - health before heal
+        assert ch.properties.health == "12"
+        assert ch.properties.max_health == "30"
     }
 }

@@ -369,7 +369,7 @@ class Player extends ScriptObject {
                     position   : place as String,
                     name       : c.name,
                     type       : c.type,
-                    cost       : c.cost,
+                    cost       : c.cost as String,
                     text       : c.text,
             ])
         }
@@ -381,10 +381,10 @@ class Player extends ScriptObject {
                     position   : place as String,
                     name       : c.name,
                     type       : c.type,
-                    cost       : c.cost,
+                    cost       : c.cost as String,
                     text       : c.text,
-                    attack     : c.attack,
-                    max_health : c.max_health
+                    attack     : c.attack as String,
+                    max_health : c.max_health as String
             ])
         }
 
