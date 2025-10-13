@@ -1,7 +1,7 @@
 package org.zebig.hs.cards
 
 
-import static org.junit.Assert.fail;
+import static org.junit.Assert.fail
 import static org.zebig.hs.mechanics.buffs.BuffType.*
 import org.zebig.hs.game.AnduinWrynn
 import org.zebig.hs.game.Game
@@ -27,7 +27,7 @@ class TestPriest extends TestHelper {
 	@Test
 	void AuchenaiSoulpriest_ok() {
 		// Your cards and powers that restore Health now deal damage instead
-		def asp = _play("Auchenai Soulpriest")
+		_play("Auchenai Soulpriest")
 		p1.hero.set_health(20)
 		_play_and_target("Healing Touch", p1.hero)  // normally restore hero health for 8
 		assert p1.hero.get_health() == 12 // damage dealt instead of healing
@@ -108,7 +108,7 @@ class TestPriest extends TestHelper {
 		_next_turn()
 		def abo = _play("Abomination")
 		def sh2 = _play("Shieldbearer")
-		def kob = _play("Kobold Geomancer") // +1 Spell damage
+		_play("Kobold Geomancer") // +1 Spell damage
 		abo.health = abo.max_health -1
 		sh2.health = sh2.max_health -2
 		p1.hero.health = 20
@@ -126,7 +126,7 @@ class TestPriest extends TestHelper {
 		// Deal 2 damage
 		def bou = _play("Boulderfist Ogre")
 		_next_turn()
-		def kob = _play("Kobold Geomancer") // +1 Spell damage
+		_play("Kobold Geomancer") // +1 Spell damage
 		_play("Holy Smite", p2.hero)
 		assert p2.hero.health == 27
 		_play("Holy Smite", bou)
@@ -614,7 +614,7 @@ class TestPriest extends TestHelper {
 		
 		// 1 other minion
 		def bou = _play("Boulderfist Ogre")
-		def te2 = _play("Temple Enforcer", bou)
+		_play("Temple Enforcer", bou)
 		assert bou.get_max_health() == bou.max_health + 3
 		assert bou.get_health() == bou.health + 3
 	}

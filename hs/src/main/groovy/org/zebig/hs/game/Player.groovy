@@ -314,11 +314,11 @@ class Player extends ScriptObject {
 			throw new IllegalActionException("cost cannot be paid")
 		}
 
-		// if it is a spell with target, check at least one valid exists
+		// if it is a spell with target, check at least that one valid exists
 		if (c.is_a_spell() && c.get_targets != null) {
-			c.get_targets.each { Closure gt ->
+			c.get_targets.each { Closure<List<Target>> gt ->
 				if (gt != null) {
-					List<Target> possible_targets = gt.call()
+					def possible_targets = gt.call()
 					check(possible_targets.size() > 0, "no valid target")
 				}
 			}
@@ -440,8 +440,8 @@ class Player extends ScriptObject {
 			throw new IllegalActionException("${next_choices[0]} is not a valid choice (${choices})")
 		}
 		//if (howmany == 1) {
-			Log.info "      . selected: ${next_choices.getAt(0)}"
-			return next_choices.remove(0) // single value
+			Log.info "      . selected: ${next_choices.get(0)}"
+			return next_choices.remove(0) as Target // single value
 		//}
         /*
 		def result = []

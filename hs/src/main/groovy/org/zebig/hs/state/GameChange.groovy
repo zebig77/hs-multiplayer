@@ -40,7 +40,7 @@ class GameChange {
     public  HeroAttacksMinion[player_name](player_name, attacked_id, attack_damage)
     public  HeroAttacksHero[player_name](player_name, attacked_player_name, attack_damage)
     public  WeaponEquipped[card_id](player_name, card_id, name, text, attack, durability)
-    TODO  WeaponDestroyed[card_id](player_name, card_id)
+    TODO  WeaponDestroyed[player_name](player_name, card_id)
     TODO private    CardCostChanged[card_id](player_name, cost)
     TODO public     CardTransformed(old_card_detail, new_card_detail)
     TODO public     HeroPowerUsed(player_name, [target])

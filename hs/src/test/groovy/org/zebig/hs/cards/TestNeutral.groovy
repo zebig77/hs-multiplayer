@@ -1615,7 +1615,7 @@ class TestNeutral extends TestHelper {
 		def mad = _play("Mad Scientist")
 		mad.dies()
 		assert p1.secrets.size() == 1
-		assert p1.deck.cards.findAll { Card c -> c.is_a_secret }.size() == nb_secrets - 1
+		assert p1.deck.cards.findAll { (it as Card).is_a_secret }.size() == nb_secrets - 1
 	}
 
 	@Test

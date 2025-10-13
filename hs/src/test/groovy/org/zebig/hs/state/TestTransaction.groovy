@@ -409,4 +409,22 @@ class TestTransaction {
         assert ch.properties.attack == w.attack as String
         assert ch.properties.durability == w.durability as String
     }
+
+    @Test
+    void testWeaponDestroyed() {
+        _initGame()
+        _startGame()
+        _play("Doomhammer")
+        def w = p1.hero.weapon
+        assert w != null
+        w.durability = 1
+        g.begin_transaction()
+        _attack(p1.hero, p2.hero) // should break weapon
+        def lch = g.transaction.findChanges(WeaponDestroyed, p1.name)
+        assert lch.size() == 1
+        def ch = lch.first
+        assert ch.target_id == p1.name
+        assert ch.properties.player_name == p1.name
+        assert ch.properties.weapon_name == "Doomhammer"
+    }
 }

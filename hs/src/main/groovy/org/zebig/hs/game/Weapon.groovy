@@ -3,6 +3,9 @@ package org.zebig.hs.game
 import org.zebig.hs.logger.Log
 import org.zebig.hs.mechanics.Trigger
 import org.zebig.hs.mechanics.events.ItIsDestroyed
+import org.zebig.hs.state.GameChange
+
+import static org.zebig.hs.state.GameChange.Type.WeaponDestroyed
 
 
 class Weapon extends Target {
@@ -48,6 +51,10 @@ class Weapon extends Target {
 		new ItIsDestroyed(this).check()
 		controller.hero.weapon = null
         Log.info "      . ${controller.hero}'s weapon destroyed"
+        game.transaction?.record(WeaponDestroyed, controller.name, [
+                player_name: controller.name,
+                weapon_name: this.name
+        ])
 	}
 	
 }
