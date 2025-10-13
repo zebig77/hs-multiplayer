@@ -427,4 +427,22 @@ class TestTransaction {
         assert ch.properties.player_name == p1.name
         assert ch.properties.weapon_name == "Doomhammer"
     }
+
+    @Test
+    void testUsePowerChange() {
+        _initGame()
+        _startGame()
+        while (p1.hero.name != "Garrosh Hellscream") {
+            _next_turn()
+        }
+        p1.max_mana = 2
+        p1.available_mana = 2
+        g.begin_transaction()
+        p1.use_hero_power()
+        def lch = g.transaction.findChanges(HeroPowerUsed, p1.name)
+        assert lch.size() == 1
+        def ch = lch.first
+        assert ch.target_id == p1.name
+        assert ch.properties.player_name == p1.name
+    }
 }

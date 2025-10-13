@@ -466,6 +466,7 @@ class Player extends ScriptObject {
 		add_available_mana(-hero.power.cost)
         Log.info "\n- $this uses ${hero}'s power: ${hero.power.name}"
 		new ThisPowerIsUsed(hero.power).check()
+        game.transaction?.record(HeroPowerUsed, this.name, [player_name: this.name])
 		hero.power.use_counter++
 		// in case a minion has its health = 0 but remains in battlefield
 		game.remove_dead_from_battlefield()

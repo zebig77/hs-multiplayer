@@ -72,7 +72,7 @@ class PlayerAction {
 	}
 
 	static List<PlayerAction> possibleUsePowerActions(Hero h) {
-		if (h.can_use_power() == false) {
+		if (!h.can_use_power()) {
 			return []
 		}
 
@@ -93,7 +93,7 @@ class PlayerAction {
 	}
 
 	static List<PlayerAction> possibleAttackActions(Target t) {
-		if (t.can_attack() == false) {
+		if (!t.can_attack()) {
 			return []
 		}
 

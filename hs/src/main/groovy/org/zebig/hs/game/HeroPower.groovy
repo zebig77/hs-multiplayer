@@ -41,7 +41,7 @@ class HeroPower extends GameObject {
 	int getUse_counter() { state.use_counter }
 	void setUse_counter(int uc) { state.use_counter = uc }
 	
-	List<Closure> getGet_targets() { state.get_targets }
+	List<Closure<List<Target>>> getGet_targets() { state.get_targets }
 	void setGet_targets(List<Closure> gt) { state.get_targets = gt }
 
 		

@@ -10,7 +10,7 @@ import org.zebig.hs.mechanics.events.ItsCostIsEvaluated
 class Card extends Target {
 
 	List<String> druid_choices // druid
-	List<Closure> get_targets
+	List<Closure<List<Target>>> get_targets
     boolean being_copied
 
 	Card(CardDefinition cd) {
