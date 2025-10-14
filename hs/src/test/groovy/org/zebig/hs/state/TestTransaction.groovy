@@ -287,6 +287,7 @@ class TestTransaction {
         assert ch.properties.heal_amount == "2" // max_health - health before heal
         assert ch.properties.health == "4"
         assert ch.properties.max_health == "4"
+        assert ch.is_public
     }
 
     @Test
@@ -304,6 +305,7 @@ class TestTransaction {
         assert ch.properties.heal_amount == "2" // max_health - health before heal
         assert ch.properties.health == "12"
         assert ch.properties.max_health == "30"
+        assert ch.is_public
     }
 
     @Test
@@ -323,6 +325,7 @@ class TestTransaction {
         assert ch.properties.attacker_id == blu.id as String
         assert ch.properties.attacked_id == bbb.id as String
         assert ch.properties.attack_damage == "2"
+        assert ch.is_public
     }
 
     @Test
@@ -340,6 +343,7 @@ class TestTransaction {
         assert ch.properties.attacker_id == blu.id as String
         assert ch.properties.attacked_player_name == p2.name
         assert ch.properties.attack_damage == "2"
+        assert ch.is_public
     }
 
 
@@ -359,6 +363,7 @@ class TestTransaction {
         assert ch.properties.player_name == g.active_player.name
         assert ch.properties.attacked_id == bbb.id as String
         assert ch.properties.attack_damage == "2"
+        assert ch.is_public
     }
 
     @Test
@@ -376,6 +381,7 @@ class TestTransaction {
             assert ch.properties.player_name == p1.name
             assert ch.properties.attacked_player_name == p2.name
             assert ch.properties.attack_damage == "2"
+            assert ch.is_public
             g.end_transaction()
         }
         try {
@@ -407,6 +413,7 @@ class TestTransaction {
         assert ch.properties.text == w.text
         assert ch.properties.attack == w.attack as String
         assert ch.properties.durability == w.durability as String
+        assert ch.is_public
     }
 
     @Test
@@ -425,6 +432,7 @@ class TestTransaction {
         assert ch.target_id == p1.name
         assert ch.properties.player_name == p1.name
         assert ch.properties.weapon_name == "Doomhammer"
+        assert ch.is_public
     }
 
     @Test
@@ -443,6 +451,7 @@ class TestTransaction {
         def ch = lch.get(0)
         assert ch.target_id == p1.name
         assert ch.properties.player_name == p1.name
+        assert ch.is_public
     }
 
     @Test
@@ -462,6 +471,7 @@ class TestTransaction {
         assert ch.target_id == p1.name
         assert ch.properties.player_name == p1.name
         assert ch.properties.armor == "2"
+        assert ch.is_public
     }
 
     @Test
@@ -470,6 +480,8 @@ class TestTransaction {
         _startGame()
         g.begin_transaction()
         def cns = _play("Counterspell")
+        // secrets should NOT be seen as a CardPlayed events (public)
+        assert g.transaction.findChanges(CardPlayed, cns.id as String).size() == 0
         def lch = g.transaction.findChanges(SecretPlayed, cns.id as String)
         assert lch.size() == 1
         def ch = lch.get(0)
@@ -502,6 +514,38 @@ class TestTransaction {
         assert ch.properties.player_name == cns.controller.name
         assert ch.properties.text == cns.text
         assert ch.is_public
+    }
 
+    @Test
+    void testHeroFrozenChange() {
+        _initGame()
+        _startGame()
+        g.begin_transaction()
+        def fro = _play_and_target("Frostbolt", p2.hero)
+        assert p2.hero.is_frozen()
+        def lch = g.transaction.findChanges(HeroFrozen, p2.name)
+        assert lch.size() == 1
+        def ch = lch.get(0)
+        assert ch.target_id == p2.name
+        assert ch.properties.player_name == p2.name
+        assert ch.is_public
+    }
+
+    @Test
+    void testMinionFrozenChange() {
+        _initGame()
+        _startGame()
+        def bbb = _play("BootyBayBodyguard")
+        _next_turn()
+        g.begin_transaction()
+        def fro = _play_and_target("Frostbolt", bbb)
+        assert !bbb.is_dead()
+        assert bbb.is_frozen()
+        def lch = g.transaction.findChanges(MinionFrozen)
+        assert lch.size() == 1
+        def ch = lch.get(0)
+        assert ch.target_id == bbb.id as String
+        assert ch.properties.player_name == bbb.controller.name
+        assert ch.is_public
     }
 }

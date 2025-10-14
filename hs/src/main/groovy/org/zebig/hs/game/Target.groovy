@@ -350,8 +350,22 @@ class Target extends GameObject {
         }
     }
 
-    static void freeze(Target t) {
+    void freeze(Target t) {
         t?.gains(FROZEN)
+        if (t.is_a_hero()) {
+            game.transaction?.record(HeroFrozen, t.controller.name, [
+                    player_name: t.controller.name,
+                    origin_id  : this.id as String
+            ])
+
+        } else {
+            assert t.is_a_minion()
+            game.transaction?.record(MinionFrozen, t.id as String, [
+                    player_name: t.controller.name,
+                    origin_id  : this.id as String
+            ])
+        }
+
     }
 
     boolean is_frozen() {

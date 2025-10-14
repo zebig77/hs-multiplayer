@@ -370,15 +370,17 @@ class Player extends ScriptObject {
 		c.is_being_played = false
 
         if (c.is_a_spell()) {
-            game.transaction?.record(CardPlayed, c.id as String, [
-                    player_name: this.name,
-                    card_id    : c.id as String,
-                    position   : place as String,
-                    name       : c.name,
-                    type       : c.type,
-                    cost       : c.cost as String,
-                    text       : c.text,
-            ])
+            if (!c.is_a_secret) { // not to be revealed by a public change
+                game.transaction?.record(CardPlayed, c.id as String, [
+                        player_name: this.name,
+                        card_id    : c.id as String,
+                        position   : place as String,
+                        name       : c.name,
+                        type       : c.type,
+                        cost       : c.cost as String,
+                        text       : c.text,
+                ])
+            }
         }
         else {
             assert c.is_a_minion() || c.is_a_weapon()
