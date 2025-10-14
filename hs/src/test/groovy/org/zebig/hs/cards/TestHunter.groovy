@@ -1,6 +1,5 @@
 package org.zebig.hs.cards
 
-import groovy.transform.CompileStatic
 import org.zebig.hs.game.Card
 
 import org.junit.Test

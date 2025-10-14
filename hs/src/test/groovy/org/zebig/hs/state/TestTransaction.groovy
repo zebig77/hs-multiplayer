@@ -1,6 +1,5 @@
 package org.zebig.hs.state
 
-import groovy.transform.CompileStatic
 import org.junit.Test
 import org.zebig.hs.decks.GarroshDeck1
 import org.zebig.hs.decks.MalfurionDeck1
@@ -443,5 +442,24 @@ class TestTransaction {
         def ch = lch.get(0)
         assert ch.target_id == p1.name
         assert ch.properties.player_name == p1.name
+    }
+
+    @Test
+    void testArmorChange() {
+        _initGame()
+        _startGame()
+        while (p1.hero.name != "Garrosh Hellscream") {
+            _next_turn()
+        }
+        p1.max_mana = 2
+        p1.available_mana = 2
+        g.begin_transaction()
+        p1.use_hero_power()
+        def lch = g.transaction.findChanges(HeroArmorChanged, p1.name)
+        assert lch.size() == 1
+        def ch = lch.get(0)
+        assert ch.target_id == p1.name
+        assert ch.properties.player_name == p1.name
+        assert ch.properties.armor == "2"
     }
 }
