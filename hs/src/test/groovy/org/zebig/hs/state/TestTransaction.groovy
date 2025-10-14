@@ -91,13 +91,13 @@ class TestTransaction {
 
         def lch = g.transaction.findChanges(PlayerBecomesActive)
         assert lch.size() == 1
-        def ch = lch.first
+        def ch = lch.get(0)
         assert ch.target_id == p1.name
         assert ch.properties["player_name"] == p1.name
 
         def lch2 = g.transaction.findChanges(ManaChanged, p1.name)
         assert lch2.size() == 1
-        def ch2 = lch2.first
+        def ch2 = lch2.get(0)
         assert ch2.target_id ==  p1.name
         assert ch2.properties == [player_name:p1.name, max_mana:"1", available_mana:"1", overload:"0"]
 
@@ -168,7 +168,7 @@ class TestTransaction {
         def blu = _play("BluegillWarrior")
         def lch = g.transaction.findChanges(ZoneSizeChange, "zone_name", "board")
         assert lch.size() == 1
-        def ch = lch.first
+        def ch = lch.get(0)
         assert ch.target_id == "board of $p1.name"
 
         _next_turn()
@@ -195,7 +195,7 @@ class TestTransaction {
         _attack(blu, bbb) // expect p1 board size = 0 (blu died) and p2 board same size (no change)
         def lch3 = g.transaction.findChanges(ZoneSizeChange, "zone_name", "board")
         assert lch3.size() == 1
-        def ch3 = lch3.first
+        def ch3 = lch3.get(0)
         assert ch3.target_id == "board of $p1.name"
         assert ch3.properties.new_size == 0
     }
@@ -212,7 +212,7 @@ class TestTransaction {
         assert g.transaction.findChanges(ZoneSizeChange).size() == 2 // +1 hand, -1 deck
         def lch = g.transaction.findChanges(ZoneSizeChange, "zone_name", "deck")
         assert lch.size() == 1
-        def ch = lch.first
+        def ch = lch.get(0)
         assert ch.properties.new_size == p1.deck.size()
     }
 
@@ -227,7 +227,7 @@ class TestTransaction {
         _attack(blu, p2.hero)
         def lch = g.transaction.findChanges(HeroDies, p2.name)
         assert lch.size() == 1
-        def ch = lch.first
+        def ch = lch.get(0)
         assert ch.target_id == p2.name
     }
 
@@ -239,7 +239,7 @@ class TestTransaction {
         def blu = _play("BluegillWarrior")
         def lch = g.transaction.findChanges(CardPlayed, blu.id as String)
         assert lch.size() == 1
-        def ch = lch.first
+        def ch = lch.get(0)
         assert ch.target_id == blu.id as String
         assert ch.properties.player_name == p1.name
         assert ch.properties.card_id == blu.id as String
@@ -260,7 +260,7 @@ class TestTransaction {
         def arc = _play_and_target("Arcane Shot", p2.hero)
         def lch = g.transaction.findChanges(CardPlayed, arc.id as String)
         assert lch.size() == 1
-        def ch = lch.first
+        def ch = lch.get(0)
         assert ch.target_id == arc.id as String
         assert ch.properties.player_name == p1.name
         assert ch.properties.card_id == arc.id as String
@@ -280,7 +280,7 @@ class TestTransaction {
         _play("Circle of Healing") // Restore 4 Health to ALL minions.
         def lch = g.transaction.findChanges(MinionIsHealed, bbb.id as String)
         assert lch.size() == 1
-        def ch = lch.first
+        def ch = lch.get(0)
         assert ch.target_id == bbb.id as String
         assert ch.properties.player_name == p1.name
         assert ch.properties.card_id == bbb.id as String
@@ -298,7 +298,7 @@ class TestTransaction {
         _play_and_target("Drain Life", p2.hero)
         def lch = g.transaction.findChanges(HeroIsHealed, p1.name)
         assert lch.size() == 1
-        def ch = lch.first
+        def ch = lch.get(0)
         assert ch.target_id == p1.name
         assert ch.properties.player_name == p1.name
         assert ch.properties.heal_amount == "2" // max_health - health before heal
@@ -317,7 +317,7 @@ class TestTransaction {
         _attack(blu, bbb)
         def lch = g.transaction.findChanges(MinionAttacksMinion, blu.id as String)
         assert lch.size() == 1
-        def ch = lch.first
+        def ch = lch.get(0)
         assert ch.target_id == blu.id as String
         assert ch.properties.player_name == blu.controller.name
         assert ch.properties.attacker_id == blu.id as String
@@ -334,7 +334,7 @@ class TestTransaction {
         _attack(blu, p2.hero)
         def lch = g.transaction.findChanges(MinionAttacksHero, blu.id as String)
         assert lch.size() == 1
-        def ch = lch.first
+        def ch = lch.get(0)
         assert ch.target_id == blu.id as String
         assert ch.properties.player_name == blu.controller.name
         assert ch.properties.attacker_id == blu.id as String
@@ -354,7 +354,7 @@ class TestTransaction {
         _attack(g.active_player.hero as Target, bbb)
         def lch = g.transaction.findChanges(HeroAttacksMinion, g.active_player.name)
         assert lch.size() == 1
-        def ch = lch.first
+        def ch = lch.get(0)
         assert ch.target_id == g.active_player.name
         assert ch.properties.player_name == g.active_player.name
         assert ch.properties.attacked_id == bbb.id as String
@@ -371,7 +371,7 @@ class TestTransaction {
             _attack(p1.hero, p2.hero)
             def lch = g.transaction.findChanges(HeroAttacksHero, p1.name)
             assert lch.size() == 1
-            def ch = lch.first
+            def ch = lch.get(0)
             assert ch.target_id == p1.name
             assert ch.properties.player_name == p1.name
             assert ch.properties.attacked_player_name == p2.name
@@ -400,7 +400,7 @@ class TestTransaction {
         assert w != null
         def lch = g.transaction.findChanges(WeaponEquipped, p1.name)
         assert lch.size() == 1
-        def ch = lch.first
+        def ch = lch.get(0)
         assert ch.target_id == p1.name
         assert ch.properties.player_name == p1.name
         assert ch.properties.name == w.name
@@ -421,7 +421,7 @@ class TestTransaction {
         _attack(p1.hero, p2.hero) // should break weapon
         def lch = g.transaction.findChanges(WeaponDestroyed, p1.name)
         assert lch.size() == 1
-        def ch = lch.first
+        def ch = lch.get(0)
         assert ch.target_id == p1.name
         assert ch.properties.player_name == p1.name
         assert ch.properties.weapon_name == "Doomhammer"
@@ -440,7 +440,7 @@ class TestTransaction {
         p1.use_hero_power()
         def lch = g.transaction.findChanges(HeroPowerUsed, p1.name)
         assert lch.size() == 1
-        def ch = lch.first
+        def ch = lch.get(0)
         assert ch.target_id == p1.name
         assert ch.properties.player_name == p1.name
     }
