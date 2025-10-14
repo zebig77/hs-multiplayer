@@ -196,7 +196,7 @@ class TestTransaction {
         assert lch3.size() == 1
         def ch3 = lch3.get(0)
         assert ch3.target_id == "board of $p1.name"
-        assert ch3.properties.new_size == 0
+        assert ch3.properties.new_size == "0"
     }
 
     @Test
@@ -212,7 +212,7 @@ class TestTransaction {
         def lch = g.transaction.findChanges(ZoneSizeChange, "zone_name", "deck")
         assert lch.size() == 1
         def ch = lch.get(0)
-        assert ch.properties.new_size == p1.deck.size()
+        assert ch.properties.new_size == p1.deck.size() as String
     }
 
     @Test
@@ -461,5 +461,26 @@ class TestTransaction {
         assert ch.target_id == p1.name
         assert ch.properties.player_name == p1.name
         assert ch.properties.armor == "2"
+    }
+
+    @Test
+    void testSecretPlayedChange() {
+        _initGame()
+        _startGame()
+        g.begin_transaction()
+        def cns = _play("Counterspell")
+        def lch = g.transaction.findChanges(SecretPlayed, cns.id as String)
+        assert lch.size() == 1
+        def ch = lch.get(0)
+        assert ch.target_id == cns.id as String
+        assert ch.properties.player_name == p1.name
+        assert !ch.is_public
+
+        def lch2 = g.transaction.findChanges(ZoneSizeChange, "zone_name", "secrets")
+        assert lch2.size() == 1
+        def ch2 = lch2.get(0)
+        assert ch2.target_id == "secrets of $p1.name"
+        assert ch2.properties.player_name == p1.name
+        assert ch2.properties.new_size == "1"
     }
 }

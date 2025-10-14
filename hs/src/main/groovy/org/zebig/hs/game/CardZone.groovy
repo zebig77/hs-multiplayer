@@ -11,7 +11,7 @@ abstract class CardZone {
 
     Game game
     Player owner
-	def cards = [] as ObservableList
+    def cards = [] as ObservableList
     String name
     boolean visible_by_owner
     boolean visible_by_all
@@ -37,45 +37,57 @@ abstract class CardZone {
         return cards.get(index) as Card
     }
 
-	void add(Card c) {
-		this.add(0, c)
-	}
+    void add(Card c) {
+        this.add(0, c)
+    }
 
     void add(int index, Card c) {
         cards.add(index, c)
-        game.transaction?.record(ZoneSizeChange, toString(), [zone_name:name, new_size:size()])
+        game.transaction?.record(ZoneSizeChange, toString(), [
+                player_name: owner.name,
+                zone_name  : name,
+                new_size   : size() as String
+        ])
     }
 
     boolean isEmpty() {
-		return cards.isEmpty()
-	}
+        return cards.isEmpty()
+    }
 
     boolean contains(Card c) {
         return cards.contains(c)
     }
-	
-	int size() {
-		return cards.size()
-	}
+
+    int size() {
+        return cards.size()
+    }
 
     List<Card> cardsNamed(String name) {
-        return (cards as List<Card>).findAll {it.name == name }
+        return (cards as List<Card>).findAll { it.name == name }
     }
 
     List<Card> minions() {
-        return (cards as List<Card>).findAll {it.is_a_minion() }
+        return (cards as List<Card>).findAll { it.is_a_minion() }
     }
 
     void clear() {
         cards.clear()
-        game.transaction?.record(ZoneSizeChange, toString(), [zone_name:name, new_size:size()])
+        game.transaction?.record(ZoneSizeChange, toString(), [
+                player_name: owner.name,
+                zone_name  : name,
+                new_size   : size() as String
+        ])
     }
 
     Card remove(Card c) {
         if (cards.contains(c)) {
             Log.info "      . $c is removed from ${owner}'s $name"
             cards.remove(c)
-            game.transaction?.record(ZoneSizeChange, toString(), [zone_name:name, new_size:size()])
+            game.transaction?.record(ZoneSizeChange, toString(), [
+                    player_name: owner.name,
+                    zone_name  : name,
+                    new_size   : size() as String
+            ])
             return c
         }
         return null

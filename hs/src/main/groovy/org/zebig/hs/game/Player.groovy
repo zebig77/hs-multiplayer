@@ -348,7 +348,14 @@ class Player extends ScriptObject {
 
 		} else 	if (c.is_a_weapon()) {
 			hero.equip_weapon(new Weapon( c.card_definition ) )
-		}
+		} else {
+            assert c.is_a_spell()
+            if (c.is_a_secret) {
+                game.transaction?.record(SecretPlayed, c.id as String, [
+                        player_name:c.controller.name
+                ], false)
+            }
+        }
 
 		// play battlecry or spell effect
 		c.is_being_played = true // excluded from selection lists
