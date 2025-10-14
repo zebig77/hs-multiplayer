@@ -15,7 +15,6 @@ import org.zebig.hs.game.Target
 import static org.junit.Assert.fail
 import static org.zebig.hs.state.GameChange.Type.*
 
-@CompileStatic
 class TestTransaction {
 
     Game g

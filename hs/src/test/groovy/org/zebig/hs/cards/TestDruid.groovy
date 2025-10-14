@@ -10,7 +10,6 @@ import org.zebig.hs.utils.TestHelper
 import static org.junit.Assert.fail
 import static org.zebig.hs.mechanics.buffs.BuffType.getTAUNT
 
-@CompileStatic
 class TestDruid extends TestHelper {
 
     @Test

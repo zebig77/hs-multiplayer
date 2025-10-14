@@ -549,7 +549,7 @@ class Deathlord extends CardDefinition {
             def _opponent = opponent_of(this_minion.controller)
             def c = random_card(_opponent.deck.cards.findAll { (it as Card).type == 'minion' })
             if (c != null && _opponent.board.size() < 7) {
-                _opponent.deck.cards.remove(c)
+                _opponent.deck.remove(c)
                 game.summon(_opponent, c)
             }
         }

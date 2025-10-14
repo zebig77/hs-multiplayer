@@ -468,7 +468,7 @@ class TestNeutral extends TestHelper {
 	void CaptainsParrot_pirate_in_deck() {
 		// Battlecry: Put a random Pirate from your deck into your hand
 		def pirate_card = g.new_card("Bloodsail Raider")
-		p1.deck.cards.add(0,pirate_card)
+		p1.deck.add(0,pirate_card)
 		def before_hand_size = p1.hand.size()
 		_play("Captain's Parrot")
 		assert p1.hand.size() == before_hand_size + 1
@@ -792,7 +792,7 @@ class TestNeutral extends TestHelper {
 		def aob = _play("Alarm-O-Bot")
 		def abo = g.new_card("Abomination")
 		p1.hand.clear()
-		p1.deck.cards.add(0,abo) // will be drawed
+		p1.deck.add(0,abo) // will be drawed
 		_next_turn()
 		_next_turn() // aob should not swap with abo
 		assert !p1.hand.contains(aob)
@@ -1610,19 +1610,19 @@ class TestNeutral extends TestHelper {
 	@Test
 	void MadScientist_play_secret() {
         //Deathrattle: Put a Secret from your deck into the battlefield.
-		p1.deck.cards.add(g.new_card("Counterspell")) // at least one secret in deck
+		p1.deck.add(g.new_card("Counterspell")) // at least one secret in deck
 		def nb_secrets = (p1.deck.cards as List<Card>).findAll { Card c -> c.is_a_secret }.size()
 		def mad = _play("Mad Scientist")
 		mad.dies()
 		assert p1.secrets.size() == 1
-		assert p1.deck.cards.findAll { (it as Card).is_a_secret }.size() == nb_secrets - 1
+		assert nb_secrets - 1 == p1.deck.cards.findAll { (it as Card).is_a_secret }.size()
 	}
 
 	@Test
 	void MadScientist_play_no_secret() {
         //Deathrattle: Put a Secret from your deck into the battlefield.
 		def secrets = (p1.deck.cards as List<Card>).findAll { Card c -> c.is_a_secret }
-		secrets.each { p1.deck.cards.remove(it) } 
+		secrets.each { p1.deck.remove(it) } 
 		def mad = _play("Mad Scientist")
 		mad.dies()
 	}
@@ -1893,12 +1893,12 @@ class TestNeutral extends TestHelper {
 		def nerub = _play("Nerub'ar Weblord")
 		// with battlecry
 		Card abu = g.new_card("Abusive Sergeant")
-		p1.hand.cards.add(abu)
+		p1.hand.add(abu)
 		assert abu.has_battlecry()
 		assert abu.get_cost() == abu.cost + 2
 		// without battlecry
 		Card blu = g.new_card("Bluegill Warrior")
-		p1.hand.cards.add(blu)
+		p1.hand.add(blu)
 		assert blu.get_cost() == blu.cost
 		assert !blu.has_battlecry()
 		nerub.dies()

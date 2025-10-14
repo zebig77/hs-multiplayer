@@ -8,7 +8,6 @@ import org.zebig.hs.utils.TestHelper
 
 import static org.zebig.hs.mechanics.buffs.BuffType.*
 
-@CompileStatic
 class TestMage extends TestHelper {
 
 	@Test
