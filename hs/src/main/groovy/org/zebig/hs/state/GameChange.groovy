@@ -5,6 +5,7 @@ class GameChange {
     enum Type {
         CardDrawn,
         CardPlayed,
+        HeroArmorChanged,
         HeroAttacksHero,
         HeroAttacksMinion,
         HeroDies,
@@ -42,17 +43,16 @@ class GameChange {
     public  HeroAttacksHero[player_name](player_name, attacked_player_name, attack_damage)
     public  WeaponEquipped[card_id](player_name, card_id, name, text, attack, durability)
     public  WeaponDestroyed[player_name](player_name, card_id)
-    TODO public     HeroPowerUsed(player_name)
+    public  HeroPowerUsed(player_name)
     TODO public     HeroArmorChanged(player_name, armor)
     TODO private    CardCostChanged[card_id](player_name, cost)
     TODO public     CardTransformed(old_card_detail, new_card_detail)
     TODO private    SecretPlayed(card_detail)
     TODO public     SecretRevealed(card_detail)
-    TODO public     WeaponDestroyed(card_detail)
     TODO public     HealingReceived(target)
     TODO public     HeroTakesFatigue(player_name, fatigue_amount, new_hero_health)
-    TODO public     TargetFreeze(target_detail)
-    TODO public     TargetUnFreeze(target_detail)
+    TODO public     TargetFrozen(target_detail)
+    TODO public     TargetUnfrozen(target_detail)
      */
 
     Type type
