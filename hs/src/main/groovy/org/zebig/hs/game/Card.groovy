@@ -7,6 +7,8 @@ import org.zebig.hs.mechanics.events.AnyCostIsEvaluated
 import org.zebig.hs.mechanics.events.BeforePlay
 import org.zebig.hs.mechanics.events.ItsCostIsEvaluated
 
+import static org.zebig.hs.state.GameChange.Type.*
+
 class Card extends Target {
 
 	List<String> druid_choices // druid
@@ -106,6 +108,11 @@ class Card extends Target {
 			return // secrets are active only during opponent's turn
 		}
 		controller.reveal(this)
+        game.transaction?.record(SecretRevealed, this.id as String, [
+                player_name:this.controller.name,
+                text:this.text
+        ]
+        )
 		c.call()
 	}
 	

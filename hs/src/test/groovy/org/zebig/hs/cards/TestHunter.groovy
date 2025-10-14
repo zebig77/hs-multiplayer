@@ -112,7 +112,7 @@ class TestHunter extends TestHelper{
 		_next_turn()
 		_play("Counterspell")
 		_next_turn()
-		_play("Arcane Shot", p2.hero) // should be countered
+		_play_and_target("Arcane Shot", p2.hero) // should be countered
 		assert p2.hero.health == 30
 		assert p2.secrets.size() == 0
 		// not one of your secrets => should have no effect
