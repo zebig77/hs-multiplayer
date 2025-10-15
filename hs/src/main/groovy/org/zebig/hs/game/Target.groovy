@@ -697,16 +697,15 @@ class Target extends GameObject {
         println "      . new health for $this = ${get_health()}"
         check_enrage_status()
         if (this.is_a_minion()) {
-            game.transaction?.record(MinionIsHealed, id as String, [
+            game.transaction?.record(MinionHealed, id as String, [
                     player_name: this.controller.name,
-                    card_id    : this.id as String,
                     heal_amount: amount as String,
                     health     : health as String,
                     max_health : max_health as String
             ])
         } else {
             assert this.is_a_hero()
-            game.transaction?.record(HeroIsHealed, this.controller.name, [
+            game.transaction?.record(HeroHealed, this.controller.name, [
                     player_name: this.controller.name,
                     heal_amount: amount as String,
                     health     : health as String,

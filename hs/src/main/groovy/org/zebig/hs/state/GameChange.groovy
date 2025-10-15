@@ -10,7 +10,7 @@ class GameChange {
         HeroAttacksMinion,
         HeroDies,
         HeroFrozen,
-        HeroIsHealed,
+        HeroHealed,
         HeroPowerUsed,
         HeroTakesDamage,
         HeroUnfrozen,
@@ -19,7 +19,7 @@ class GameChange {
         MinionAttacksHero,
         MinionDies,
         MinionFrozen,
-        MinionIsHealed,
+        MinionHealed,
         MinionTakesDamage,
         MinionUnfrozen,
         PlayerBecomesActive,
@@ -41,8 +41,8 @@ class GameChange {
     public  HeroDies(player_name)
     public  MinionPlayed[card_id](player_name, card_id, position, name, type, cost, text, attack, max_health))
     public  SpellPlayed[card_id](player_name, card_id, position, name, type, cost, text)) note: non-secret spells
-    public  MinionIsHealed[card_id](player_name, card_id, health, heal_amount, max_health)
-    public  HeroIsHealed[player_name](heal_amount, health, max_health)
+    public  MinionHealed[card_id](player_name, card_id, health, heal_amount, max_health)
+    public  HeroHealed[player_name](heal_amount, health, max_health)
     public  MinionAttacksMinion[attacker_id](player_name, attacker_id, attacked_id, attack_damage)
     public  MinionAttacksHero[attacker_id](player_name, attacker_id, attacked_player_name, attack_damage)
     public  HeroAttacksMinion[player_name](player_name, attacked_id, attack_damage)
@@ -54,12 +54,11 @@ class GameChange {
     private SecretPlayed[card_id](player_name, card_id)
     public  SecretRevealed(card_detail)
     public  MinionFrozen[target_id](player_name, target_it, origin_id)
-    public  HeroFrozen[player_name](player_name, target_it, origin_id)
+    public  HeroFrozen[player_name](player_name, origin_id)
     public  HeroUnfrozen[player_name](player_name)
     public  MinionUnfrozen[target_id](player_name)
     TODO private    CardCostChanged[card_id](player_name, cost)
     TODO public     CardTransformed(old_card_detail, new_card_detail)
-    TODO public     HealingReceived(target)
     TODO public     HeroTakesFatigue(player_name, fatigue_amount, new_hero_health)
      */
 

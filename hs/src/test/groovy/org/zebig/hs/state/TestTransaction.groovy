@@ -278,12 +278,11 @@ class TestTransaction {
         _play_and_target("Arcane Shot", bbb)
         g.begin_transaction()
         _play("Circle of Healing") // Restore 4 Health to ALL minions.
-        def lch = g.transaction.findChanges(MinionIsHealed, bbb.id as String)
+        def lch = g.transaction.findChanges(MinionHealed, bbb.id as String)
         assert lch.size() == 1
         def ch = lch.get(0)
         assert ch.target_id == bbb.id as String
         assert ch.properties.player_name == p1.name
-        assert ch.properties.card_id == bbb.id as String
         assert ch.properties.heal_amount == "2" // max_health - health before heal
         assert ch.properties.health == "4"
         assert ch.properties.max_health == "4"
@@ -297,7 +296,7 @@ class TestTransaction {
         p1.hero.health = 10
         g.begin_transaction()
         _play_and_target("Drain Life", p2.hero)
-        def lch = g.transaction.findChanges(HeroIsHealed, p1.name)
+        def lch = g.transaction.findChanges(HeroHealed, p1.name)
         assert lch.size() == 1
         def ch = lch.get(0)
         assert ch.target_id == p1.name
@@ -579,7 +578,7 @@ class TestTransaction {
         _startGame()
         def bbb = _play("BootyBayBodyguard")
         _next_turn()
-        def fro = _play_and_target("Frostbolt", bbb)
+        _play_and_target("Frostbolt", bbb)
         assert !bbb.is_dead()
         assert bbb.is_frozen()
 
