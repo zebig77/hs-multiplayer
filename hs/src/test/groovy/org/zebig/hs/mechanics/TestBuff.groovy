@@ -77,7 +77,7 @@ class TestBuff extends TestHelper {
         shi.gains("+2 Health")
         assert shi.buffs.size() == 3
         assert shi.get_health() == before_health + 4
-        assert (shi.buffs as List<Buff>).findAll { it.buff_type.name == "+2 health"}.size() == 2
+        assert (shi.buffs as List<Buff>).findAll { it.type.name == "+2 health"}.size() == 2
     }
 
 }

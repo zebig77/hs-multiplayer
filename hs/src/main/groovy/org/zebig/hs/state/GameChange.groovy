@@ -10,9 +10,10 @@ class GameChange {
         HeroAttacksMinion,
         HeroDies,
         HeroFrozen,
+        HeroIsHealed,
         HeroPowerUsed,
         HeroTakesDamage,
-        HeroIsHealed,
+        HeroUnfrozen,
         ManaChanged,
         MinionAttacksMinion,
         MinionAttacksHero,
@@ -20,6 +21,7 @@ class GameChange {
         MinionFrozen,
         MinionIsHealed,
         MinionTakesDamage,
+        MinionUnfrozen,
         PlayerBecomesActive,
         SecretPlayed,
         SecretRevealed,
@@ -49,10 +51,12 @@ class GameChange {
     public  WeaponDestroyed[player_name](player_name, card_id)
     public  HeroPowerUsed(player_name)
     public  HeroArmorChanged(player_name, armor)
-    private    SecretPlayed[card_id](player_name, card_id)
-    public     SecretRevealed(card_detail)
-    TODO public     TargetFrozen[target_id](player_name, target_it)
-    TODO public     TargetUnfrozen(target_detail)
+    private SecretPlayed[card_id](player_name, card_id)
+    public  SecretRevealed(card_detail)
+    public  MinionFrozen[target_id](player_name, target_it, origin_id)
+    public  HeroFrozen[player_name](player_name, target_it, origin_id)
+    public  HeroUnfrozen[player_name](player_name)
+    public  MinionUnfrozen[target_id](player_name)
     TODO private    CardCostChanged[card_id](player_name, cost)
     TODO public     CardTransformed(old_card_detail, new_card_detail)
     TODO public     HealingReceived(target)

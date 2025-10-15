@@ -63,7 +63,7 @@ class Target extends GameObject {
     Buff gains(BuffType bt) {
         if (bt in STATELESS_BUFFS) {
             // ensure target does not already have it
-            def found = (buffs as List<Buff>).find { it.buff_type == bt }
+            def found = (buffs as List<Buff>).find { it.type == bt }
             if (found) {
                 return found
             }
@@ -89,16 +89,16 @@ class Target extends GameObject {
     }
 
     def remove_first_buff(BuffType bt) {
-        remove_buff((buffs as List<Buff>).find { Buff b -> b.buff_type == bt })
+        remove_buff((buffs as List<Buff>).find { Buff b -> b.type == bt })
     }
 
     def remove_first_buff(String buff_type_name) {
         def btn = normalized(buff_type_name)
-        remove_buff((buffs as List<Buff>).find { Buff b -> b.buff_type.name == btn })
+        remove_buff((buffs as List<Buff>).find { Buff b -> b.type.name == btn })
     }
 
     def remove_all_buff(BuffType bt) {
-        def to_remove = (buffs as List<Buff>).findAll { it.buff_type == bt }
+        def to_remove = (buffs as List<Buff>).findAll { it.type == bt }
         to_remove.each { remove_buff(it) }
     }
 
@@ -106,6 +106,15 @@ class Target extends GameObject {
         if (b != null) {
             b.remove_effect()
             this.buffs.remove(b)
+            if (b.type == FROZEN) {
+                if (this.is_a_hero()) {
+                    game.transaction?.record(HeroUnfrozen, controller.name, [player_name: controller.name])
+                }
+                else {
+                    assert this.is_a_minion()
+                    game.transaction?.record(MinionUnfrozen, id as String, [player_name: controller.name])
+                }
+            }
         }
     }
 
@@ -163,7 +172,7 @@ class Target extends GameObject {
                 return e.has_buff    // return
             }
         }
-        return get_buffs().find { (it.buff_type == buff_type) } != null
+        return get_buffs().find { (it.type == buff_type) } != null
     }
 
     boolean has_buff(String buff_name) {

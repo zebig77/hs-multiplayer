@@ -10,7 +10,7 @@ import java.beans.PropertyChangeEvent
 
 class Buff extends ScriptObject {
 	
-	final BuffType buff_type
+	final BuffType type
 	Target target
 	
 	int attack_increase = 0
@@ -22,9 +22,9 @@ class Buff extends ScriptObject {
 	
 	def triggers = [] as ObservableList
 
-	Buff(BuffType buff_type, Target target) {
+	Buff(BuffType type, Target target) {
         super(target.game)
-		this.buff_type = buff_type
+		this.type = type
 		this.target = target
         this.triggers.addPropertyChangeListener {
             process_triggers_change(it)
@@ -45,7 +45,7 @@ class Buff extends ScriptObject {
 	}
 
 	String toString() {
-		return buff_type.name
+		return type.name
 	}
 
 	def until_end_of_turn() {

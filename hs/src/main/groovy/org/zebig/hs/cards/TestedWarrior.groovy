@@ -4,7 +4,6 @@ import org.zebig.hs.game.CardDefinition
 import org.zebig.hs.game.Game
 import org.zebig.hs.game.Target
 import org.zebig.hs.mechanics.buffs.Buff
-import org.zebig.hs.mechanics.buffs.BuffType
 
 import static org.zebig.hs.mechanics.buffs.BuffType.*
 
@@ -107,7 +106,7 @@ class CommandingShout extends CardDefinition {
             def spell_controller = you
             your_hero.when_a_buff_list_is_evaluated("check $text") {
                 if (that_target.is_a_minion() && that_minion.controller == spell_controller) {
-                    if (that_buff_list.find { it.buff_type == CANNOT_BE_REDUCED_BELOW_1_HEALTH } == null) {
+                    if (that_buff_list.find { it.type == CANNOT_BE_REDUCED_BELOW_1_HEALTH } == null) {
                         that_buff_list.add(new Buff(CANNOT_BE_REDUCED_BELOW_1_HEALTH, that_target))
                     }
                 }

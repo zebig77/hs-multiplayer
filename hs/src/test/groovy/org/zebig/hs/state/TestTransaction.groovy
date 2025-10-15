@@ -528,6 +528,7 @@ class TestTransaction {
         def ch = lch.get(0)
         assert ch.target_id == p2.name
         assert ch.properties.player_name == p2.name
+        assert ch.properties.origin_id == fro.id as String
         assert ch.is_public
     }
 
@@ -542,6 +543,54 @@ class TestTransaction {
         assert !bbb.is_dead()
         assert bbb.is_frozen()
         def lch = g.transaction.findChanges(MinionFrozen)
+        assert lch.size() == 1
+        def ch = lch.get(0)
+        assert ch.target_id == bbb.id as String
+        assert ch.properties.player_name == bbb.controller.name
+        assert ch.properties.origin_id == fro.id as String
+        assert ch.is_public
+    }
+
+    @Test
+    void testHeroUnfrozenChange() {
+        _initGame()
+        _startGame()
+        _play_and_target("Frostbolt", p2.hero)
+        assert p2.hero.is_frozen()
+        def frozen_hero = p2.hero
+
+        _next_turn()
+        assert frozen_hero.is_frozen()
+
+        g.begin_transaction()
+        _next_turn() // hero should be unfrozen
+        assert !frozen_hero.is_frozen()
+        def lch = g.transaction.findChanges(HeroUnfrozen, p2.name)
+        assert lch.size() == 1
+        def ch = lch.get(0)
+        assert ch.target_id == p2.name
+        assert ch.properties.player_name == p2.name
+        assert ch.is_public
+    }
+
+    @Test
+    void testMinionUnfrozenChange() {
+        _initGame()
+        _startGame()
+        def bbb = _play("BootyBayBodyguard")
+        _next_turn()
+        def fro = _play_and_target("Frostbolt", bbb)
+        assert !bbb.is_dead()
+        assert bbb.is_frozen()
+
+        _next_turn()
+        assert bbb.is_frozen()
+
+        g.begin_transaction()
+        _next_turn() // bbb should be unfrozen
+        assert !bbb.is_frozen()
+
+        def lch = g.transaction.findChanges(MinionUnfrozen, bbb.id as String)
         assert lch.size() == 1
         def ch = lch.get(0)
         assert ch.target_id == bbb.id as String
