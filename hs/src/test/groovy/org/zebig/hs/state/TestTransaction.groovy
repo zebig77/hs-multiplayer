@@ -596,4 +596,24 @@ class TestTransaction {
         assert ch.properties.player_name == bbb.controller.name
         assert ch.is_public
     }
+
+    @Test
+    void testHeroTakesFatigue() {
+        _initGame()
+        _startGame()
+        p1.deck.clear()
+        g.begin_transaction()
+        p1.draw(1)
+        def lch = g.transaction.findChanges(HeroTakesFatigue, p1.name)
+        assert lch.size() == 1
+        def ch = lch.get(0)
+        assert ch.target_id == p1.name
+        assert ch.properties.player_name == p1.name
+        assert ch.is_public
+        g.end_transaction()
+        g.begin_transaction()
+        p1.draw(2)
+        def lch2 = g.transaction.findChanges(HeroTakesFatigue, p1.name)
+        assert lch2.size() == 1 // only 1 message even if several fatigue taken
+    }
 }

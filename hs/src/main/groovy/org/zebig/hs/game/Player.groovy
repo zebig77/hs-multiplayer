@@ -139,7 +139,6 @@ class Player extends ScriptObject {
 	}
 
 	Card create_secret(Card c) {
-		Log.info "      . adding $c to ${this}'s secrets"
 		secrets.add(c)
 		new ItComesInPlay(c).check()
 		return c
@@ -205,6 +204,9 @@ class Player extends ScriptObject {
 				fatigue += 1
 				Log.info "      . fatigue = $fatigue !"
 				hero.receive_damage(fatigue)
+                game.transaction?.record(HeroTakesFatigue, this.name, [
+                        player_name: this.name
+                ])
 				game.check_end_of_game()
 			}
 		}

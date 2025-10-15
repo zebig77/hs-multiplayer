@@ -13,6 +13,7 @@ class GameChange {
         HeroHealed,
         HeroPowerUsed,
         HeroTakesDamage,
+        HeroTakesFatigue,
         HeroUnfrozen,
         ManaChanged,
         MinionAttacksMinion,
@@ -57,9 +58,9 @@ class GameChange {
     public  HeroFrozen[player_name](player_name, origin_id)
     public  HeroUnfrozen[player_name](player_name)
     public  MinionUnfrozen[target_id](player_name)
+    TODO public     HeroTakesFatigue[player_name](player_name)
     TODO private    CardCostChanged[card_id](player_name, cost)
     TODO public     CardTransformed(old_card_detail, new_card_detail)
-    TODO public     HeroTakesFatigue(player_name, fatigue_amount, new_hero_health)
      */
 
     Type type
