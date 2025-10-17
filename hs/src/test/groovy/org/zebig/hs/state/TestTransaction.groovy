@@ -41,6 +41,9 @@ class TestTransaction {
         g.start()
         p1 = g.active_player
         p2 = g.passive_player
+        p1.doMulligan([])
+        p2.doMulligan([])
+        g.start_turn()
     }
 
     def _next_turn() {

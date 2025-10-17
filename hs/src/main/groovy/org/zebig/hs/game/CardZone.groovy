@@ -58,6 +58,14 @@ abstract class CardZone {
         return cards.contains(c)
     }
 
+    void shuffle() {
+        cards.shuffle()
+    }
+
+    Card findById(String card_id) {
+        return (cards as List<Card>).find { card_id == it.id as String }
+    }
+
     int size() {
         return cards.size()
     }

@@ -289,7 +289,7 @@ class TestWarlock extends TestHelper {
 		
 		_play("Sacrificial Pact", p2.hero)
 		assert p2.hero.is_dead()	
-		assert g.is_ended	
+		assert g.is_ended()
 	}
 	
 	
@@ -383,7 +383,7 @@ class TestWarlock extends TestHelper {
 		
 		_play("Sacrificial Pact", p2.hero)
 		assert p2.hero.is_dead()
-		assert g.is_ended
+		assert g.is_ended()
 	}
 	
 	@Test

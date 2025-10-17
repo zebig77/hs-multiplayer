@@ -8,10 +8,18 @@ import org.zebig.hs.utils.RandomGenerator
 
 import java.beans.PropertyChangeEvent
 
+import static org.zebig.hs.game.Game.Phase.*
 import static org.zebig.hs.mechanics.buffs.BuffType.*
 import static org.zebig.hs.state.GameChange.Type.*
 
 class Game {
+
+    enum Phase {
+        WAITING_FOR_PLAYERS,
+        WAITING_FOR_MULLIGAN,
+        IN_PLAY,
+        GAME_ENDED
+    }
 
     RandomGenerator random
     CardLibrary card_library
@@ -19,7 +27,6 @@ class Game {
 
     // Unique identifier for this match instance
     final String gameId = UUID.randomUUID().toString()
-    private long seq = 0L
 
     def state = [:] as ObservableMap
     GameObject scope // game-wide events are attached to this scope
@@ -32,14 +39,14 @@ class Game {
         random = new RandomGenerator(random_seed)
         next_id = 100 // 1-99 reserved for heroes and deck cards
         play_id = 1
-        is_started = false
-        is_ended = false
         turn_timeout = 90
         feugen_died = false
         stalagg_died = false
         state.addPropertyChangeListener {
             process_state_change(it)
         }
+        seq = 0
+        phase = WAITING_FOR_PLAYERS
     }
 
     void process_state_change(PropertyChangeEvent event) {
@@ -63,10 +70,7 @@ class Game {
 
         players.add(p1)
         players.add(p2)
-    }
-
-    long nextSeq() {
-        return ++seq
+        phase = WAITING_FOR_MULLIGAN
     }
 
     void begin_transaction() {
@@ -96,6 +100,16 @@ class Game {
         transaction = null
     }
 
+    Phase getPhase() { state.phase }
+    void setPhase(Phase phase) { state.phase = phase }
+
+    long getSeq() { state.seq }
+    void setSeq(long seq) { state.seq = seq }
+    void nextSeq() { state.seq = state.seq +1 }
+
+    boolean is_started() { phase = IN_PLAY }
+    boolean is_ended() { phase == GAME_ENDED  }
+
     boolean getFeugen_died() { state.feugen_died }
 
     void setFeugen_died(boolean b) { state.feugen_died = b }
@@ -111,14 +125,6 @@ class Game {
     int getPlay_id() { state.play_id }
 
     void setPlay_id(int pi) { state.play_id = pi }
-
-    boolean getIs_started() { state.is_started }
-
-    void setIs_started(boolean is) { state.is_started = is }
-
-    boolean getIs_ended() { state.is_ended }
-
-    void setIs_ended(boolean ie) { state.is_ended = ie }
 
     int getTurn_timeout() { state.turn_timeout }
 
@@ -141,7 +147,6 @@ class Game {
         if (!players[0].hero.is_dead() && !players[1].hero.is_dead()) {
             return // not ended
         }
-        is_ended = true
         Log.info ""
         def win_message
         if (players[0].hero.is_dead() && players[1].hero.is_dead()) {
@@ -157,8 +162,9 @@ class Game {
         end_game()
     }
 
-    static void end_game() {
+    void end_game() {
         Log.info "---- end of game"
+        phase = GAME_ENDED
     }
 
     void end_turn() {
@@ -201,6 +207,14 @@ class Game {
     }
 
     void start_turn() {
+        if (phase == WAITING_FOR_MULLIGAN) {
+            assert active_player.mulligan_done
+            assert passive_player.mulligan_done
+            phase = IN_PLAY
+        }
+
+        assert phase == IN_PLAY
+
         Log.info "\n---- ${active_player}'s turn begins"
 
         turn_timeout = 90 // default timeout, can be changed by Nozdormu
@@ -250,6 +264,8 @@ class Game {
     }
 
     void player_attacks(Target attacker, Target attacked) {
+        assert phase == IN_PLAY
+
         if (attacker.controller == attacked.controller) {
             throw new IllegalActionException("$attacker and $attacked have the same controller")
         }
@@ -510,6 +526,7 @@ class Game {
     }
 
     def next_turn() {
+        assert phase == IN_PLAY
         end_turn()
         start_turn()
     }
@@ -519,8 +536,9 @@ class Game {
     }
 
     void start() {
+        assert phase == WAITING_FOR_MULLIGAN
         players.each { Player p ->
-            p.deck.cards.shuffle()
+            p.deck.shuffle()
             p.max_mana = 0
             p.overload = 0
             p.available_mana = 0
@@ -533,10 +551,6 @@ class Game {
 - $passive_player plays second with ${passive_player.hero}"""
         active_player.draw(3)
         passive_player.draw(4)
-        // TODO: each player can discard any number of cards and have them replaced
-        passive_player.hand.add(new_card("The Coin"))
-        is_started = true
-        start_turn()
     }
 
     // single pick

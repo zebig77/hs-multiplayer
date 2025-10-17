@@ -17,6 +17,8 @@ import org.zebig.hs.mechanics.events.SpellTargetSelected
 import org.zebig.hs.mechanics.events.ThisPowerIsUsed
 import java.beans.PropertyChangeEvent
 
+import static org.zebig.hs.game.Game.Phase.IN_PLAY
+import static org.zebig.hs.game.Game.Phase.WAITING_FOR_MULLIGAN
 import static org.zebig.hs.state.GameChange.Type.*
 
 class Player extends ScriptObject {
@@ -28,6 +30,7 @@ class Player extends ScriptObject {
 	Deck deck
 	Secrets secrets
 	PlayerArtefact artefact // container for player's triggers
+    boolean mulligan_done
 
 	// simulates player's answers for tests
 	def next_choices = []
@@ -47,6 +50,7 @@ class Player extends ScriptObject {
         this.state.addPropertyChangeListener {
             process_state_change(it)
         }
+        this.mulligan_done = false
 	}
 
     void process_state_change(PropertyChangeEvent event) {
@@ -59,6 +63,27 @@ class Player extends ScriptObject {
 
     Hero getHero() { state.hero }
 	void setHero(Hero h) { state.hero = h; h.controller = this }
+
+    void doMulligan( List<String> card_ids ) {
+        assert game.phase == WAITING_FOR_MULLIGAN
+        card_ids.each {
+            // check cards in hand
+            Card c = hand.findById(it)
+            assert c != null
+            // put selected cards back in deck
+            hand.remove(c)
+            deck.add(c)
+        }
+        if (card_ids != []) {
+            // draw new cards
+            draw(card_ids.size())
+            deck.shuffle()
+        }
+        if (game.passive_player == this) {
+            hand.add(game.new_card("The Coin"))
+        }
+        mulligan_done = true
+    }
 
 	int getOverload() { default0(state.overload) }
 	void setOverload(int o) { state.overload = o }
@@ -273,6 +298,7 @@ class Player extends ScriptObject {
 	}
 
 	void init_turn() {
+        assert game.phase == IN_PLAY
 		add_max_mana(1)
 		available_mana = max_mana - overload
 		overload = 0
@@ -299,6 +325,8 @@ class Player extends ScriptObject {
 
 	/** play a card from hand, with place specified */
 	Card play(Card c, int place) {
+
+        assert game.phase == IN_PLAY
 
 		// check that card can be played
 		Log.info "\n- $this plays $c"
@@ -470,6 +498,8 @@ class Player extends ScriptObject {
 	}
 
 	def use_hero_power() {
+        assert game.phase == IN_PLAY
+
 		StringBuilder reason = new StringBuilder()
 		if (!hero.can_use_power(reason)) {
 			throw new IllegalActionException("Cannot use power (${reason.toString()})")

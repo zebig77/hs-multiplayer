@@ -8,7 +8,7 @@ import static org.junit.Assert.fail
 import static org.zebig.hs.mechanics.buffs.BuffType.*
 
 class TestGame extends TestHelper {
-	
+
 	@Test
 	void Game_attack_fail_because_just_summoned() {
 		def c = _play("Angry Chicken")
@@ -210,8 +210,8 @@ class TestGame extends TestHelper {
 	void Game_init() {
 		assert g != null
 		assert g.players.size() == 2
-		assert g.is_started
-		assert !g.is_ended
+		assert g.is_started()
+		assert !g.is_ended()
 
 	}
 
@@ -275,12 +275,12 @@ class TestGame extends TestHelper {
 	
 	@Test
 	void hero_dies() {
-		assert !g.is_ended
+		assert !g.is_ended()
 		p2.hero.health = 2
 		def blu = _play("Bluegill Warrior")
 		_attack(blu, p2.hero)
 		assert p2.hero.is_dead()
-		assert g.is_ended
+		assert g.is_ended()
 	}
 
 	@Test
