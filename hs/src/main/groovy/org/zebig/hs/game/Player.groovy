@@ -66,19 +66,23 @@ class Player extends ScriptObject {
 
     void doMulligan( List<String> card_ids ) {
         assert game.phase == WAITING_FOR_MULLIGAN
-        card_ids.each {
-            // check cards in hand
-            Card c = hand.findById(it)
-            assert c != null
-            // put selected cards back in deck
-            hand.remove(c)
-            deck.add(c)
-        }
         if (card_ids != []) {
             // draw new cards
-            draw(card_ids.size())
-            deck.shuffle()
+            Log.info "      . Mulligan : $name redraws ${card_ids.size()} cards"
+            card_ids.each {
+                // check cards in hand
+                Card c = hand.findById(it)
+                assert c != null
+                // put selected cards back in deck
+                hand.remove(c)
+                draw(1)
+                deck.add(c)
+            }
         }
+        else {
+            Log.info "      . Mulligan : $name keeps all cards in hand"
+        }
+
         if (game.passive_player == this) {
             hand.add(game.new_card("The Coin"))
         }
