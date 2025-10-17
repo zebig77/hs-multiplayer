@@ -520,7 +520,7 @@ class Target extends GameObject {
         if (this.controller == null) {
             return false
         }
-        return controller.board.cards.contains(this as Card)
+        return controller.board.contains(this as Card)
     }
 
     boolean is_dead() {

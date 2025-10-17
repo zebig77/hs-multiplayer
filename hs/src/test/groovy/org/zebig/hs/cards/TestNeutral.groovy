@@ -707,6 +707,9 @@ class TestNeutral extends TestHelper {
 		def dt = _play("Deathlord")
 		def before_deck_size = p2.deck.size()
 		assert p2.board.size() == 0
+        if (p2.deck.minions() == []) {
+            p2.deck.add(g.new_card("Leper Gnome"))
+        }
 		dt.dies()
 		assert p2.deck.size() == before_deck_size -1
 		assert p2.board.size() == 1

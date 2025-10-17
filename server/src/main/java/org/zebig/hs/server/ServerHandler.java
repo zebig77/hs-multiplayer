@@ -7,16 +7,6 @@ public class ServerHandler extends SimpleChannelInboundHandler<GameProto.ClientM
 
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, GameProto.ClientMessage msg) throws Exception {
-        if (msg.hasCreateMatch()) {
-            Match match = MatchManager.createMatch(ctx.channel());
-            System.out.println("Created match " + match.getMatchId());
-            GameProto.MatchCreated created = GameProto.MatchCreated.newBuilder()
-                    .setMatchId(match.getMatchId())
-                    .build();
-            ctx.writeAndFlush(GameProto.ServerMessage.newBuilder().setMatchCreated(created).build());
-            return;
-        }
-
         if (msg.hasPlayCard()) {
             GameProto.PlayCard play = msg.getPlayCard();
             if (play.getCardId() == null || play.getCardId().isEmpty()) {
@@ -57,19 +47,6 @@ public class ServerHandler extends SimpleChannelInboundHandler<GameProto.ClientM
                 }
             }
             match.nextTurn();
-            return;
-        }
-
-        if (msg.hasChat()) {
-            GameProto.ChatMessage chat = msg.getChat();
-            Match match = MatchManager.getMatch(chat.getMatchId());
-            if (match != null) {
-                for (Channel c : match.getPlayers()) {
-                    if (c != ctx.channel()) {
-                        c.writeAndFlush(GameProto.ServerMessage.newBuilder().setChat(chat).build());
-                    }
-                }
-            }
             return;
         }
 

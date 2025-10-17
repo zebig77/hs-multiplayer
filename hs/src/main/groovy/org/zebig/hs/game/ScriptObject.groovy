@@ -296,14 +296,23 @@ abstract class ScriptObject {
 	}
 	
 	Card random_card(List<Card> choices) {
+        if (choices.size() < 1) {
+            return null
+        }
 		return game.random_pick(choices) as Card
 	}
 
 	<T> T random_pick(List<T> choices) {
+        if (choices.size() < 1) {
+            return null
+        }
 		return game.random_pick(choices) as T
 	}
 
 	Object random_pick(int count, List choices) {
+        if (choices.size() < count) {
+            return null
+        }
 		return game.random_pick(count, choices)
 	}
 

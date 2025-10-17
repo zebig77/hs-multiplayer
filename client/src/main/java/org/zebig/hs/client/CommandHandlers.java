@@ -39,23 +39,6 @@ public class CommandHandlers {
         }
     }
 
-    public static void handleChat(String[] parts, Channel channel) {
-        if (parts.length < 4) {
-            System.out.println("Usage: chat <match_id> from=<name> text=<message>");
-            return;
-        }
-        String matchId = parts[1];
-        Map<String, String> named = CommandParser.parseNamedArgs(parts, 2);
-        String from = named.get("from");
-        String text = named.get("text");
-        try {
-            GameProto.ClientMessage msg = MessageBuilderHelper.buildChatMessage(matchId, from, text);
-            channel.writeAndFlush(msg);
-        } catch (IllegalArgumentException e) {
-            System.out.println("ERROR: " + e.getMessage());
-        }
-    }
-
     public static void handleCreate(String[] parts, Channel channel) {
         Map<String, String> named = CommandParser.parseNamedArgs(parts, 1);
         String mode = named.get("mode");

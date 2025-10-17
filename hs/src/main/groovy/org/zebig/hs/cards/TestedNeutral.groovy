@@ -4,14 +4,9 @@ import org.zebig.hs.game.Card
 import org.zebig.hs.game.CardDefinition
 import org.zebig.hs.game.Game
 import org.zebig.hs.logger.Log
-import org.zebig.hs.mechanics.buffs.BuffType
-
-import static org.zebig.hs.mechanics.buffs.BuffType.*
-import static org.zebig.hs.mechanics.buffs.BuffType.CANNOT_BE_TARGETED_BY_SPELL_OR_POWER
-import static org.zebig.hs.mechanics.buffs.BuffType.CHARGE
-
 import org.zebig.hs.mechanics.events.ItIsDestroyed
 
+import static org.zebig.hs.mechanics.buffs.BuffType.*
 
 class Abomination extends CardDefinition {
     Abomination(Game game) {
@@ -547,7 +542,7 @@ class Deathlord extends CardDefinition {
         text = 'Taunt. Deathrattle: Your opponent puts a minion from their deck into the battlefield.'
         when_it_is_destroyed("Deathrattle: Your opponent puts a minion from their deck into the battlefield.") {
             def _opponent = opponent_of(this_minion.controller)
-            def c = random_card(_opponent.deck.cards.findAll { (it as Card).type == 'minion' })
+            def c = random_card(_opponent.deck.minions())
             if (c != null && _opponent.board.size() < 7) {
                 _opponent.deck.remove(c)
                 game.summon(_opponent, c)

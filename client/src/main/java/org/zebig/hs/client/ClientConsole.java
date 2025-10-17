@@ -11,7 +11,6 @@ import io.netty.handler.codec.protobuf.ProtobufEncoder;
 import io.netty.handler.codec.protobuf.ProtobufVarint32FrameDecoder;
 import io.netty.handler.codec.protobuf.ProtobufVarint32LengthFieldPrepender;
 
-import java.util.Map;
 import java.util.Scanner;
 
 public class ClientConsole {
@@ -37,15 +36,13 @@ public class ClientConsole {
                              .addLast(new SimpleChannelInboundHandler<GameProto.ServerMessage>() {
                                  @Override
                                  protected void channelRead0(ChannelHandlerContext ctx, GameProto.ServerMessage msg) {
-                                     if (msg.hasMatchCreated()) {
-                                         System.out.println("Match created with ID: " + msg.getMatchCreated().getMatchId());
-                                     } else if (msg.hasChat()) {
-                                         System.out.println("[" + msg.getChat().getMatchId() + "] " + msg.getChat().getFrom() + ": " + msg.getChat().getText());
-                                     } else if (msg.hasAck()) {
-                                         System.out.println("SERVER: " + msg.getAck().getMsg());
-                                     } else {
-                                         System.out.println("SERVER: " + msg);
-                                     }
+//                                     if (msg.hasMatchCreated()) {
+//                                         System.out.println("Match created with ID: " + msg.getMatchCreated().getMatchId());
+//                                     } else if (msg.hasAck()) {
+//                                         System.out.println("SERVER: " + msg.getAck().getMsg());
+//                                     } else {
+//                                         System.out.println("SERVER: " + msg);
+//                                     }
                                  }
                              });
                  }
@@ -81,8 +78,6 @@ public class ClientConsole {
         String command = parts[0].toLowerCase();
         switch (command) {
             case "play" -> CommandHandlers.handlePlay(parts, channel);
-            case "chat" -> CommandHandlers.handleChat(parts, channel);
-            case "create" -> CommandHandlers.handleCreate(parts, channel);
             case "join" -> CommandHandlers.handleJoin(parts, channel);
             default -> System.out.println("Unknown command: " + command);
         }

@@ -485,7 +485,7 @@ class Game {
     def possible_actions() {
         List<PlayerAction> pa = []
         // playable cards
-        active_player.hand.cards.each { Card c ->
+        (active_player.hand.cards as List<Card>).each { Card c ->
             pa += PlayerAction.possiblePlayCardActions(c)
         }
         // minion attacks
@@ -512,13 +512,6 @@ class Game {
     }
 
     Card summon(Player p, String card_name) {
-        if (card_name == null) {
-            return null
-        }
-        return summon(p, new_card(card_name))
-    }
-
-    Card summon(Player p, String card_name, int place) {
         if (card_name == null) {
             return null
         }

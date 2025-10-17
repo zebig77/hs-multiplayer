@@ -32,35 +32,16 @@ public class MessageBuilderHelper {
                 .build();
     }
 
-    public static GameProto.ClientMessage buildChatMessage(String matchId, String from, String text) {
-        if (matchId == null || matchId.isEmpty()) {
-            throw new IllegalArgumentException("match_id is mandatory");
-        }
-        if (from == null || from.isEmpty()) {
-            throw new IllegalArgumentException("from is mandatory");
-        }
-        if (text == null || text.isEmpty()) {
-            throw new IllegalArgumentException("text is mandatory");
-        }
-        GameProto.ChatMessage chat = GameProto.ChatMessage.newBuilder()
-                .setMatchId(matchId)
-                .setFrom(from)
-                .setText(text)
-                .build();
-        return GameProto.ClientMessage.newBuilder()
-                .setChat(chat)
-                .build();
-    }
-
     public static GameProto.ClientMessage buildCreateMatch(String mode) {
         if (mode == null || mode.isEmpty()) {
             throw new IllegalArgumentException("mode is mandatory");
         }
-        GameProto.CreateMatch createMatch = GameProto.CreateMatch.newBuilder()
+        GameProto.JoinGame joinGame = GameProto.JoinGame.newBuilder()
                 .setMode(mode)
                 .build();
         return GameProto.ClientMessage.newBuilder()
-                .setCreateMatch(createMatch)
+                .setJoinGame(joinGame)
                 .build();
+
     }
 }
